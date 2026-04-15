@@ -17,6 +17,7 @@ import argparse
 import hashlib
 import json
 import os
+import struct
 import sys
 import time
 import xml.etree.ElementTree as ET
@@ -124,108 +125,170 @@ def collect_textures(model_dir: Path) -> list[dict]:
     return textures
 
 
-def convert_model_xml_to_obj(model_index_xml: Path, output_obj: Path) -> dict:
-    """Convert the simplemodel XML <model> section to Wavefront OBJ.
+def convert_model_xml_to_glb(model_index_xml: Path, output_glb: Path) -> dict:
+    """Convert the simplemodel XML <model> section to glTF Binary (.glb).
 
-    Returns stats dict with vertex/face counts.
+    Returns stats dict with vertex/triangle counts.
     """
     tree = ET.parse(model_index_xml)
     root = tree.getroot()
 
-    # Find the <model> element which contains the actual 3D polygon data
     model_el = root.find("model")
     if model_el is None:
         print("  [ERROR] No <model> element found in model/index.xml")
         return {"vertices": 0, "faces": 0}
 
-    vertices = []   # (x, y, z)
-    uvs = []        # (u, v)
-    normals = []    # (nx, ny, nz)
-    faces = []      # list of (material, [(vi, vti, vni), ...])
+    # Collect vertex data and triangulate
+    positions = []   # flat floats: x, y, z, x, y, z, ...
+    normals = []     # flat floats: nx, ny, nz, ...
+    texcoords = []   # flat floats: u, v, ...
+    indices = []     # triangle indices
+    vertex_count = 0
+    triangle_count = 0
 
     for polygon in model_el.findall("polygon"):
         nx = float(polygon.get("nx", "0"))
         ny = float(polygon.get("ny", "0"))
         nz = float(polygon.get("nz", "0"))
 
-        # Determine material name from texture attribute
-        texture = polygon.get("texture", "default")
-        # Normalize: "pack:z_inc.bmp" -> "z_inc", "material:black.bmp" -> "mat_black"
-        if texture.startswith("pack:"):
-            mat_name = texture[5:].replace(".bmp", "")
-        elif texture.startswith("material:"):
-            mat_name = "mat_" + texture[9:].replace(".bmp", "")
-        else:
-            mat_name = texture.replace(".", "_").replace(":", "_")
-
-        # Add the face normal
-        normals.append((nx, ny, nz))
-        ni = len(normals)  # 1-indexed
-
-        face_indices = []
+        poly_verts = []
         for vert in polygon.findall("vertex"):
             x = float(vert.get("x", "0"))
             y = float(vert.get("y", "0"))
             z = float(vert.get("z", "0"))
             s = float(vert.get("s", "0"))
             t = float(vert.get("t", "0"))
+            poly_verts.append((x, y, z, nx, ny, nz, s, 1.0 - t))
 
-            vertices.append((x, y, z))
-            uvs.append((s, 1.0 - t))  # Flip V for OBJ convention
+        if len(poly_verts) < 3:
+            continue
 
-            vi = len(vertices)  # 1-indexed
-            vti = len(uvs)
-            face_indices.append((vi, vti, ni))
+        # Add vertices
+        base_idx = vertex_count
+        for v in poly_verts:
+            positions.extend(v[:3])
+            normals.extend(v[3:6])
+            texcoords.extend(v[6:8])
+            vertex_count += 1
 
-        if len(face_indices) >= 3:
-            faces.append((mat_name, face_indices))
+        # Fan triangulation from first vertex
+        for j in range(1, len(poly_verts) - 1):
+            indices.extend([base_idx, base_idx + j, base_idx + j + 1])
+            triangle_count += 1
 
-    # Write OBJ file
-    lines = []
-    lines.append(f"# Converted from {model_index_xml.name}")
-    lines.append(f"# Vertices: {len(vertices)}, Faces: {len(faces)}")
-    lines.append("")
+    if vertex_count == 0:
+        print("  [ERROR] No vertices found in model")
+        return {"vertices": 0, "faces": 0}
 
-    # Vertices
-    for x, y, z in vertices:
-        lines.append(f"v {x} {y} {z}")
-    lines.append("")
+    # Build binary buffer sections
+    use_uint32 = vertex_count > 65535
 
-    # Texture coordinates
-    for u, v in uvs:
-        lines.append(f"vt {u} {v}")
-    lines.append("")
+    pos_data = struct.pack(f"<{len(positions)}f", *positions)
+    norm_data = struct.pack(f"<{len(normals)}f", *normals)
+    uv_data = struct.pack(f"<{len(texcoords)}f", *texcoords)
 
-    # Normals
-    for nx, ny, nz in normals:
-        lines.append(f"vn {nx} {ny} {nz}")
-    lines.append("")
+    if use_uint32:
+        idx_data = struct.pack(f"<{len(indices)}I", *indices)
+        idx_component_type = 5125  # UNSIGNED_INT
+        idx_byte_len = len(indices) * 4
+    else:
+        idx_data = struct.pack(f"<{len(indices)}H", *indices)
+        idx_component_type = 5123  # UNSIGNED_SHORT
+        idx_byte_len = len(indices) * 2
 
-    # Faces grouped by material
-    current_mat = None
-    for mat_name, face_indices in faces:
-        if mat_name != current_mat:
-            lines.append(f"usemtl {mat_name}")
-            current_mat = mat_name
+    # Pad each section to 4-byte alignment
+    def pad4(data):
+        remainder = len(data) % 4
+        return data + b'\x00' * (4 - remainder) if remainder else data
 
-        if len(face_indices) <= 4:
-            # Triangle or quad — write directly
-            face_str = " ".join(f"{vi}/{vti}/{vni}" for vi, vti, vni in face_indices)
-            lines.append(f"f {face_str}")
-        else:
-            # N-gon: fan triangulate from first vertex
-            v0 = face_indices[0]
-            for j in range(1, len(face_indices) - 1):
-                v1 = face_indices[j]
-                v2 = face_indices[j + 1]
-                tri = f"f {v0[0]}/{v0[1]}/{v0[2]} {v1[0]}/{v1[1]}/{v1[2]} {v2[0]}/{v2[1]}/{v2[2]}"
-                lines.append(tri)
+    pos_data = pad4(pos_data)
+    norm_data = pad4(norm_data)
+    uv_data = pad4(uv_data)
+    idx_data = pad4(idx_data)
 
-    lines.append("")
-    output_obj.write_text("\n".join(lines), encoding="utf-8")
+    # Buffer layout offsets
+    pos_offset = 0
+    norm_offset = pos_offset + len(pos_data)
+    uv_offset = norm_offset + len(norm_data)
+    idx_offset = uv_offset + len(uv_data)
+    bin_data = pos_data + norm_data + uv_data + idx_data
 
-    stats = {"vertices": len(vertices), "faces": len(faces)}
-    print(f"  OBJ written: {output_obj} ({stats['vertices']} vertices, {stats['faces']} faces)")
+    # Bounding box for positions accessor (required by glTF spec)
+    min_pos = [float('inf')] * 3
+    max_pos = [float('-inf')] * 3
+    for i in range(vertex_count):
+        for c in range(3):
+            val = positions[i * 3 + c]
+            min_pos[c] = min(min_pos[c], val)
+            max_pos[c] = max(max_pos[c], val)
+
+    # Build glTF JSON descriptor
+    gltf = {
+        "asset": {"version": "2.0", "generator": "vlakosimdb upload_loco.py"},
+        "scene": 0,
+        "scenes": [{"nodes": [0]}],
+        "nodes": [{"mesh": 0}],
+        "meshes": [{
+            "primitives": [{
+                "attributes": {
+                    "POSITION": 0,
+                    "NORMAL": 1,
+                    "TEXCOORD_0": 2,
+                },
+                "indices": 3,
+            }]
+        }],
+        "accessors": [
+            {
+                "bufferView": 0, "componentType": 5126, "count": vertex_count,
+                "type": "VEC3", "min": min_pos, "max": max_pos,
+            },
+            {
+                "bufferView": 1, "componentType": 5126, "count": vertex_count,
+                "type": "VEC3",
+            },
+            {
+                "bufferView": 2, "componentType": 5126, "count": vertex_count,
+                "type": "VEC2",
+            },
+            {
+                "bufferView": 3, "componentType": idx_component_type,
+                "count": len(indices), "type": "SCALAR",
+            },
+        ],
+        "bufferViews": [
+            {"buffer": 0, "byteOffset": pos_offset, "byteLength": vertex_count * 12, "target": 34962},
+            {"buffer": 0, "byteOffset": norm_offset, "byteLength": vertex_count * 12, "target": 34962},
+            {"buffer": 0, "byteOffset": uv_offset, "byteLength": vertex_count * 8, "target": 34962},
+            {"buffer": 0, "byteOffset": idx_offset, "byteLength": idx_byte_len, "target": 34963},
+        ],
+        "buffers": [{"byteLength": len(bin_data)}],
+    }
+
+    json_str = json.dumps(gltf, separators=(",", ":"))
+    # Pad JSON chunk to 4-byte alignment with spaces (glTF spec)
+    while len(json_str) % 4 != 0:
+        json_str += " "
+    json_data = json_str.encode("utf-8")
+
+    # Write GLB: header + JSON chunk + BIN chunk
+    total_length = 12 + 8 + len(json_data) + 8 + len(bin_data)
+    with open(output_glb, "wb") as f:
+        # GLB header
+        f.write(struct.pack("<I", 0x46546C67))  # magic "glTF"
+        f.write(struct.pack("<I", 2))            # version 2
+        f.write(struct.pack("<I", total_length))
+        # JSON chunk
+        f.write(struct.pack("<I", len(json_data)))
+        f.write(struct.pack("<I", 0x4E4F534A))   # chunk type "JSON"
+        f.write(json_data)
+        # BIN chunk
+        f.write(struct.pack("<I", len(bin_data)))
+        f.write(struct.pack("<I", 0x004E4942))    # chunk type "BIN\0"
+        f.write(bin_data)
+
+    stats = {"vertices": vertex_count, "faces": triangle_count}
+    print(f"  GLB written: {output_glb} ({stats['vertices']} vertices, {stats['faces']} triangles)")
     return stats
 
 
@@ -255,7 +318,7 @@ def upload_mesh_to_roblox(obj_path: Path, api_key: str, creator_id: str,
         headers={"x-api-key": api_key},
         files={
             "request": (None, json.dumps(request_body), "application/json"),
-            "fileContent": (obj_path.name, mesh_data, "model/obj"),
+            "fileContent": (obj_path.name, mesh_data, "model/gltf-binary"),
         },
         timeout=120,
     )
@@ -447,11 +510,11 @@ def main():
 
     # 3. Convert model XML to OBJ mesh
     model_xml = model_dir / "index.xml" if model_dir.is_dir() else None
-    obj_path = None
+    glb_path = None
     if model_xml and model_xml.exists():
-        obj_path = loco_dir / "model.obj"
-        print(f"\nConverting 3D model to OBJ...")
-        convert_model_xml_to_obj(model_xml, obj_path)
+        glb_path = loco_dir / "model.glb"
+        print(f"\nConverting 3D model to GLB...")
+        convert_model_xml_to_glb(model_xml, glb_path)
     else:
         print("  [WARN] model/index.xml not found, skipping mesh conversion")
 
@@ -520,16 +583,16 @@ def main():
                     print(f"  Uploaded: assetId = {asset_id}")
 
         # Upload 3D mesh
-        if obj_path and obj_path.exists():
+        if glb_path and glb_path.exists():
             mesh_hash = file_content_hash(model_xml)
             if mesh_hash in mesh_lockdata:
                 mesh_asset_id = mesh_lockdata[mesh_hash]
                 cache_hits += 1
-                print(f"\nMesh: model.obj [CACHED] assetId = {mesh_asset_id}")
+                print(f"\nMesh: model.glb [CACHED] assetId = {mesh_asset_id}")
             else:
-                print(f"\nUploading 3D mesh: model.obj...")
+                print(f"\nUploading 3D mesh: model.glb...")
                 asset_id = upload_mesh_to_roblox(
-                    obj_path, args.api_key, args.creator_id,
+                    glb_path, args.api_key, args.creator_id,
                     display_name=f"{metadata.get('title', 'Loco')} Mesh",
                     description=f"3D mesh for {metadata.get('title', '')} by {metadata.get('author', '')}",
                 )
