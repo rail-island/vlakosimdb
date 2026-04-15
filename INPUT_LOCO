@@ -1,0 +1,5 @@
+# Locomotive directories to process (one per line)
+# Lines ending with /* expand to all sub-directories
+# Lines starting with # are comments
+
+db/loco/loco/electric/cd_163

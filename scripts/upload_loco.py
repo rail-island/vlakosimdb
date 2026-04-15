@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """
-Upload locomotive assets to Roblox and generate a Lua metadata file.
+Upload locomotive assets to Roblox and generate a combined Lua metadata file.
 
 Usage:
-    python upload_loco.py <loco_dir> [--dry-run]
+    python upload_loco.py [--dry-run]
+
+Reads INPUT_LOCO file from the project root for the list of loco directories.
+Each line is a path relative to the repo root, e.g.:
+    db/loco/loco/electric/cd_163
+    db/loco/loco/electric/*
+
+Lines ending with /* will expand to all sub-directories.
 
 Configure ROBLOX_API_KEY and ROBLOX_CREATOR_ID in a .env file at the project root,
 or pass them via --api-key / --creator-id flags (flags override .env values).
-
-Example:
-    python upload_loco.py db/loco/loco/electric/cd_163
-    python upload_loco.py db/loco/loco/electric/cd_163 --dry-run
 """
 
 import argparse
@@ -42,6 +45,8 @@ except ImportError:
 
 ROBLOX_ASSETS_API = "https://apis.roblox.com/assets/v1/assets"
 LOCKFILE_NAME = "roblox_uploads.lock.json"
+INPUT_FILE = "INPUT_LOCO"
+OUTPUT_LUA = "loco_data.lua"
 
 # Built-in material colors for "material:xxx.bmp" texture references
 MATERIAL_COLORS = {
@@ -567,92 +572,88 @@ def poll_operation(operation_path: str, api_key: str, max_attempts: int = 20) ->
     return None
 
 
-def generate_lua(metadata: dict, thumbnail_asset_id: str,
-                 atlas_asset_id: str, mesh_asset_id: str,
-                 output_path: Path):
-    """Generate a Lua metadata file."""
+def generate_combined_lua(all_locos: list[dict], output_path: Path):
+    """Generate a single Lua file with all locomotive data."""
     lines = []
-    lines.append("-- Auto-generated locomotive metadata")
-    lines.append(f"-- Source: {metadata.get('name', 'unknown')}")
+    lines.append("-- Auto-generated locomotive database")
+    lines.append(f"-- {len(all_locos)} locomotive(s)")
     lines.append("")
-    lines.append("local LocoData = {")
+    lines.append("local LocoDatabase = {")
 
-    # Metadata
-    lines.append("\t-- Metadata from index.xml")
-    lines.append(f'\tname = "{metadata.get("name", "")}",') 
-    lines.append(f'\ttitle = "{metadata.get("title", "")}",') 
-    lines.append(f'\tauthor = "{metadata.get("author", "")}",') 
-    lines.append(f'\temail = "{metadata.get("email", "")}",') 
+    for loco in all_locos:
+        meta = loco["metadata"]
+        key = meta.get("name", "unknown")
+        lines.append(f'\t["{key}"] = {{')
 
-    # Numeric fields
-    for key in ("maxspeed", "weight", "power"):
-        val = metadata.get(key, "0")
-        lines.append(f"\t{key} = {val},")
+        lines.append(f'\t\tname = "{meta.get("name", "")}",')
+        lines.append(f'\t\ttitle = "{meta.get("title", "")}",')
+        lines.append(f'\t\tauthor = "{meta.get("author", "")}",')
+        lines.append(f'\t\temail = "{meta.get("email", "")}",')
 
-    lines.append(f'\tpath = "{metadata.get("path", "")}",') 
-    lines.append("")
+        for field in ("maxspeed", "weight", "power"):
+            val = meta.get(field, "0")
+            lines.append(f"\t\t{field} = {val},")
 
-    # Thumbnail
-    lines.append("\t-- Thumbnail image asset")
-    lines.append(f'\tthumbnailAssetId = "{thumbnail_asset_id}",') 
-    lines.append("")
-
-    # 3D Mesh
-    lines.append("\t-- 3D mesh asset (GLB with embedded atlas texture)")
-    lines.append(f'\tmeshAssetId = "{mesh_asset_id}",') 
-    lines.append("")
-
-    # Atlas texture
-    lines.append("\t-- Atlas texture asset (all model textures combined)")
-    lines.append(f'\tatlasTextureAssetId = "{atlas_asset_id}",') 
+        lines.append(f'\t\tpath = "{meta.get("path", "")}",')
+        lines.append(f'\t\tthumbnailAssetId = "{loco["thumbnailAssetId"]}",')
+        lines.append(f'\t\tmeshAssetId = "{loco["meshAssetId"]}",')
+        lines.append(f'\t\tatlasTextureAssetId = "{loco["atlasAssetId"]}",')
+        lines.append("\t},")
 
     lines.append("}")
     lines.append("")
-    lines.append("return LocoData")
+    lines.append("return LocoDatabase")
     lines.append("")
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text("\n".join(lines), encoding="utf-8")
-    print(f"Lua file written to: {output_path}")
+    print(f"\nLua file written to: {output_path}")
 
 
-def main():
-    # Load .env from project root (two levels up from scripts/)
-    env_path = Path(__file__).resolve().parent.parent / ".env"
-    load_dotenv(env_path)
-
-    parser = argparse.ArgumentParser(description="Upload loco assets to Roblox and generate Lua metadata")
-    parser.add_argument("loco_dir", help="Path to locomotive directory (e.g. db/loco/loco/electric/cd_163)")
-    parser.add_argument("--api-key", help="Roblox Open Cloud API key (overrides ROBLOX_API_KEY from .env)")
-    parser.add_argument("--creator-id", help="Roblox user/creator ID (overrides ROBLOX_CREATOR_ID from .env)")
-    parser.add_argument("--dry-run", action="store_true", help="Skip uploads, generate Lua with placeholder IDs")
-    parser.add_argument("--output", help="Output Lua file path (default: <loco_dir>/loco_data.lua)")
-    args = parser.parse_args()
-
-    # Resolve credentials: CLI flags > .env > missing
-    args.api_key = args.api_key or os.environ.get("ROBLOX_API_KEY")
-    args.creator_id = args.creator_id or os.environ.get("ROBLOX_CREATOR_ID")
-
-    loco_dir = Path(args.loco_dir).resolve()
-    if not loco_dir.is_dir():
-        print(f"Error: {loco_dir} is not a directory")
+def resolve_input_dirs(input_file: Path) -> list[Path]:
+    """Read INPUT_LOCO file and resolve paths, expanding wildcards."""
+    if not input_file.exists():
+        print(f"Error: {input_file} not found")
         sys.exit(1)
 
+    root = _repo_root()
+    dirs: list[Path] = []
+
+    for raw_line in input_file.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+
+        if line.endswith("/*"):
+            parent = root / line[:-2]
+            if not parent.is_dir():
+                print(f"  [WARN] Directory not found: {parent}")
+                continue
+            for child in sorted(parent.iterdir()):
+                if child.is_dir() and (child / "index.xml").exists():
+                    dirs.append(child)
+        else:
+            d = root / line
+            if d.is_dir():
+                dirs.append(d)
+            else:
+                print(f"  [WARN] Directory not found: {d}")
+
+    return dirs
+
+
+def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
+                 creator_id: str | None, dry_run: bool) -> dict:
+    """Process a single locomotive: atlas, GLB, upload. Returns loco result dict."""
     index_xml = loco_dir / "index.xml"
-    if not index_xml.exists():
-        print(f"Error: {index_xml} not found")
-        sys.exit(1)
-
     thumbnail = loco_dir / "image.bmp"
     model_dir = loco_dir / "model"
     model_xml = model_dir / "index.xml" if model_dir.is_dir() else None
     loco_rel = str(loco_dir.relative_to(_repo_root()))
 
     # 1. Parse metadata
-    print(f"Parsing metadata from {index_xml}...")
     metadata = parse_loco_metadata(index_xml)
     print(f"  Name: {metadata.get('name')}  Title: {metadata.get('title')}")
-    print(f"  Author: {metadata.get('author')}  Max Speed: {metadata.get('maxspeed')} km/h")
 
     # 2. Build texture atlas
     atlas_png = b""
@@ -662,50 +663,32 @@ def main():
     tex_refs: list[str] = []
 
     if model_xml and model_xml.exists():
-        print(f"\nBuilding texture atlas...")
         atlas_png, atlas_map, tex_refs = build_texture_atlas(model_dir, model_xml)
-
         if atlas_png:
             atlas_path = loco_dir / "atlas.png"
             atlas_path.write_bytes(atlas_png)
-            print(f"  Saved: {atlas_path}")
 
-        # 3. Convert model to GLB with embedded atlas
         glb_path = loco_dir / "model.glb"
-        print(f"\nConverting 3D model to GLB...")
         convert_model_xml_to_glb(model_xml, glb_path, atlas_png, atlas_map)
-    else:
-        print("  [WARN] model/index.xml not found, skipping atlas & mesh")
 
-    # 4. Load lockfile
-    lockdata = load_lockfile()
-    uploads_made = 0
-    cache_hits = 0
-
-    # 5. Upload or use placeholders
+    # 3. Upload or placeholders
     thumbnail_asset_id = "PENDING_UPLOAD"
     atlas_asset_id = "PENDING_UPLOAD"
     mesh_asset_id = "PENDING_UPLOAD"
+    uploads_made = 0
+    cache_hits = 0
 
-    if args.dry_run:
-        print("\n[DRY RUN] Skipping uploads, using placeholder asset IDs.")
-    else:
-        if not args.api_key or not args.creator_id:
-            print("\nError: --api-key and --creator-id are required for upload (or use --dry-run)")
-            sys.exit(1)
-
-        # Upload thumbnail
+    if not dry_run:
+        # Thumbnail
         if thumbnail.exists():
             thumb_hash = file_content_hash(thumbnail)
             thumb_key = make_lock_key(f"{loco_rel}/image.bmp", thumb_hash)
             if thumb_key in lockdata:
                 thumbnail_asset_id = lockdata[thumb_key]
                 cache_hits += 1
-                print(f"\nThumbnail: [CACHED] assetId = {thumbnail_asset_id}")
             else:
-                print(f"\nUploading thumbnail: image.bmp...")
                 asset_id = upload_image_to_roblox(
-                    thumbnail, args.api_key, args.creator_id,
+                    thumbnail, api_key, creator_id,
                     display_name=f"{metadata.get('title', 'Loco')} Thumbnail",
                     description=f"Thumbnail for {metadata.get('title', '')} by {metadata.get('author', '')}",
                 )
@@ -714,22 +697,17 @@ def main():
                     lockdata[thumb_key] = asset_id
                     save_lockfile(lockdata)
                     uploads_made += 1
-                    print(f"  Uploaded: assetId = {asset_id}")
-        else:
-            print(f"  [WARN] Thumbnail not found: {thumbnail}")
 
-        # Upload atlas texture (single combined image)
+        # Atlas
         if atlas_path and atlas_path.exists():
             atlas_hash = compute_atlas_source_hash(model_dir, tex_refs)
             atlas_key = make_lock_key(f"{loco_rel}/atlas.png", atlas_hash)
             if atlas_key in lockdata:
                 atlas_asset_id = lockdata[atlas_key]
                 cache_hits += 1
-                print(f"\nAtlas texture: [CACHED] assetId = {atlas_asset_id}")
             else:
-                print(f"\nUploading atlas texture: atlas.png...")
                 asset_id = upload_image_to_roblox(
-                    atlas_path, args.api_key, args.creator_id,
+                    atlas_path, api_key, creator_id,
                     display_name=f"{metadata.get('name', 'Loco')} Atlas",
                     description=f"Texture atlas for {metadata.get('title', '')}",
                 )
@@ -738,11 +716,9 @@ def main():
                     lockdata[atlas_key] = asset_id
                     save_lockfile(lockdata)
                     uploads_made += 1
-                    print(f"  Uploaded: assetId = {asset_id}")
 
-        # Upload 3D mesh (GLB with embedded atlas)
+        # Mesh
         if glb_path and glb_path.exists():
-            # Mesh depends on model XML + all textures (atlas layout affects UVs)
             model_hash = file_content_hash(model_xml)
             atlas_hash_for_mesh = compute_atlas_source_hash(model_dir, tex_refs)
             combined_hash = hashlib.sha256(
@@ -752,11 +728,9 @@ def main():
             if mesh_key in lockdata:
                 mesh_asset_id = lockdata[mesh_key]
                 cache_hits += 1
-                print(f"\nMesh: [CACHED] assetId = {mesh_asset_id}")
             else:
-                print(f"\nUploading 3D mesh: model.glb...")
                 asset_id = upload_mesh_to_roblox(
-                    glb_path, args.api_key, args.creator_id,
+                    glb_path, api_key, creator_id,
                     display_name=f"{metadata.get('title', 'Loco')} Mesh",
                     description=f"3D mesh for {metadata.get('title', '')} by {metadata.get('author', '')}",
                 )
@@ -765,15 +739,68 @@ def main():
                     lockdata[mesh_key] = asset_id
                     save_lockfile(lockdata)
                     uploads_made += 1
-                    print(f"  Uploaded: assetId = {asset_id}")
 
-        print(f"\nSummary: {uploads_made} uploaded, {cache_hits} cached")
+        print(f"  Uploads: {uploads_made} new, {cache_hits} cached")
 
-    # 6. Generate Lua
-    output_path = Path(args.output) if args.output else loco_dir / "loco_data.lua"
-    print(f"\nGenerating Lua metadata file...")
-    generate_lua(metadata, thumbnail_asset_id, atlas_asset_id, mesh_asset_id, output_path.resolve())
-    print("Done!")
+    return {
+        "metadata": metadata,
+        "thumbnailAssetId": thumbnail_asset_id,
+        "atlasAssetId": atlas_asset_id,
+        "meshAssetId": mesh_asset_id,
+    }
+
+
+def main():
+    env_path = _repo_root() / ".env"
+    load_dotenv(env_path)
+
+    parser = argparse.ArgumentParser(
+        description="Upload loco assets to Roblox, reading directories from INPUT_LOCO"
+    )
+    parser.add_argument("--api-key", help="Roblox Open Cloud API key (overrides .env)")
+    parser.add_argument("--creator-id", help="Roblox user/creator ID (overrides .env)")
+    parser.add_argument("--dry-run", action="store_true", help="Skip uploads, use placeholder IDs")
+    parser.add_argument("--input", help=f"Input file (default: {INPUT_FILE})")
+    parser.add_argument("--output", help=f"Output Lua file (default: {OUTPUT_LUA})")
+    args = parser.parse_args()
+
+    api_key = args.api_key or os.environ.get("ROBLOX_API_KEY")
+    creator_id = args.creator_id or os.environ.get("ROBLOX_CREATOR_ID")
+
+    if not args.dry_run and (not api_key or not creator_id):
+        print("Error: --api-key and --creator-id are required (or use --dry-run)")
+        sys.exit(1)
+
+    # Resolve input directories
+    input_file = _repo_root() / (args.input or INPUT_FILE)
+    print(f"Reading input from: {input_file}")
+    loco_dirs = resolve_input_dirs(input_file)
+
+    if not loco_dirs:
+        print("No locomotive directories found.")
+        sys.exit(1)
+
+    print(f"Found {len(loco_dirs)} locomotive(s) to process.\n")
+
+    # Load lockfile once
+    lockdata = load_lockfile()
+    all_locos: list[dict] = []
+
+    for i, loco_dir in enumerate(loco_dirs, 1):
+        loco_rel = loco_dir.relative_to(_repo_root())
+        print(f"[{i}/{len(loco_dirs)}] Processing {loco_rel}...")
+
+        if not (loco_dir / "index.xml").exists():
+            print(f"  [SKIP] No index.xml found")
+            continue
+
+        result = process_loco(loco_dir, lockdata, api_key, creator_id, args.dry_run)
+        all_locos.append(result)
+
+    # Generate combined Lua
+    output_path = _repo_root() / (args.output or OUTPUT_LUA)
+    generate_combined_lua(all_locos, output_path)
+    print(f"\nDone! Processed {len(all_locos)} locomotive(s).")
 
 
 if __name__ == "__main__":
