@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<tunnel rep.name="emptyobj.tunne2" hor="0.1" ver="0.3" name="tunnel2" author="Vojtěch Vohlídka" email="xxvojtikxx@seznam.cz" default="0" top.texture="material:drock002.bmp" top.texsize="" bot.texture="material:drock002.bmp" bot.texsize="" title="$Tunnel 2"/>

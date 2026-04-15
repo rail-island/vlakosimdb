@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<shape3d name="wall" rep.name="emptyobj.shape3d">
+<polygon b="1" g="1" r="1" texture="material:wall.bmp" texture.transparent="0">
+<vertex s="0" t="0" x="0" y="0" z="0"/>
+<vertex s="0" t="1" x="0" y="8" z="0"/>
+<vertex s="2" t="1" x="10" y="8" z="0"/>
+<vertex s="2" t="0" x="10" y="0" z="0"/>
+</polygon>
+<polygon b="1" g="1" r="1" texture="material:wall.bmp" texture.transparent="0">
+<vertex s="0" t="0" x="0" y="0" z="40"/>
+<vertex s="0" t="1" x="0" y="8" z="40"/>
+<vertex s="2" t="1" x="10" y="8" z="40"/>
+<vertex s="2" t="0" x="10" y="0" z="40"/>
+</polygon>
+</shape3d>

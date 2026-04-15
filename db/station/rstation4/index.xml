@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<rstation rep.name="emptyobj.rstation" name="rstation4" author="Vojtěch Vohlídka" email="xxvojtikxx@seznam.cz" default="0" title="Maselna Lhota" depo="0">
+<perons>
+<peron item="base" cnt="1" min="" max=""/>
+</perons>
+<items>
+<item model="model" cnt="1" min="" max="" tracks="1" name="base"/>
+</items>
+</rstation>

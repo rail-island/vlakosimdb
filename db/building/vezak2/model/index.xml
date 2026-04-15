@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<simplemodel xsize="10" ysize="20" zsize="10" version="1.0" glomodel.loadchild="model" name="model" edit_along="0">
+<colorizes>
+<colorize texture="pack:x_both.bmp" dirs="1;0;0;0;0;0;" texx1="0" texy1="0" texx2="10" texy2="20"/>
+<colorize texture="pack:x_both.bmp" dirs="0;1;0;0;0;0;" texx1="0" texy1="0" texx2="10" texy2="20"/>
+<colorize texture="pack:y_dec.bmp" dirs="0;0;0;1;0;0;" texx1="0" texy1="0" texx2="10" texy2="10"/>
+<colorize texture="pack:z_both.bmp" dirs="0;0;0;0;1;0;" texx1="0" texy1="0" texx2="10" texy2="20"/>
+<colorize texture="pack:z_both.bmp" dirs="0;0;0;0;0;1;" texx1="0" texy1="0" texx2="10" texy2="20"/>
+</colorizes>
+<alongx edit_jumpx="1" edit_jumpy="1" edit_scale="19" edit_dx="271" edit_dy="508" edit_incdec="0">
+<clip>
+<polygon apply="base">
+<point x="2" y="0"/>
+<point x="8" y="0"/>
+<point x="8" y="20"/>
+<point x="2" y="20"/>
+</polygon>
+</clip>
+</alongx>
+<alongy edit_jumpx="1" edit_jumpy="1" edit_scale="25" edit_dx="259" edit_dy="400" edit_incdec="0">
+<clip>
+<polygon apply="base">
+<point x="0" y="0"/>
+<point x="10" y="0"/>
+<point x="10" y="10"/>
+<point x="0" y="10"/>
+</polygon>
+</clip>
+</alongy>
+<alongz edit_jumpx="1" edit_jumpy="1" edit_scale="21" edit_dx="235" edit_dy="472" edit_incdec="0">
+<clip>
+<polygon apply="base">
+<point x="0" y="0"/>
+<point x="10" y="0"/>
+<point x="10" y="20"/>
+<point x="0" y="20"/>
+</polygon>
+</clip>
+</alongz>
+<inlines/>
+<crook/>
+<shapes>
+<shape name="base" type="clip"/>
+</shapes>
+<model>
+<polygon nx="-0" ny="1" nz="-0" culling="1">
+<vertex x="0" y="0" z="8" s="0" t="0"/>
+<vertex x="0" y="0" z="2" s="0" t="0"/>
+<vertex x="10" y="0" z="2" s="0" t="0"/>
+<vertex x="10" y="0" z="8" s="0" t="0"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="-1" culling="1" texture="pack:z_both.bmp" texture.transparent="0" r="1" g="1" b="1">
+<vertex x="10" y="0" z="8" s="1" t="0"/>
+<vertex x="10" y="20" z="8" s="1" t="1"/>
+<vertex x="0" y="20" z="8" s="0" t="1"/>
+<vertex x="0" y="0" z="8" s="0" t="0"/>
+</polygon>
+<polygon nx="-0" ny="-1" nz="-0" culling="1" texture="pack:y_dec.bmp" texture.transparent="0" r="1" g="1" b="1">
+<vertex x="10" y="20" z="8" s="1" t="0.8"/>
+<vertex x="10" y="20" z="2" s="1" t="0.2"/>
+<vertex x="0" y="20" z="2" s="0" t="0.2"/>
+<vertex x="0" y="20" z="8" s="0" t="0.8"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="1" culling="1" texture="pack:z_both.bmp" texture.transparent="0" r="1" g="1" b="1">
+<vertex x="0" y="0" z="2" s="0" t="0"/>
+<vertex x="0" y="20" z="2" s="0" t="1"/>
+<vertex x="10" y="20" z="2" s="1" t="1"/>
+<vertex x="10" y="0" z="2" s="1" t="0"/>
+</polygon>
+<polygon nx="-1" ny="-0" nz="-0" culling="1" texture="pack:x_both.bmp" texture.transparent="0" r="1" g="1" b="1">
+<vertex x="10" y="0" z="8" s="0.8" t="0"/>
+<vertex x="10" y="0" z="2" s="0.2" t="0"/>
+<vertex x="10" y="20" z="2" s="0.2" t="1"/>
+<vertex x="10" y="20" z="8" s="0.8" t="1"/>
+</polygon>
+<polygon nx="1" ny="-0" nz="-0" culling="1" texture="pack:x_both.bmp" texture.transparent="0" r="1" g="1" b="1">
+<vertex x="0" y="20" z="8" s="0.8" t="1"/>
+<vertex x="0" y="20" z="2" s="0.2" t="1"/>
+<vertex x="0" y="0" z="2" s="0.2" t="0"/>
+<vertex x="0" y="0" z="8" s="0.8" t="0"/>
+</polygon>
+</model>
+<noise>
+<noise name="noise" dr="5" dg="5" db="14" srccolor="*" files="x_both.bmp;z_both.bmp;y_dec.bmp"/>
+</noise>
+</simplemodel>

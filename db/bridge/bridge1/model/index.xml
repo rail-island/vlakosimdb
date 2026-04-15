@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<simplemodel rep.name="emptyobj.simplemodel" name="nridgemodel" xsize="10" ysize="25" zsize="10" glomodel.loadchild="model" edit_along="2" version="1.0">
+<alongx edit_dx="308" edit_dy="114" edit_incdec="-1" edit_jumpx="0.1" edit_jumpy="0.1" edit_scale="20">
+<clip>
+<polygon apply="base">
+<point x="0" y="-25"/>
+<point x="10" y="-25"/>
+<point x="10" y="0"/>
+<point x="0" y="0"/>
+</polygon>
+</clip>
+</alongx>
+<alongy edit_dx="297" edit_dy="388" edit_incdec="-1" edit_jumpx="1" edit_jumpy="1" edit_scale="25">
+<clip>
+<polygon apply="base">
+<point x="0" y="3"/>
+<point x="10" y="3"/>
+<point x="10" y="7"/>
+<point x="0" y="7"/>
+</polygon>
+</clip>
+</alongy>
+<alongz edit_dx="207" edit_dy="22" edit_incdec="-1" edit_jumpx="0.1" edit_jumpy="0.1" edit_scale="31">
+<clip>
+<polygon apply="base">
+<point x="0" y="-25"/>
+<point x="1.4" y="-25"/>
+<point x="1.4" y="0"/>
+<point x="0" y="0"/>
+</polygon>
+<polygon apply="base">
+<point x="1.4" y="-6.6"/>
+<point x="1.4" y="0"/>
+<point x="3.6" y="0"/>
+<point x="3.7" y="-2.5"/>
+</polygon>
+<polygon apply="base">
+<point x="3.7" y="-2.5"/>
+<point x="3.6" y="0"/>
+<point x="6" y="0"/>
+<point x="6.1" y="-2.5"/>
+</polygon>
+<polygon apply="base">
+<point x="6.1" y="-2.5"/>
+<point x="6" y="0"/>
+<point x="8.6" y="0"/>
+<point x="8.6" y="-6.5"/>
+</polygon>
+<polygon apply="base">
+<point x="8.6" y="-25.1"/>
+<point x="8.6" y="0"/>
+<point x="10" y="0"/>
+<point x="10" y="-25.1"/>
+</polygon>
+</clip>
+</alongz>
+<inlines/>
+<crook/>
+<model rep.name="">
+<polygon nx="-0" ny="10" nz="-0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="0" y="-25" z="3" s="0" t="0.3"/>
+<vertex x="0" y="-25" z="7" s="0" t="0.7"/>
+<vertex x="1.4" y="-25" z="7" s="0.14" t="0.7"/>
+<vertex x="1.4" y="-25" z="3" s="0.14" t="0.3"/>
+</polygon>
+<polygon nx="-0" ny="-10" nz="-0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="0" y="0" z="3" s="0" t="0.3"/>
+<vertex x="0" y="0" z="7" s="0" t="0.7"/>
+<vertex x="1.4" y="0" z="7" s="0.14" t="0.7"/>
+<vertex x="1.4" y="0" z="3" s="0.14" t="0.3"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="10" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="0" y="-25" z="3" s="0" t="-2.5"/>
+<vertex x="0" y="0" z="3" s="0" t="0"/>
+<vertex x="1.4" y="0" z="3" s="0.14" t="0"/>
+<vertex x="1.4" y="-25" z="3" s="0.14" t="-2.5"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="-10" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="0" y="-25" z="7" s="0" t="-2.5"/>
+<vertex x="0" y="0" z="7" s="0" t="0"/>
+<vertex x="1.4" y="0" z="7" s="0.14" t="0"/>
+<vertex x="1.4" y="-25" z="7" s="0.14" t="-2.5"/>
+</polygon>
+<polygon nx="4" ny="-0" nz="-0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="0" y="-25" z="3" s="0.3" t="-2.5"/>
+<vertex x="0" y="0" z="3" s="0.3" t="0"/>
+<vertex x="0" y="0" z="7" s="0.7" t="0"/>
+<vertex x="0" y="-25" z="7" s="0.7" t="-2.5"/>
+</polygon>
+<polygon nx="-25" ny="-0" nz="-0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="1.4" y="-25" z="3" s="0.3" t="-2.5"/>
+<vertex x="1.4" y="-25" z="7" s="0.7" t="-2.5"/>
+<vertex x="1.4" y="0" z="7" s="0.7" t="0"/>
+<vertex x="1.4" y="0" z="3" s="0.3" t="0"/>
+</polygon>
+<polygon nx="-0" ny="-10" nz="-0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="1.4" y="0" z="7" s="0.14" t="0.7"/>
+<vertex x="1.4" y="0" z="3" s="0.14" t="0.3"/>
+<vertex x="3.6" y="0" z="3" s="0.36" t="0.3"/>
+<vertex x="3.6" y="0" z="7" s="0.36" t="0.7"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="10" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="1.4" y="0" z="3" s="0.14" t="0"/>
+<vertex x="3.6" y="0" z="3" s="0.36" t="0"/>
+<vertex x="3.7" y="-2.5" z="3" s="0.37" t="-0.25"/>
+<vertex x="1.4" y="-6.6" z="3" s="0.14" t="-0.66"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="-10" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="1.4" y="0" z="7" s="0.14" t="0"/>
+<vertex x="3.6" y="0" z="7" s="0.36" t="0"/>
+<vertex x="3.7" y="-2.5" z="7" s="0.37" t="-0.25"/>
+<vertex x="1.4" y="-6.6" z="7" s="0.14" t="-0.66"/>
+</polygon>
+<polygon nx="6.6" ny="0" nz="0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="1.4" y="0" z="7" s="0.7" t="0"/>
+<vertex x="1.4" y="0" z="3" s="0.3" t="0"/>
+<vertex x="1.4" y="-6.6" z="3" s="0.3" t="-0.66"/>
+<vertex x="1.4" y="-6.6" z="7" s="0.7" t="-0.66"/>
+</polygon>
+<polygon nx="-4.1" ny="2.3" nz="0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="1.4" y="-6.6" z="3" s="0.3" t="-0.66"/>
+<vertex x="3.7" y="-2.5" z="3" s="0.3" t="-0.25"/>
+<vertex x="3.7" y="-2.5" z="7" s="0.7" t="-0.25"/>
+<vertex x="1.4" y="-6.6" z="7" s="0.7" t="-0.66"/>
+</polygon>
+<polygon nx="-0" ny="-10" nz="-0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="3.6" y="0" z="7" s="0.36" t="0.7"/>
+<vertex x="3.6" y="0" z="3" s="0.36" t="0.3"/>
+<vertex x="6" y="0" z="3" s="0.6" t="0.3"/>
+<vertex x="6" y="0" z="7" s="0.6" t="0.7"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="10" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="3.6" y="0" z="3" s="0.36" t="0"/>
+<vertex x="3.7" y="-2.5" z="3" s="0.37" t="-0.25"/>
+<vertex x="6.1" y="-2.5" z="3" s="0.61" t="-0.25"/>
+<vertex x="6" y="0" z="3" s="0.6" t="0"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="-10" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="3.6" y="0" z="7" s="0.36" t="0"/>
+<vertex x="3.7" y="-2.5" z="7" s="0.37" t="-0.25"/>
+<vertex x="6.1" y="-2.5" z="7" s="0.61" t="-0.25"/>
+<vertex x="6" y="0" z="7" s="0.6" t="0"/>
+</polygon>
+<polygon nx="2.5" ny="0.1" nz="0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="3.6" y="0" z="7" s="0.7" t="0"/>
+<vertex x="3.6" y="0" z="3" s="0.3" t="0"/>
+<vertex x="3.7" y="-2.5" z="3" s="0.3" t="-0.25"/>
+<vertex x="3.7" y="-2.5" z="7" s="0.7" t="-0.25"/>
+</polygon>
+<polygon nx="0" ny="2.4" nz="0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="3.7" y="-2.5" z="3" s="0.37" t="0.3"/>
+<vertex x="3.7" y="-2.5" z="7" s="0.37" t="0.7"/>
+<vertex x="6.1" y="-2.5" z="7" s="0.61" t="0.7"/>
+<vertex x="6.1" y="-2.5" z="3" s="0.61" t="0.3"/>
+</polygon>
+<polygon nx="-0" ny="-10" nz="-0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="6" y="0" z="7" s="0.6" t="0.7"/>
+<vertex x="6" y="0" z="3" s="0.6" t="0.3"/>
+<vertex x="8.6" y="0" z="3" s="0.86" t="0.3"/>
+<vertex x="8.6" y="0" z="7" s="0.86" t="0.7"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="10" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="6" y="0" z="3" s="0.6" t="0"/>
+<vertex x="6.1" y="-2.5" z="3" s="0.61" t="-0.25"/>
+<vertex x="8.6" y="-6.5" z="3" s="0.86" t="-0.65"/>
+<vertex x="8.6" y="0" z="3" s="0.86" t="0"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="-10" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="6" y="0" z="7" s="0.6" t="0"/>
+<vertex x="6.1" y="-2.5" z="7" s="0.61" t="-0.25"/>
+<vertex x="8.6" y="-6.5" z="7" s="0.86" t="-0.65"/>
+<vertex x="8.6" y="0" z="7" s="0.86" t="0"/>
+</polygon>
+<polygon nx="2.5" ny="0.1" nz="0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="6" y="0" z="7" s="0.7" t="0"/>
+<vertex x="6" y="0" z="3" s="0.3" t="0"/>
+<vertex x="6.1" y="-2.5" z="3" s="0.3" t="-0.25"/>
+<vertex x="6.1" y="-2.5" z="7" s="0.7" t="-0.25"/>
+</polygon>
+<polygon nx="-6.5" ny="0" nz="0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="8.6" y="0" z="7" s="0.7" t="0"/>
+<vertex x="8.6" y="0" z="3" s="0.3" t="0"/>
+<vertex x="8.6" y="-6.5" z="3" s="0.3" t="-0.65"/>
+<vertex x="8.6" y="-6.5" z="7" s="0.7" t="-0.65"/>
+</polygon>
+<polygon nx="4" ny="2.5" nz="0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="6.1" y="-2.5" z="3" s="0.3" t="-0.25"/>
+<vertex x="6.1" y="-2.5" z="7" s="0.7" t="-0.25"/>
+<vertex x="8.6" y="-6.5" z="7" s="0.7" t="-0.65"/>
+<vertex x="8.6" y="-6.5" z="3" s="0.3" t="-0.65"/>
+</polygon>
+<polygon nx="-0" ny="10" nz="-0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="10" y="-25" z="3" s="1" t="0.3"/>
+<vertex x="10" y="-25" z="7" s="1" t="0.7"/>
+<vertex x="8.6" y="-25" z="7" s="0.86" t="0.7"/>
+<vertex x="8.6" y="-25" z="3" s="0.86" t="0.3"/>
+</polygon>
+<polygon nx="-0" ny="-10" nz="-0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="10" y="0" z="3" s="1" t="0.3"/>
+<vertex x="10" y="0" z="7" s="1" t="0.7"/>
+<vertex x="8.6" y="0" z="7" s="0.86" t="0.7"/>
+<vertex x="8.6" y="0" z="3" s="0.86" t="0.3"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="10" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="10" y="-25" z="3" s="1" t="-2.5"/>
+<vertex x="10" y="0" z="3" s="1" t="0"/>
+<vertex x="8.6" y="0" z="3" s="0.86" t="0"/>
+<vertex x="8.6" y="-25" z="3" s="0.86" t="-2.5"/>
+</polygon>
+<polygon nx="-4" ny="-0" nz="-0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="10" y="-25" z="3" s="0.3" t="-2.5"/>
+<vertex x="10" y="0" z="3" s="0.3" t="0"/>
+<vertex x="10" y="0" z="7" s="0.7" t="0"/>
+<vertex x="10" y="-25" z="7" s="0.7" t="-2.5"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="-10" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="10" y="-25" z="7" s="1" t="-2.5"/>
+<vertex x="10" y="0" z="7" s="1" t="0"/>
+<vertex x="8.6" y="0" z="7" s="0.86" t="0"/>
+<vertex x="8.6" y="-25" z="7" s="0.86" t="-2.5"/>
+</polygon>
+<polygon nx="25.1" ny="0" nz="0" texture="material:wall.bmp" texture.transparent="0">
+<vertex x="8.6" y="-25" z="3" s="0.3" t="-2.5"/>
+<vertex x="8.6" y="-25" z="7" s="0.7" t="-2.5"/>
+<vertex x="8.6" y="0" z="7" s="0.7" t="0"/>
+<vertex x="8.6" y="0" z="3" s="0.3" t="0"/>
+</polygon>
+</model>
+<colorizes>
+<colorize dirs="1;1;1;1;1;1;" xscale="0.1" yscale="0.1" texture="material:wall.bmp" transp="0" transparent="0" material="1"/>
+</colorizes>
+<shapes>
+<shape name="base" type="clip"/>
+</shapes>
+<noise/>
+</simplemodel>

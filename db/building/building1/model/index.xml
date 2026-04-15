@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<simplemodel edit_along="1" glomodel.loadchild="model" name="model" rep.name="emptyobj.simplemodel" xsize="10" ysize="10" zsize="10" version="1.0">
+<alongx edit_jumpx="0.1" edit_jumpy="0.1" edit_scale="25" edit_dx="161" edit_dy="472" edit_incdec="0">
+<clip>
+<polygon apply="base">
+<point x="0.9" y="0"/>
+<point x="9" y="0"/>
+<point x="9" y="5.9"/>
+<point x="0.9" y="5.8"/>
+</polygon>
+<polygon apply="base">
+<point x="0.8" y="5.8"/>
+<point x="1.7" y="6.9"/>
+<point x="8.3" y="6.9"/>
+<point x="9.3" y="5.9"/>
+</polygon>
+</clip>
+</alongx>
+<alongy edit_jumpx="0.1" edit_jumpy="0.1" edit_scale="25" edit_dx="97" edit_dy="382" edit_incdec="0">
+<clip>
+<polygon apply="base">
+<point x="0" y="0"/>
+<point x="10" y="0"/>
+<point x="10" y="10"/>
+<point x="0" y="10"/>
+</polygon>
+</clip>
+</alongy>
+<alongz sameas="x" edit_dx="0" edit_dy="0" edit_scale="" edit_jumpx="0.01" edit_jumpy="0.01" edit_incdec="0"/>
+<inlines/>
+<crook/>
+<model rep.name="">
+<polygon culling="1" nx="-0" ny="8.1" nz="-0">
+<vertex x="9" y="0" z="0.9"/>
+<vertex x="9" y="0" z="9"/>
+<vertex x="0.9" y="0" z="9"/>
+<vertex x="0.9" y="0" z="0.9"/>
+</polygon>
+<polygon culling="1" nx="-0" ny="-0" nz="-5.9" texture="pack:x_both.bmp" texture.transparent="0">
+<vertex s="0.9" t="0" x="9" y="0" z="9"/>
+<vertex x="9" y="5.9" z="9" s="0.9" t="0.59"/>
+<vertex x="0.9" y="5.8" z="9" s="0.09" t="0.58"/>
+<vertex x="0.9" y="0" z="9" s="0.09" t="0"/>
+</polygon>
+<polygon nx="-0" ny="-8.1" nz="0.1" culling="1" texture="pack:y_dec.bmp" texture.transparent="0">
+<vertex x="9" y="5.9" z="9" s="0.9" t="0.9"/>
+<vertex x="9" y="5.8" z="0.9" s="0.9" t="0.09"/>
+<vertex x="0.9" y="5.8" z="0.9" s="0.09" t="0.09"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="5.8" culling="1" texture="pack:x_both.bmp" texture.transparent="0">
+<vertex x="0.9" y="0" z="0.9" s="0.09" t="0"/>
+<vertex x="0.9" y="5.8" z="0.9" s="0.09" t="0.58"/>
+<vertex x="9" y="5.8" z="0.9" s="0.9" t="0.58"/>
+<vertex x="9" y="0" z="0.9" s="0.9" t="0"/>
+</polygon>
+<polygon nx="-5.9" ny="-0" nz="-0" culling="1" texture="pack:x_both.bmp" texture.transparent="0">
+<vertex x="9" y="5.8" z="0.9" s="0.09" t="0.58"/>
+<vertex x="9" y="5.9" z="9" s="0.9" t="0.59"/>
+<vertex x="9" y="0" z="9" s="0.9" t="0"/>
+<vertex x="9" y="0" z="0.9" s="0.09" t="0"/>
+</polygon>
+<polygon nx="0.1" ny="-8.1" nz="-0" culling="1" texture="pack:y_dec.bmp" texture.transparent="0">
+<vertex x="9" y="5.9" z="9" s="0.9" t="0.9"/>
+<vertex x="0.9" y="5.8" z="0.9" s="0.09" t="0.09"/>
+<vertex x="0.9" y="5.8" z="9" s="0.09" t="0.9"/>
+</polygon>
+<polygon nx="5.8" ny="-0" nz="-0" culling="1" texture="pack:x_both.bmp" texture.transparent="0">
+<vertex x="0.9" y="0" z="0.9" s="0.09" t="0"/>
+<vertex x="0.9" y="0" z="9" s="0.9" t="0"/>
+<vertex x="0.9" y="5.8" z="9" s="0.9" t="0.58"/>
+<vertex x="0.9" y="5.8" z="0.9" s="0.09" t="0.58"/>
+</polygon>
+<polygon nx="0" ny="-0.9" nz="1.1" culling="1" texture="pack:x_both.bmp" texture.transparent="0">
+<vertex x="0.9" y="5.8" z="0.8" s="0.09" t="0.58"/>
+<vertex x="9" y="5.9" z="0.881818" s="0.9" t="0.59"/>
+<vertex x="9" y="5.8" z="0.8" s="0.9" t="0.58"/>
+</polygon>
+<polygon nx="0" ny="8.5" nz="-0.1" culling="1">
+<vertex x="9" y="5.8" z="0.8"/>
+<vertex x="9" y="5.9" z="9.3"/>
+<vertex x="0.9" y="5.8" z="0.8"/>
+</polygon>
+<polygon nx="-5.9" ny="-0" nz="-0" culling="1" texture="pack:x_both.bmp" texture.transparent="0">
+<vertex x="9" y="5.9" z="0.881818" s="0.088182" t="0.59"/>
+<vertex x="9" y="5.9" z="9.3" s="0.93" t="0.59"/>
+<vertex x="9" y="5.8" z="0.8" s="0.08" t="0.58"/>
+</polygon>
+<polygon nx="0.1" ny="-8.1" nz="-0" culling="1" texture="pack:y_dec.bmp" texture.transparent="0">
+<vertex x="9" y="5.9" z="9.3" s="0.9" t="0.93"/>
+<vertex x="9" y="5.9" z="0.881818" s="0.9" t="0.088182"/>
+<vertex x="0.9" y="5.8" z="0.8" s="0.09" t="0.08"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="-5.9" culling="1" texture="pack:x_both.bmp" texture.transparent="0">
+<vertex x="0.8" y="5.8" z="9" s="0.08" t="0.58"/>
+<vertex x="9.3" y="5.9" z="9" s="0.93" t="0.59"/>
+<vertex x="0.881818" y="5.9" z="9" s="0.088182" t="0.59"/>
+</polygon>
+<polygon nx="-0" ny="-8.1" nz="0.1" culling="1" texture="pack:y_dec.bmp" texture.transparent="0">
+<vertex x="9.3" y="5.9" z="9" s="0.93" t="0.9"/>
+<vertex x="0.8" y="5.8" z="0.9" s="0.08" t="0.09"/>
+<vertex x="0.881818" y="5.9" z="9" s="0.088182" t="0.9"/>
+</polygon>
+<polygon nx="1.1" ny="-0.9" nz="0" culling="1" texture="pack:x_both.bmp" texture.transparent="0">
+<vertex x="0.881818" y="5.9" z="9" s="0.9" t="0.59"/>
+<vertex x="0.8" y="5.8" z="0.9" s="0.09" t="0.58"/>
+<vertex x="0.8" y="5.8" z="9" s="0.9" t="0.58"/>
+</polygon>
+<polygon nx="-0.1" ny="8.5" nz="0" culling="1">
+<vertex x="0.8" y="5.8" z="0.9"/>
+<vertex x="9.3" y="5.9" z="9"/>
+<vertex x="0.8" y="5.8" z="9"/>
+</polygon>
+<polygon nx="0" ny="-0.9" nz="1.1" culling="1" texture="pack:x_both.bmp" texture.transparent="0">
+<vertex x="8.3" y="6.9" z="1.7" s="0.83" t="0.69"/>
+<vertex x="9.3" y="5.9" z="0.881818" s="0.93" t="0.59"/>
+<vertex x="0.8" y="5.8" z="0.8" s="0.08" t="0.58"/>
+<vertex x="1.7" y="6.9" z="1.7" s="0.17" t="0.69"/>
+</polygon>
+<polygon nx="0" ny="-6.6" nz="0" culling="1" texture="pack:y_dec.bmp" texture.transparent="0">
+<vertex x="1.7" y="6.9" z="1.7" s="0.17" t="0.17"/>
+<vertex x="1.7" y="6.9" z="8.3" s="0.17" t="0.83"/>
+<vertex x="8.3" y="6.9" z="8.3" s="0.83" t="0.83"/>
+<vertex x="8.3" y="6.9" z="1.7" s="0.83" t="0.17"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="-1" culling="1" texture="pack:y_dec.bmp" texture.transparent="0">
+<vertex x="1.7" y="6.9" z="8.3" s="0.17" t="0.83"/>
+<vertex x="0.881818" y="5.9" z="9.3" s="0.088182" t="0.93"/>
+<vertex x="9.3" y="5.9" z="9.3" s="0.93" t="0.93"/>
+<vertex x="8.3" y="6.9" z="8.3" s="0.83" t="0.83"/>
+</polygon>
+<polygon nx="0" ny="8.5" nz="-0.1" culling="1">
+<vertex x="9.3" y="5.9" z="9.3"/>
+<vertex x="0.881818" y="5.9" z="9.3"/>
+<vertex x="0.8" y="5.8" z="0.8"/>
+</polygon>
+<polygon nx="1.1" ny="-0.9" nz="0" culling="1" texture="pack:x_both.bmp" texture.transparent="0">
+<vertex x="1.7" y="6.9" z="1.7" s="0.17" t="0.69"/>
+<vertex x="0.8" y="5.8" z="0.8" s="0.08" t="0.58"/>
+<vertex x="0.881818" y="5.9" z="9.3" s="0.93" t="0.59"/>
+<vertex x="1.7" y="6.9" z="8.3" s="0.83" t="0.69"/>
+</polygon>
+<polygon nx="-1" ny="-1" nz="0" culling="1" texture="pack:x_both.bmp" texture.transparent="0">
+<vertex x="8.3" y="6.9" z="1.7" s="0.17" t="0.69"/>
+<vertex x="8.3" y="6.9" z="8.3" s="0.83" t="0.69"/>
+<vertex x="9.3" y="5.9" z="9.3" s="0.93" t="0.59"/>
+<vertex x="9.3" y="5.9" z="0.881818" s="0.088182" t="0.59"/>
+</polygon>
+<polygon nx="-0.1" ny="8.5" nz="0" culling="1">
+<vertex x="9.3" y="5.9" z="0.881818"/>
+<vertex x="9.3" y="5.9" z="9.3"/>
+<vertex x="0.8" y="5.8" z="0.8"/>
+</polygon>
+</model>
+<colorizes>
+<colorize dirs="1;1;0;0;0;0" texture="pack:x_both.bmp" texx1="0" texy1="0" texx2="10" texy2="10"/>
+<colorize dirs="0;0;0;1;0;0" texture="pack:y_dec.bmp" texx1="0" texy1="0" texx2="10" texy2="10"/>
+</colorizes>
+<shapes>
+<shape name="base" type="clip"/>
+</shapes>
+</simplemodel>

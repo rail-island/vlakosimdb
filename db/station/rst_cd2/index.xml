@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<rstation rep.name="emptyobj.rstation" name="RST_CD2" author="Vojtěch Vohlídka" email="xxvojtikxx@seznam.cz" default="0" title="CD 2" depo="0">
+<perons>
+<peron item="any" cnt="2" min="" max="" bmin="" bmax="" emin="" emax=""/>
+<peron item="any" cnt="1" min="" max="" bmin="" bmax="" emin="" emax=""/>
+</perons>
+<items>
+<item model="base1_1" cnt="1" min="" max="" tracks="1" name="any" bmin="" bmax="" emin="" emax="">
+<models/>
+</item>
+<item model="base2_1" cnt="1" min="" max="2" tracks="2" name="any" bmin="" bmax="" emin="" emax="">
+<models/>
+</item>
+<item model="base2_2" cnt="1" min="3" max="7" tracks="2" name="any" bmin="" bmax="" emin="" emax="">
+<models/>
+</item>
+<item model="base2_3" cnt="1" min="8" max="8" tracks="2" name="any" bmin="" bmax="" emin="" emax="">
+<models/>
+</item>
+<item model="base2_2" cnt="1" min="9" max="" tracks="2" name="any" bmin="" bmax="" emin="" emax="">
+<models/>
+</item>
+</items>
+</rstation>

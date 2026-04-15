@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<shape3d name="model" rep.name="emptyobj.shape3d">
+<scale x="0.1" y="0.1" z="0.1">
+<inline name="ver" sx="1" sy="1" sz="1" tx="0" ty="0" tz="0">
+<args/>
+</inline>
+<translate x="0.5" y="5.7" z="0">
+<rotate angle="?state&gt;free:135;stop:180!135" x="0" y="0" z="1">
+<inline name="hor" sx="1" sy="1" sz="1" tx="0" ty="0" tz="0">
+<args/>
+</inline>
+</rotate>
+</translate>
+</scale>
+</shape3d>

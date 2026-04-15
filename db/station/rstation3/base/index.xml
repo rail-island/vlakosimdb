@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<simplemodel name="rstdbl" edit_along="1" xsize="10" ysize="40" zsize="20" glomodel.loadchild="model">
+<alongx edit_dx="181" edit_dy="540" edit_incdec="0" edit_jumpx="1" edit_jumpy="1" edit_scale="18">
+<clip>
+<polygon>
+<point x="7" y="0"/>
+<point x="13" y="0"/>
+<point x="13" y="3"/>
+<point x="7" y="3"/>
+</polygon>
+<polygon>
+<point x="9" y="3"/>
+<point x="9" y="10"/>
+<point x="11" y="10"/>
+<point x="11" y="3"/>
+</polygon>
+</clip>
+</alongx>
+<alongy edit_dx="298" edit_dy="526" edit_incdec="1" edit_jumpx="1" edit_jumpy="1" edit_scale="22">
+<clip>
+<polygon>
+<point x="0" y="6"/>
+<point x="10" y="6"/>
+<point x="10" y="14"/>
+<point x="0" y="14"/>
+</polygon>
+</clip>
+</alongy>
+<alongz edit_dx="326" edit_dy="536" edit_incdec="0" edit_jumpx="1" edit_jumpy="1" edit_scale="15">
+<clip>
+<polygon>
+<point x="0" y="0"/>
+<point x="10" y="0"/>
+<point x="10" y="1"/>
+<point x="0" y="1"/>
+</polygon>
+</clip>
+</alongz>
+<inlines/>
+<crook/>
+<materials>
+<material rkoef="1" gkoef="1" bkoef="1" xscale="0.2" yscale="0.2" texture="material:brick059.bmp" transp="0" transparent="0" dirs="1;1;1;1;1;1;"/>
+</materials>
+<model>
+<polygon nx="-0" ny="6" nz="-0" culling="1" texture="material:brick059.bmp" texture.transparent="0">
+<vertex x="0" y="0" z="13" s="0" t="2.6"/>
+<vertex x="0" y="0" z="7" s="0" t="1.4"/>
+<vertex x="10" y="0" z="7" s="2" t="1.4"/>
+<vertex x="10" y="0" z="13" s="2" t="2.6"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="-3" culling="1" texture="material:brick059.bmp" texture.transparent="0">
+<vertex x="10" y="1" z="13" s="2" t="0.2"/>
+<vertex x="0" y="1" z="13" s="0" t="0.2"/>
+<vertex x="0" y="0" z="13" s="0" t="0"/>
+<vertex x="10" y="0" z="13" s="2" t="0"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="3" culling="1" texture="material:brick059.bmp" texture.transparent="0">
+<vertex x="10" y="0" z="7" s="2" t="0"/>
+<vertex x="0" y="0" z="7" s="0" t="0"/>
+<vertex x="0" y="1" z="7" s="0" t="0.2"/>
+<vertex x="10" y="1" z="7" s="2" t="0.2"/>
+</polygon>
+<polygon nx="-8" ny="-0" nz="-0" culling="1" texture="material:brick059.bmp" texture.transparent="0">
+<vertex x="10" y="0" z="13" s="2.6" t="0"/>
+<vertex x="10" y="0" z="7" s="1.4" t="0"/>
+<vertex x="10" y="1" z="7" s="1.4" t="0.2"/>
+<vertex x="10" y="1" z="13" s="2.6" t="0.2"/>
+</polygon>
+<polygon nx="8" ny="-0" nz="-0" culling="1" texture="material:brick059.bmp" texture.transparent="0">
+<vertex x="0" y="1" z="13" s="2.6" t="0.2"/>
+<vertex x="0" y="1" z="7" s="1.4" t="0.2"/>
+<vertex x="0" y="0" z="7" s="1.4" t="0"/>
+<vertex x="0" y="0" z="13" s="2.6" t="0"/>
+</polygon>
+<polygon nx="-0" ny="-10" nz="-0" culling="1" texture="material:brick059.bmp" texture.transparent="0">
+<vertex x="10" y="1" z="7" s="2" t="1.4"/>
+<vertex x="0" y="1" z="7" s="0" t="1.4"/>
+<vertex x="0" y="1" z="13" s="0" t="2.6"/>
+<vertex x="10" y="1" z="13" s="2" t="2.6"/>
+</polygon>
+</model>
+<stamps/>
+</simplemodel>

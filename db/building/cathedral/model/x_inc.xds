@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<description>
+<filter>
+<noise>
+<noise per_r="5" per_g="5" per_b="8" srccolor="*"/>
+</noise>
+</filter>
+</description>

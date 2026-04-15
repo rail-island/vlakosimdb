@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<building rep.name="emptyobj.building" w="3" h="1" name="rstation_bld3" author="Vojtěch Vohlídka" email="xxvojtikxx@seznam.cz" title="Nadr. Maselna Lhota">
+<models>
+<model model="model" dx="" dz="" dir="0" dy="" w="" h=""/>
+</models>
+</building>

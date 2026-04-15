@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<railroad default="0" name="FSrail_elec_CS" title="Concrete Tie Electric" train_y="0.03" wire_bot="0.51" wire_top="0.56">
+<surface>
+<gravel b="0.4" file="gravel.bmp" g="0.4" hi="0.01" quality="0.2" r="0.4" w="0.4"/>
+<sleeper b="0.2" cover="0.1" file="sleeper.bmp" g="0.4" hi="0.02" len="0.3" r="0.6" wi="0.05"/>
+<rail b="0.7" file="rail.bmp" g="0.7" gauge2="0.08" hi="0.03" quality="0.2" r="0.7" w="0.02"/>
+<rail b="0.7" file="rail.bmp" g="0.7" gauge2="-0.08" hi="0.03" quality="0.2" r="0.7" w="0.02"/>
+<wire b="0.7" file="wire.bmp" g="1" gauge2="0" hi="0.51" linewi="0.01" quality="2" r="0.7"/>
+<cols gauge2="0.3" model="col" wire_file="wire.bmp" wire_linewi="0.01" wire_y="0.63"/>
+<wire b="0.7" file="wire.bmp" g="1" gauge2="0" hi="0.56" linewi="0.01" quality="2" r="0.7"/>
+<vwire file="wire.bmp" linewi="0.01" y1="0.56" y2="0.51"/>
+</surface>
+</railroad>

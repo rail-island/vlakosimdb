@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<building rep.name="emptyobj.building" w="1" h="1" name="building1" author="Jan Prochazka" email="zputil@centrum.cz" title="$Building 1">
+<models>
+<model model="model" dx="" dz="" dir="0" dy="" w="" h=""/>
+</models>
+</building>

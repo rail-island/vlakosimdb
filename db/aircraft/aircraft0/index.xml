@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<aircraft air_radius="15" author="Jan Prochazka" default="1" email="zputil@centrum.cz" land_angling="4" land_len="10" lower_angle="15" lower_hi="5" lower_len="10" name="aircraft0" path="" rise_angle="15" rise_hi="5" rise_len="10" speed="500" start_angling="4" start_len="10" title="$Aircraft 0" v_land="300" v_start="200"/>

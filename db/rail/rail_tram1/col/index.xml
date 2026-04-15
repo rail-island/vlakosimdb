@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<shape3d name="col" rep.name="emptyobj.shape3d">
+<scale x="7" y="7" z="7">
+<polyline b="1" closed="0" g="1" linewi="0.1" polygon="1" r="1" texture="pack:col1.bmp">
+<vertex s="" t="" x="0" y="0" z="0"/>
+<vertex s="" t="" x="0" y="1" z="0"/>
+</polyline>
+<polyline b="1" closed="0" g="1" linewi="0.05" polygon="1" r="1" texture="pack:col2.bmp">
+<vertex s="" t="" x="0" y="1" z="0"/>
+<vertex s="" t="" x="0.5" y="1" z="0"/>
+<vertex s="" t="" x="" y="0.8" z=""/>
+</polyline>
+</scale>
+</shape3d>

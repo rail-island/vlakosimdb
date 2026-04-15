@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<simplemodel rep.name="emptyobj.simplemodel" name="col" xsize="10" ysize="40" zsize="10" glomodel.loadchild="model" edit_along="0">
+<alongx edit_jumpx="0.1" edit_jumpy="0.1" edit_scale="13" edit_dx="218" edit_dy="149" edit_incdec="0">
+<clip>
+<polygon>
+<point x="0" y="-40"/>
+<point x="10" y="-40"/>
+<point x="10" y="0"/>
+<point x="0" y="0"/>
+</polygon>
+</clip>
+</alongx>
+<alongy edit_jumpx="0.1" edit_jumpy="0.1" edit_scale="25" edit_dx="270" edit_dy="367" edit_incdec="0">
+<clip>
+<polygon>
+<point x="0" y="3"/>
+<point x="10" y="3"/>
+<point x="10" y="7"/>
+<point x="0" y="7"/>
+</polygon>
+</clip>
+</alongy>
+<alongz edit_jumpx="0.1" edit_jumpy="0.1" edit_scale="12" edit_dx="313" edit_dy="95" edit_incdec="0">
+<clip>
+<polygon>
+<point x="0" y="-40"/>
+<point x="1" y="-40"/>
+<point x="1" y="0"/>
+<point x="0" y="0"/>
+</polygon>
+</clip>
+</alongz>
+<inlines/>
+<crook/>
+<materials>
+<material rkoef="1" gkoef="1" bkoef="1" xscale="0.1" yscale="0.1" texture="material:metal053.bmp" transp="0" transparent="0" dirs="1;1;1;1;1;1;"/>
+</materials>
+<model rep.name="">
+<polygon nx="0" ny="6400" nz="0" culling="1" texture="material:metal053.bmp" texture.transparent="0">
+<vertex x="1" y="-40" z="3" s="0.1" t="0.3"/>
+<vertex x="1" y="-40" z="7" s="0.1" t="0.7"/>
+<vertex x="0" y="-40" z="7" s="0" t="0.7"/>
+<vertex x="0" y="-40" z="3" s="0" t="0.3"/>
+</polygon>
+<polygon nx="-0" ny="-10" nz="-0" culling="1" texture="material:metal053.bmp" texture.transparent="0">
+<vertex x="0" y="0" z="3" s="0" t="0.3"/>
+<vertex x="0" y="0" z="7" s="0" t="0.7"/>
+<vertex x="1" y="0" z="7" s="0.1" t="0.7"/>
+<vertex x="1" y="0" z="3" s="0.1" t="0.3"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="10" culling="1" texture="material:metal053.bmp" texture.transparent="0">
+<vertex x="0" y="-40" z="3" s="0" t="-4"/>
+<vertex x="0" y="0" z="3" s="0" t="0"/>
+<vertex x="1" y="0" z="3" s="0.1" t="0"/>
+<vertex x="1" y="-40" z="3" s="0.1" t="-4"/>
+</polygon>
+<polygon nx="-0" ny="-0" nz="-10" culling="1" texture="material:metal053.bmp" texture.transparent="0">
+<vertex x="1" y="-40" z="7" s="0.1" t="-4"/>
+<vertex x="1" y="0" z="7" s="0.1" t="0"/>
+<vertex x="0" y="0" z="7" s="0" t="0"/>
+<vertex x="0" y="-40" z="7" s="0" t="-4"/>
+</polygon>
+<polygon nx="4" ny="-0" nz="-0" culling="1" texture="material:metal053.bmp" texture.transparent="0">
+<vertex x="0" y="-40" z="7" s="0.7" t="-4"/>
+<vertex x="0" y="0" z="7" s="0.7" t="0"/>
+<vertex x="0" y="0" z="3" s="0.3" t="0"/>
+<vertex x="0" y="-40" z="3" s="0.3" t="-4"/>
+</polygon>
+<polygon nx="-40" ny="-0" nz="-0" culling="1" texture="material:metal053.bmp" texture.transparent="0">
+<vertex x="1" y="-40" z="7" s="0.7" t="-4"/>
+<vertex x="1" y="-40" z="3" s="0.3" t="-4"/>
+<vertex x="1" y="0" z="3" s="0.3" t="0"/>
+<vertex x="1" y="0" z="7" s="0.7" t="0"/>
+</polygon>
+</model>
+<stamps/>
+</simplemodel>

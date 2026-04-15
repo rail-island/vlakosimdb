@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<shape3d b="0.5" crook="1" frequency="0.5" g="0.5" hi="10" initialized="yes" len="20" linewi="0.6" n="4" name="dbl" polygon="1" r="0.5" rep.name="emptyobj.shape3d" scriptname="bridge" texture="pack:steel.bmp" type="shape3d" wi="5">
+<polyline b="0.5" closed="1" frequency="0.5" g="0.5" linewi="0.6" polygon="1" r="0.5" texture="pack:steel.bmp">
+<point x="0" y="0" z="2.5"/>
+<point x="0" y="0" z="7.5"/>
+<point x="20" y="0" z="7.5"/>
+<point x="20" y="0" z="2.5"/>
+</polyline>
+<polyline closed="1" r="0.5" b="0.5" g="0.5" linewi="0.6" texture="pack:steel.bmp" frequency="0.5" polygon="1">
+<point x="2.5" y="10" z="2.5"/>
+<point x="2.5" y="10" z="7.5"/>
+<point x="17.5" y="10" z="7.5"/>
+<point x="17.5" y="10" z="2.5"/>
+</polyline>
+<polyline b="0.5" frequency="0.5" g="0.5" linewi="0.6" polygon="1" r="0.5" texture="pack:steel.bmp">
+<point x="0" y="0" z="2.5"/>
+<point x="2.5" y="10" z="2.5"/>
+<point x="5" y="0" z="2.5"/>
+</polyline>
+<polyline b="0.5" frequency="0.5" g="0.5" linewi="0.6" polygon="1" r="0.5" texture="pack:steel.bmp">
+<point x="0" y="0" z="7.5"/>
+<point x="2.5" y="10" z="7.5"/>
+<point x="5" y="0" z="7.5"/>
+</polyline>
+<polyline r="0.5" b="0.5" g="0.5" linewi="0.6" texture="pack:steel.bmp" frequency="0.5" polygon="1">
+<point x="5" y="0" z="2.5"/>
+<point x="7.5" y="10" z="2.5"/>
+<point x="10" y="0" z="2.5"/>
+</polyline>
+<polyline r="0.5" b="0.5" g="0.5" linewi="0.6" texture="pack:steel.bmp" frequency="0.5" polygon="1">
+<point x="5" y="0" z="7.5"/>
+<point x="7.5" y="10" z="7.5"/>
+<point x="10" y="0" z="7.5"/>
+</polyline>
+<polyline r="0.5" b="0.5" g="0.5" linewi="0.6" texture="pack:steel.bmp" frequency="0.5" polygon="1">
+<point x="10" y="0" z="2.5"/>
+<point x="12.5" y="10" z="2.5"/>
+<point x="15" y="0" z="2.5"/>
+</polyline>
+<polyline r="0.5" b="0.5" g="0.5" linewi="0.6" texture="pack:steel.bmp" frequency="0.5" polygon="1">
+<point x="10" y="0" z="7.5"/>
+<point x="12.5" y="10" z="7.5"/>
+<point x="15" y="0" z="7.5"/>
+</polyline>
+<polyline r="0.5" b="0.5" g="0.5" linewi="0.6" texture="pack:steel.bmp" frequency="0.5" polygon="1">
+<point x="15" y="0" z="2.5"/>
+<point x="17.5" y="10" z="2.5"/>
+<point x="20" y="0" z="2.5"/>
+</polyline>
+<polyline r="0.5" b="0.5" g="0.5" linewi="0.6" texture="pack:steel.bmp" frequency="0.5" polygon="1">
+<point x="15" y="0" z="7.5"/>
+<point x="17.5" y="10" z="7.5"/>
+<point x="20" y="0" z="7.5"/>
+</polyline>
+<polyline r="0.5" b="0.5" g="0.5" linewi="0.6" texture="pack:steel.bmp" frequency="0.5" polygon="1">
+<point x="7.5" y="10" z="2.5"/>
+<point x="7.5" y="10" z="7.5"/>
+</polyline>
+<polyline r="0.5" b="0.5" g="0.5" linewi="0.6" texture="pack:steel.bmp" frequency="0.5" polygon="1">
+<point x="12.5" y="10" z="2.5"/>
+<point x="12.5" y="10" z="7.5"/>
+</polyline>
+</shape3d>

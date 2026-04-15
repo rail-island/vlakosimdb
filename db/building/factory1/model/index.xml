@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<simplemodel xsize="30" ysize="10" zsize="20" version="1.0" glomodel.loadchild="model" name="model" edit_along="0">
+<colorizes/>
+<alongx edit_jumpx="1" edit_jumpy="1" edit_scale="25" edit_dx="122" edit_dy="498" edit_incdec="-1">
+<clip>
+<polygon apply="base">
+<point x="19" y="0"/>
+<point x="19" y="8"/>
+<point x="20" y="8"/>
+<point x="20" y="0"/>
+</polygon>
+</clip>
+</alongx>
+<alongy edit_jumpx="0.1" edit_jumpy="0.1" edit_scale="16" edit_dx="147" edit_dy="335" edit_incdec="0">
+<clip/>
+</alongy>
+<alongz edit_jumpx="1" edit_jumpy="1" edit_scale="25" edit_dx="216" edit_dy="451" edit_incdec="-1">
+<clip/>
+</alongz>
+<inlines>
+<inline name="hall" comment="hall" sx="1" sy="1" sz="1" tx="0" ty="0" tz="0" what="1" when="1">
+<args/>
+</inline>
+<inline name="vpipe" comment="vp1" sx="1" sy="1" sz="1" tx="3.795921" ty="0" tz="11.112255" what="1" when="0">
+<args/>
+</inline>
+<inline name="vpipe" comment="vp2" sx="1" sy="1" sz="1" tx="7.744905" ty="0" tz="11.112249" what="1" when="0">
+<args/>
+</inline>
+<inline name="vpipe" comment="vp3" sx="1" sy="1" sz="1" tx="11.663276" ty="-0" tz="11.11226" what="1" when="0">
+<args/>
+</inline>
+<inline name="vpipe" comment="vp4" sx="1" sy="1" sz="1" tx="10.56124" ty="0" tz="14.602056" what="1" when="0">
+<args/>
+</inline>
+<inline name="vpipe" comment="vp5" sx="1" sy="1" sz="1" tx="6.642863" ty="0" tz="14.602053" what="1" when="0">
+<args/>
+</inline>
+</inlines>
+<crook/>
+<shapes>
+<shape type="rotate" name="silo" rotateverteces="16" cullsafe="0">
+<colorizes>
+<colorize texture="pack:silobmp.bmp" transp="0" xscale="" yscale="" transparent="0" material="0" cond="" reflectx="0" reflecty="0"/>
+</colorizes>
+<verteces>
+<vertex x="15" y="0" z="5"/>
+<vertex x="19" y="0" z="5"/>
+<vertex x="19" y="7" z="5"/>
+<vertex x="15" y="7" z="5"/>
+</verteces>
+</shape>
+</shapes>
+<model>
+<polygon nx="-0" ny="1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="18.695518" y="0" z="3.469266" s="0.0625" t="0.266667"/>
+<vertex x="19" y="0" z="5" s="0" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.03125" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.03125" t="1"/>
+<vertex x="19" y="7" z="5" s="0" t="0.733333"/>
+<vertex x="18.695518" y="7" z="3.469266" s="0.0625" t="0.733333"/>
+</polygon>
+<polygon nx="-0.980785" ny="0" nz="0.19509" texture="pack:silobmp.bmp" culling="1">
+<vertex x="19" y="0" z="5" s="0" t="0.266667"/>
+<vertex x="18.695518" y="0" z="3.469266" s="0.0625" t="0.266667"/>
+<vertex x="18.695518" y="7" z="3.469266" s="0.0625" t="0.733333"/>
+<vertex x="19" y="7" z="5" s="0" t="0.733333"/>
+</polygon>
+<polygon nx="-0" ny="1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="17.828426" y="0" z="2.171573" s="0.125" t="0.266667"/>
+<vertex x="18.695518" y="0" z="3.469266" s="0.0625" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.09375" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.09375" t="1"/>
+<vertex x="18.695518" y="7" z="3.469266" s="0.0625" t="0.733333"/>
+<vertex x="17.828426" y="7" z="2.171573" s="0.125" t="0.733333"/>
+</polygon>
+<polygon nx="-0.831469" ny="0" nz="0.555571" texture="pack:silobmp.bmp" culling="1">
+<vertex x="18.695518" y="0" z="3.469266" s="0.0625" t="0.266667"/>
+<vertex x="17.828426" y="0" z="2.171573" s="0.125" t="0.266667"/>
+<vertex x="17.828426" y="7" z="2.171573" s="0.125" t="0.733333"/>
+<vertex x="18.695518" y="7" z="3.469266" s="0.0625" t="0.733333"/>
+</polygon>
+<polygon nx="-0" ny="1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="16.530735" y="0" z="1.304482" s="0.1875" t="0.266667"/>
+<vertex x="17.828426" y="0" z="2.171573" s="0.125" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.15625" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.15625" t="1"/>
+<vertex x="17.828426" y="7" z="2.171573" s="0.125" t="0.733333"/>
+<vertex x="16.530735" y="7" z="1.304482" s="0.1875" t="0.733333"/>
+</polygon>
+<polygon nx="-0.555571" ny="0" nz="0.831469" texture="pack:silobmp.bmp" culling="1">
+<vertex x="17.828426" y="0" z="2.171573" s="0.125" t="0.266667"/>
+<vertex x="16.530735" y="0" z="1.304482" s="0.1875" t="0.266667"/>
+<vertex x="16.530735" y="7" z="1.304482" s="0.1875" t="0.733333"/>
+<vertex x="17.828426" y="7" z="2.171573" s="0.125" t="0.733333"/>
+</polygon>
+<polygon nx="-0" ny="1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="14.999999" y="0" z="1" s="0.25" t="0.266667"/>
+<vertex x="16.530735" y="0" z="1.304482" s="0.1875" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.21875" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.21875" t="1"/>
+<vertex x="16.530735" y="7" z="1.304482" s="0.1875" t="0.733333"/>
+<vertex x="14.999999" y="7" z="1" s="0.25" t="0.733333"/>
+</polygon>
+<polygon nx="-0.19509" ny="0" nz="0.980785" texture="pack:silobmp.bmp" culling="1">
+<vertex x="16.530735" y="0" z="1.304482" s="0.1875" t="0.266667"/>
+<vertex x="14.999999" y="0" z="1" s="0.25" t="0.266667"/>
+<vertex x="14.999999" y="7" z="1" s="0.25" t="0.733333"/>
+<vertex x="16.530735" y="7" z="1.304482" s="0.1875" t="0.733333"/>
+</polygon>
+<polygon nx="-0" ny="1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="13.469266" y="0" z="1.304482" s="0.3125" t="0.266667"/>
+<vertex x="14.999999" y="0" z="1" s="0.25" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.28125" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.28125" t="1"/>
+<vertex x="14.999999" y="7" z="1" s="0.25" t="0.733333"/>
+<vertex x="13.469266" y="7" z="1.304482" s="0.3125" t="0.733333"/>
+</polygon>
+<polygon nx="0.19509" ny="0" nz="0.980785" texture="pack:silobmp.bmp" culling="1">
+<vertex x="14.999999" y="0" z="1" s="0.25" t="0.266667"/>
+<vertex x="13.469266" y="0" z="1.304482" s="0.3125" t="0.266667"/>
+<vertex x="13.469266" y="7" z="1.304482" s="0.3125" t="0.733333"/>
+<vertex x="14.999999" y="7" z="1" s="0.25" t="0.733333"/>
+</polygon>
+<polygon nx="-0" ny="1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="12.171573" y="0" z="2.171574" s="0.375" t="0.266667"/>
+<vertex x="13.469266" y="0" z="1.304482" s="0.3125" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.34375" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.34375" t="1"/>
+<vertex x="13.469266" y="7" z="1.304482" s="0.3125" t="0.733333"/>
+<vertex x="12.171573" y="7" z="2.171574" s="0.375" t="0.733333"/>
+</polygon>
+<polygon nx="0.555571" ny="0" nz="0.831469" texture="pack:silobmp.bmp" culling="1">
+<vertex x="13.469266" y="0" z="1.304482" s="0.3125" t="0.266667"/>
+<vertex x="12.171573" y="0" z="2.171574" s="0.375" t="0.266667"/>
+<vertex x="12.171573" y="7" z="2.171574" s="0.375" t="0.733333"/>
+<vertex x="13.469266" y="7" z="1.304482" s="0.3125" t="0.733333"/>
+</polygon>
+<polygon nx="-0" ny="1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="11.304482" y="0" z="3.469266" s="0.4375" t="0.266667"/>
+<vertex x="12.171573" y="0" z="2.171574" s="0.375" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.40625" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.40625" t="1"/>
+<vertex x="12.171573" y="7" z="2.171574" s="0.375" t="0.733333"/>
+<vertex x="11.304482" y="7" z="3.469266" s="0.4375" t="0.733333"/>
+</polygon>
+<polygon nx="0.831469" ny="0" nz="0.555571" texture="pack:silobmp.bmp" culling="1">
+<vertex x="12.171573" y="0" z="2.171574" s="0.375" t="0.266667"/>
+<vertex x="11.304482" y="0" z="3.469266" s="0.4375" t="0.266667"/>
+<vertex x="11.304482" y="7" z="3.469266" s="0.4375" t="0.733333"/>
+<vertex x="12.171573" y="7" z="2.171574" s="0.375" t="0.733333"/>
+</polygon>
+<polygon nx="-0" ny="1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="11" y="0" z="4.999999" s="0.5" t="0.266667"/>
+<vertex x="11.304482" y="0" z="3.469266" s="0.4375" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.46875" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.46875" t="1"/>
+<vertex x="11.304482" y="7" z="3.469266" s="0.4375" t="0.733333"/>
+<vertex x="11" y="7" z="4.999999" s="0.5" t="0.733333"/>
+</polygon>
+<polygon nx="0.980785" ny="0" nz="0.19509" texture="pack:silobmp.bmp" culling="1">
+<vertex x="11.304482" y="0" z="3.469266" s="0.4375" t="0.266667"/>
+<vertex x="11" y="0" z="4.999999" s="0.5" t="0.266667"/>
+<vertex x="11" y="7" z="4.999999" s="0.5" t="0.733333"/>
+<vertex x="11.304482" y="7" z="3.469266" s="0.4375" t="0.733333"/>
+</polygon>
+<polygon nx="-0" ny="1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="11.304482" y="0" z="6.530733" s="0.5625" t="0.266667"/>
+<vertex x="11" y="0" z="4.999999" s="0.5" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.53125" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.53125" t="1"/>
+<vertex x="11" y="7" z="4.999999" s="0.5" t="0.733333"/>
+<vertex x="11.304482" y="7" z="6.530733" s="0.5625" t="0.733333"/>
+</polygon>
+<polygon nx="0.980785" ny="0" nz="-0.19509" texture="pack:silobmp.bmp" culling="1">
+<vertex x="11" y="0" z="4.999999" s="0.5" t="0.266667"/>
+<vertex x="11.304482" y="0" z="6.530733" s="0.5625" t="0.266667"/>
+<vertex x="11.304482" y="7" z="6.530733" s="0.5625" t="0.733333"/>
+<vertex x="11" y="7" z="4.999999" s="0.5" t="0.733333"/>
+</polygon>
+<polygon nx="0" ny="1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="12.171574" y="0" z="7.828426" s="0.625" t="0.266667"/>
+<vertex x="11.304482" y="0" z="6.530733" s="0.5625" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.59375" t="0"/>
+</polygon>
+<polygon nx="-0" ny="-1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.59375" t="1"/>
+<vertex x="11.304482" y="7" z="6.530733" s="0.5625" t="0.733333"/>
+<vertex x="12.171574" y="7" z="7.828426" s="0.625" t="0.733333"/>
+</polygon>
+<polygon nx="0.831469" ny="0" nz="-0.555571" texture="pack:silobmp.bmp" culling="1">
+<vertex x="11.304482" y="0" z="6.530733" s="0.5625" t="0.266667"/>
+<vertex x="12.171574" y="0" z="7.828426" s="0.625" t="0.266667"/>
+<vertex x="12.171574" y="7" z="7.828426" s="0.625" t="0.733333"/>
+<vertex x="11.304482" y="7" z="6.530733" s="0.5625" t="0.733333"/>
+</polygon>
+<polygon nx="0" ny="1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="13.469266" y="0" z="8.695518" s="0.6875" t="0.266667"/>
+<vertex x="12.171574" y="0" z="7.828426" s="0.625" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.65625" t="0"/>
+</polygon>
+<polygon nx="-0" ny="-1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.65625" t="1"/>
+<vertex x="12.171574" y="7" z="7.828426" s="0.625" t="0.733333"/>
+<vertex x="13.469266" y="7" z="8.695518" s="0.6875" t="0.733333"/>
+</polygon>
+<polygon nx="0.555571" ny="0" nz="-0.831469" texture="pack:silobmp.bmp" culling="1">
+<vertex x="12.171574" y="0" z="7.828426" s="0.625" t="0.266667"/>
+<vertex x="13.469266" y="0" z="8.695518" s="0.6875" t="0.266667"/>
+<vertex x="13.469266" y="7" z="8.695518" s="0.6875" t="0.733333"/>
+<vertex x="12.171574" y="7" z="7.828426" s="0.625" t="0.733333"/>
+</polygon>
+<polygon nx="0" ny="1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="0" z="9" s="0.75" t="0.266667"/>
+<vertex x="13.469266" y="0" z="8.695518" s="0.6875" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.71875" t="0"/>
+</polygon>
+<polygon nx="-0" ny="-1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.71875" t="1"/>
+<vertex x="13.469266" y="7" z="8.695518" s="0.6875" t="0.733333"/>
+<vertex x="15" y="7" z="9" s="0.75" t="0.733333"/>
+</polygon>
+<polygon nx="0.19509" ny="0" nz="-0.980785" texture="pack:silobmp.bmp" culling="1">
+<vertex x="13.469266" y="0" z="8.695518" s="0.6875" t="0.266667"/>
+<vertex x="15" y="0" z="9" s="0.75" t="0.266667"/>
+<vertex x="15" y="7" z="9" s="0.75" t="0.733333"/>
+<vertex x="13.469266" y="7" z="8.695518" s="0.6875" t="0.733333"/>
+</polygon>
+<polygon nx="-0" ny="1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="16.530735" y="0" z="8.695518" s="0.8125" t="0.266667"/>
+<vertex x="15" y="0" z="9" s="0.75" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.78125" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.78125" t="1"/>
+<vertex x="15" y="7" z="9" s="0.75" t="0.733333"/>
+<vertex x="16.530735" y="7" z="8.695518" s="0.8125" t="0.733333"/>
+</polygon>
+<polygon nx="-0.195091" ny="-0" nz="-0.980785" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="0" z="9" s="0.75" t="0.266667"/>
+<vertex x="16.530735" y="0" z="8.695518" s="0.8125" t="0.266667"/>
+<vertex x="16.530735" y="7" z="8.695518" s="0.8125" t="0.733333"/>
+<vertex x="15" y="7" z="9" s="0.75" t="0.733333"/>
+</polygon>
+<polygon nx="-0" ny="1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="17.828428" y="0" z="7.828425" s="0.875" t="0.266667"/>
+<vertex x="16.530735" y="0" z="8.695518" s="0.8125" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.84375" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.84375" t="1"/>
+<vertex x="16.530735" y="7" z="8.695518" s="0.8125" t="0.733333"/>
+<vertex x="17.828428" y="7" z="7.828425" s="0.875" t="0.733333"/>
+</polygon>
+<polygon nx="-0.555571" ny="-0" nz="-0.831469" texture="pack:silobmp.bmp" culling="1">
+<vertex x="16.530735" y="0" z="8.695518" s="0.8125" t="0.266667"/>
+<vertex x="17.828428" y="0" z="7.828425" s="0.875" t="0.266667"/>
+<vertex x="17.828428" y="7" z="7.828425" s="0.875" t="0.733333"/>
+<vertex x="16.530735" y="7" z="8.695518" s="0.8125" t="0.733333"/>
+</polygon>
+<polygon nx="-0" ny="1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="18.695518" y="0" z="6.530732" s="0.9375" t="0.266667"/>
+<vertex x="17.828428" y="0" z="7.828425" s="0.875" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.90625" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.90625" t="1"/>
+<vertex x="17.828428" y="7" z="7.828425" s="0.875" t="0.733333"/>
+<vertex x="18.695518" y="7" z="6.530732" s="0.9375" t="0.733333"/>
+</polygon>
+<polygon nx="-0.83147" ny="-0" nz="-0.55557" texture="pack:silobmp.bmp" culling="1">
+<vertex x="17.828428" y="0" z="7.828425" s="0.875" t="0.266667"/>
+<vertex x="18.695518" y="0" z="6.530732" s="0.9375" t="0.266667"/>
+<vertex x="18.695518" y="7" z="6.530732" s="0.9375" t="0.733333"/>
+<vertex x="17.828428" y="7" z="7.828425" s="0.875" t="0.733333"/>
+</polygon>
+<polygon nx="-0" ny="1" nz="-0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="19" y="0" z="5" s="1" t="0.266667"/>
+<vertex x="18.695518" y="0" z="6.530732" s="0.9375" t="0.266667"/>
+<vertex x="15" y="0" z="5" s="0.96875" t="0"/>
+</polygon>
+<polygon nx="0" ny="-1" nz="0" texture="pack:silobmp.bmp" culling="1">
+<vertex x="15" y="7" z="5" s="0.96875" t="1"/>
+<vertex x="18.695518" y="7" z="6.530732" s="0.9375" t="0.733333"/>
+<vertex x="19" y="7" z="5" s="1" t="0.733333"/>
+</polygon>
+<polygon nx="-0.980785" ny="-0" nz="-0.19509" texture="pack:silobmp.bmp" culling="1">
+<vertex x="18.695518" y="0" z="6.530732" s="0.9375" t="0.266667"/>
+<vertex x="19" y="0" z="5" s="1" t="0.266667"/>
+<vertex x="19" y="7" z="5" s="1" t="0.733333"/>
+<vertex x="18.695518" y="7" z="6.530732" s="0.9375" t="0.733333"/>
+</polygon>
+<inline name="vpipe" sx="1" sy="1" sz="1" tx="3.795921" ty="0" tz="11.112255">
+<args/>
+</inline>
+<inline name="vpipe" sx="1" sy="1" sz="1" tx="7.744905" ty="0" tz="11.112249">
+<args/>
+</inline>
+<inline name="vpipe" sx="1" sy="1" sz="1" tx="11.663276" ty="-0" tz="11.11226">
+<args/>
+</inline>
+<inline name="vpipe" sx="1" sy="1" sz="1" tx="10.56124" ty="0" tz="14.602056">
+<args/>
+</inline>
+<inline name="vpipe" sx="1" sy="1" sz="1" tx="6.642863" ty="0" tz="14.602053">
+<args/>
+</inline>
+<inline name="hall" sx="1" sy="1" sz="1" tx="0" ty="0" tz="0">
+<args/>
+</inline>
+</model>
+<noise/>
+</simplemodel>

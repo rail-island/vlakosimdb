@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<road allowstyles="tram" default="0" motodist="0.15" name="ROAD_tram" title="Tram">
+<surface>
+<tramrail file="tramrail.bmp" gauge2="0.06" hi="0.02" w="0.01"/>
+<wire file="wire.bmp" gauge2="0" hi="0.48" w="0.01"/>
+</surface>
+</road>

@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<loco name="CSD_U46" power="210" maxspeed="30" weight="25.5" author="Vojtěch Vohlídka" email="xxvojtikxx@seznam.cz" default="0" title="CSD U 46" path="760 mm" smoke_x="0.1" smoke_y="0.25" smoke="../smoke3"/>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<bridge rep.name="emptyobj.bridge" name="bridge4" author="Jan Prochazka" email="zputil@centrum.cz" default="0" title="$Bridge 4">
+<items>
+<item model="simple" cnt="1" min="1" max="1">
+<models>
+<model model="col" dx="" dz="" dir="0" dy="" w="" h=""/>
+</models>
+</item>
+<item model="model" cnt="3" min="" max="">
+<models>
+<model model="col" dx="" dz="" dir="0" dy="" w="" h=""/>
+</models>
+</item>
+</items>
+</bridge>

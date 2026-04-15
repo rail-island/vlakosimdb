@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<rstation author="???" default="0" depo="0" email="???" name="RST_Freight" rep.name="emptyobj.rstation" title="Freight Sation">
+<perons>
+<peron item="base" cnt="1" min="" max="" bmin="" bmax="" emin="" emax=""/>
+</perons>
+<items>
+<item model="model2" cnt="1" min="1" max="" tracks="1" name="base" bmin="" bmax="" emin="" emax="">
+<models/>
+</item>
+<item model="model" cnt="1" min="" max="" tracks="1" name="base" bmin="" bmax="0" emin="" emax="">
+<models>
+<model model="model" dz="" dir="0" dy="" w="" h="" dx=""/>
+</models>
+</item>
+<item model="model3" cnt="1" min="" max="" tracks="1" name="base" bmin="" bmax="" emin="" emax="0">
+<models>
+<model model="model" dz="" dir="2" dy="" w="" h="" dx=""/>
+</models>
+</item>
+</items>
+</rstation>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<simplemodel>
+<shapes>
+<shape name="base"/>
+</shapes>
+<clip>
+<x>
+<polygon>
+<point x="-1.5" y="0"/>
+<point x="1.5" y="0"/>
+<point x="1.5" y="3"/>
+<point x="1" y="4"/>
+<point x="-1" y="4"/>
+<point x="-1.5" y="3"/>
+</polygon>
+</x>
+<y>
+<polygon>
+<point x="1.5" y="-1.5"/>
+<point x="13.5" y="-1.5"/>
+<point x="15" y="-0.5"/>
+<point x="15" y="0.5"/>
+<point x="13.5" y="1.5"/>
+<point x="1.5" y="1.5"/>
+<point x="0" y="0.5"/>
+<point x="0" y="-0.5"/>
+</polygon>
+</y>
+<z>
+<polygon>
+<point x="0" y="0"/>
+<point x="15" y="0"/>
+<point x="15" y="2"/>
+<point x="11" y="4"/>
+<point x="4" y="4"/>
+<point x="0" y="2"/>
+</polygon>
+</z>
+</clip>
+<editprops side="2">
+<x dx="362" dy="244" jumpx="0.5" jumpy="0.5" scale="25" incdec="0"/>
+<y dx="102" dy="152" jumpx="0.5" jumpy="0.5" scale="27" incdec="1"/>
+<z dx="300" dy="200" jumpx="1" jumpy="1" scale="25" incdec="1"/>
+</editprops>
+<colorizes>
+<xinc type="sameas" sameas="1"/>
+<xdec type="texture" texture="pack:x_both.bmp" x1="-1.5" y1="0" x2="1.5" y2="4"/>
+<ydec type="texture" texture="pack:y_dec.bmp" x1="0" y1="-1.5" x2="15" y2="1.5"/>
+<zinc type="sameas" sameas="5"/>
+<zdec type="texture" texture="pack:z_both.bmp" x1="0" y1="0" x2="15" y2="4"/>
+</colorizes>
+</simplemodel>

@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<motocar name="TAM272A180M" style="bus2c" pas_wi="2,5" pas_y1="0" pas_y2="3,16" yd_rel="1" yd_t1="0" yd_t2="17,9" yd_s1="-1" yd_s2="1" ydecfile="model/y_dec.bmp" zd_rel="1" zd_t1="0" zd_t2="17,9" zd_s1="0" zd_s2="3,16" zdecfile="model/z_dec.bmp" zi_rel="1" zi_t1="0" zi_t2="17,9" zi_s1="0" zi_s2="3,16" zincfile="model/z_inc.bmp" power="199" maxspeed="71.5" weight="14.4" author="Tomáš Gerčák" email="gercakt@zoznam.sk" default="0" title="TAM272A180M" path="" roadstyle="" tramspace=""/>

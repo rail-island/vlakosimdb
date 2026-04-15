@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<simplemodel rep.name="emptyobj.simplemodel" name="model2" xsize="1" ysize="1" zsize="1" version="1.0" glomodel.loadchild="model" edit_along="1">
+<colorizes/>
+<alongx edit_jumpx="0.1" edit_jumpy="0.1" edit_scale="25" edit_dx="300" edit_dy="200" edit_incdec="-1">
+<clip/>
+</alongx>
+<alongy edit_jumpx="0.1" edit_jumpy="0.1" edit_scale="25" edit_dx="300" edit_dy="200" edit_incdec="-1">
+<clip/>
+</alongy>
+<alongz edit_jumpx="0.1" edit_jumpy="0.1" edit_scale="25" edit_dx="300" edit_dy="200" edit_incdec="-1">
+<clip/>
+</alongz>
+<inlines/>
+<crook/>
+<shapes/>
+<model/>
+<noise/>
+</simplemodel>
