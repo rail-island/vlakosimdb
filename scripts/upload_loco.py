@@ -38,25 +38,25 @@ except ImportError:
 
 
 ROBLOX_ASSETS_API = "https://apis.roblox.com/assets/v1/assets"
-LOCKFILE_NAME = "roblox_assets.lock.json"
+TEXTURE_LOCKFILE = "roblox_assets.lock.json"
+MESH_LOCKFILE = "roblox_meshes.lock.json"
 
 
-def get_lockfile_path() -> Path:
-    """Return path to the lockfile in the repository root."""
-    return Path(__file__).resolve().parent.parent / LOCKFILE_NAME
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parent.parent
 
 
-def load_lockfile() -> dict:
-    """Load the lockfile. Returns {content_hash: asset_id} mapping."""
-    path = get_lockfile_path()
+def load_lockfile(name: str) -> dict:
+    """Load a lockfile by name. Returns {content_hash: asset_id} mapping."""
+    path = _repo_root() / name
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
     return {}
 
 
-def save_lockfile(lockdata: dict):
-    """Save the lockfile (sorted for stable diffs)."""
-    path = get_lockfile_path()
+def save_lockfile(name: str, lockdata: dict):
+    """Save a lockfile (sorted for stable diffs)."""
+    path = _repo_root() / name
     path.write_text(
         json.dumps(lockdata, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
@@ -122,6 +122,157 @@ def collect_textures(model_dir: Path) -> list[dict]:
             "name": bmp_file.stem,
         })
     return textures
+
+
+def convert_model_xml_to_obj(model_index_xml: Path, output_obj: Path) -> dict:
+    """Convert the simplemodel XML <model> section to Wavefront OBJ.
+
+    Returns stats dict with vertex/face counts.
+    """
+    tree = ET.parse(model_index_xml)
+    root = tree.getroot()
+
+    # Find the <model> element which contains the actual 3D polygon data
+    model_el = root.find("model")
+    if model_el is None:
+        print("  [ERROR] No <model> element found in model/index.xml")
+        return {"vertices": 0, "faces": 0}
+
+    vertices = []   # (x, y, z)
+    uvs = []        # (u, v)
+    normals = []    # (nx, ny, nz)
+    faces = []      # list of (material, [(vi, vti, vni), ...])
+
+    for polygon in model_el.findall("polygon"):
+        nx = float(polygon.get("nx", "0"))
+        ny = float(polygon.get("ny", "0"))
+        nz = float(polygon.get("nz", "0"))
+
+        # Determine material name from texture attribute
+        texture = polygon.get("texture", "default")
+        # Normalize: "pack:z_inc.bmp" -> "z_inc", "material:black.bmp" -> "mat_black"
+        if texture.startswith("pack:"):
+            mat_name = texture[5:].replace(".bmp", "")
+        elif texture.startswith("material:"):
+            mat_name = "mat_" + texture[9:].replace(".bmp", "")
+        else:
+            mat_name = texture.replace(".", "_").replace(":", "_")
+
+        # Add the face normal
+        normals.append((nx, ny, nz))
+        ni = len(normals)  # 1-indexed
+
+        face_indices = []
+        for vert in polygon.findall("vertex"):
+            x = float(vert.get("x", "0"))
+            y = float(vert.get("y", "0"))
+            z = float(vert.get("z", "0"))
+            s = float(vert.get("s", "0"))
+            t = float(vert.get("t", "0"))
+
+            vertices.append((x, y, z))
+            uvs.append((s, 1.0 - t))  # Flip V for OBJ convention
+
+            vi = len(vertices)  # 1-indexed
+            vti = len(uvs)
+            face_indices.append((vi, vti, ni))
+
+        if len(face_indices) >= 3:
+            faces.append((mat_name, face_indices))
+
+    # Write OBJ file
+    lines = []
+    lines.append(f"# Converted from {model_index_xml.name}")
+    lines.append(f"# Vertices: {len(vertices)}, Faces: {len(faces)}")
+    lines.append("")
+
+    # Vertices
+    for x, y, z in vertices:
+        lines.append(f"v {x} {y} {z}")
+    lines.append("")
+
+    # Texture coordinates
+    for u, v in uvs:
+        lines.append(f"vt {u} {v}")
+    lines.append("")
+
+    # Normals
+    for nx, ny, nz in normals:
+        lines.append(f"vn {nx} {ny} {nz}")
+    lines.append("")
+
+    # Faces grouped by material
+    current_mat = None
+    for mat_name, face_indices in faces:
+        if mat_name != current_mat:
+            lines.append(f"usemtl {mat_name}")
+            current_mat = mat_name
+
+        if len(face_indices) <= 4:
+            # Triangle or quad — write directly
+            face_str = " ".join(f"{vi}/{vti}/{vni}" for vi, vti, vni in face_indices)
+            lines.append(f"f {face_str}")
+        else:
+            # N-gon: fan triangulate from first vertex
+            v0 = face_indices[0]
+            for j in range(1, len(face_indices) - 1):
+                v1 = face_indices[j]
+                v2 = face_indices[j + 1]
+                tri = f"f {v0[0]}/{v0[1]}/{v0[2]} {v1[0]}/{v1[1]}/{v1[2]} {v2[0]}/{v2[1]}/{v2[2]}"
+                lines.append(tri)
+
+    lines.append("")
+    output_obj.write_text("\n".join(lines), encoding="utf-8")
+
+    stats = {"vertices": len(vertices), "faces": len(faces)}
+    print(f"  OBJ written: {output_obj} ({stats['vertices']} vertices, {stats['faces']} faces)")
+    return stats
+
+
+def upload_mesh_to_roblox(obj_path: Path, api_key: str, creator_id: str,
+                          display_name: str, description: str) -> str | None:
+    """Upload an OBJ mesh to Roblox via Open Cloud Assets API. Returns asset ID."""
+    if not HAS_REQUESTS:
+        print("  [ERROR] 'requests' library required. Install with: pip install requests")
+        return None
+
+    request_body = {
+        "assetType": "Model",
+        "displayName": display_name[:50],
+        "description": description[:1000],
+        "creationContext": {
+            "creator": {
+                "userId": creator_id,
+            }
+        },
+    }
+
+    with open(obj_path, "rb") as f:
+        mesh_data = f.read()
+
+    resp = requests.post(
+        ROBLOX_ASSETS_API,
+        headers={"x-api-key": api_key},
+        files={
+            "request": (None, json.dumps(request_body), "application/json"),
+            "fileContent": (obj_path.name, mesh_data, "model/obj"),
+        },
+        timeout=120,
+    )
+
+    if resp.status_code not in (200, 201):
+        print(f"  [ERROR] Mesh upload failed ({resp.status_code}): {resp.text}")
+        return None
+
+    result = resp.json()
+    operation_path = result.get("path")
+    if operation_path and not result.get("done"):
+        return poll_operation(operation_path, api_key)
+
+    if result.get("done") and result.get("response"):
+        return result["response"].get("assetId")
+
+    return result.get("assetId")
 
 
 def upload_image_to_roblox(file_path: Path, api_key: str, creator_id: str,
@@ -200,7 +351,8 @@ def poll_operation(operation_path: str, api_key: str, max_attempts: int = 20) ->
 
 
 def generate_lua(metadata: dict, thumbnail_asset_id: str,
-                 texture_assets: list[dict], output_path: Path):
+                 texture_assets: list[dict], mesh_asset_id: str,
+                 output_path: Path):
     """Generate a Lua metadata file."""
     lines = []
     lines.append("-- Auto-generated locomotive metadata")
@@ -210,23 +362,27 @@ def generate_lua(metadata: dict, thumbnail_asset_id: str,
 
     # Metadata
     lines.append("\t-- Metadata from index.xml")
-    lines.append(f'\tname = "{metadata.get("name", "")}",')
-    lines.append(f'\ttitle = "{metadata.get("title", "")}",')
-    lines.append(f'\tauthor = "{metadata.get("author", "")}",')
-    lines.append(f'\temail = "{metadata.get("email", "")}",')
+    lines.append(f'\tname = "{metadata.get("name", "")}",') 
+    lines.append(f'\ttitle = "{metadata.get("title", "")}",') 
+    lines.append(f'\tauthor = "{metadata.get("author", "")}",') 
+    lines.append(f'\temail = "{metadata.get("email", "")}",') 
 
     # Numeric fields
     for key in ("maxspeed", "weight", "power"):
         val = metadata.get(key, "0")
         lines.append(f"\t{key} = {val},")
 
-    lines.append(f'\tpath = "{metadata.get("path", "")}",')
+    lines.append(f'\tpath = "{metadata.get("path", "")}",') 
     lines.append("")
 
     # Thumbnail
     lines.append("\t-- Thumbnail image asset")
-    lines.append(f'\tthumbnailAssetId = "{thumbnail_asset_id}",')
+    lines.append(f'\tthumbnailAssetId = "{thumbnail_asset_id}",') 
     lines.append("")
+
+    # 3D Mesh
+    lines.append("\t-- 3D mesh asset")
+    lines.append(f'\tmeshAssetId = "{mesh_asset_id}",') 
 
     # Textures
     lines.append("\t-- Model textures")
@@ -289,13 +445,25 @@ def main():
         textures = collect_textures(model_dir)
         print(f"  Found {len(textures)} texture(s) in model/")
 
-    # 3. Load lockfile
-    lockdata = load_lockfile()
+    # 3. Convert model XML to OBJ mesh
+    model_xml = model_dir / "index.xml" if model_dir.is_dir() else None
+    obj_path = None
+    if model_xml and model_xml.exists():
+        obj_path = loco_dir / "model.obj"
+        print(f"\nConverting 3D model to OBJ...")
+        convert_model_xml_to_obj(model_xml, obj_path)
+    else:
+        print("  [WARN] model/index.xml not found, skipping mesh conversion")
+
+    # 4. Load lockfiles
+    tex_lockdata = load_lockfile(TEXTURE_LOCKFILE)
+    mesh_lockdata = load_lockfile(MESH_LOCKFILE)
     uploads_made = 0
     cache_hits = 0
 
-    # 4. Upload or use placeholders
+    # 5. Upload or use placeholders
     thumbnail_asset_id = "PENDING_UPLOAD"
+    mesh_asset_id = "PENDING_UPLOAD"
     texture_assets = [{"name": t["name"], "relativePath": t["relativePath"], "assetId": "PENDING_UPLOAD"}
                       for t in textures]
 
@@ -309,8 +477,8 @@ def main():
         # Upload thumbnail
         if thumbnail.exists():
             thumb_hash = file_content_hash(thumbnail)
-            if thumb_hash in lockdata:
-                thumbnail_asset_id = lockdata[thumb_hash]
+            if thumb_hash in tex_lockdata:
+                thumbnail_asset_id = tex_lockdata[thumb_hash]
                 cache_hits += 1
                 print(f"\nThumbnail: {thumbnail.name} [CACHED] assetId = {thumbnail_asset_id}")
             else:
@@ -322,8 +490,8 @@ def main():
                 )
                 if asset_id:
                     thumbnail_asset_id = asset_id
-                    lockdata[thumb_hash] = asset_id
-                    save_lockfile(lockdata)
+                    tex_lockdata[thumb_hash] = asset_id
+                    save_lockfile(TEXTURE_LOCKFILE, tex_lockdata)
                     uploads_made += 1
                     print(f"  Uploaded: assetId = {asset_id}")
         else:
@@ -333,10 +501,10 @@ def main():
         for i, tex in enumerate(textures):
             tex_path = Path(tex["path"])
             tex_hash = file_content_hash(tex_path)
-            if tex_hash in lockdata:
-                texture_assets[i]["assetId"] = lockdata[tex_hash]
+            if tex_hash in tex_lockdata:
+                texture_assets[i]["assetId"] = tex_lockdata[tex_hash]
                 cache_hits += 1
-                print(f"\nTexture [{i+1}/{len(textures)}]: {tex['relativePath']} [CACHED] assetId = {lockdata[tex_hash]}")
+                print(f"\nTexture [{i+1}/{len(textures)}]: {tex['relativePath']} [CACHED] assetId = {tex_lockdata[tex_hash]}")
             else:
                 print(f"\nUploading texture [{i+1}/{len(textures)}]: {tex['relativePath']}...")
                 asset_id = upload_image_to_roblox(
@@ -346,17 +514,38 @@ def main():
                 )
                 if asset_id:
                     texture_assets[i]["assetId"] = asset_id
-                    lockdata[tex_hash] = asset_id
-                    save_lockfile(lockdata)
+                    tex_lockdata[tex_hash] = asset_id
+                    save_lockfile(TEXTURE_LOCKFILE, tex_lockdata)
+                    uploads_made += 1
+                    print(f"  Uploaded: assetId = {asset_id}")
+
+        # Upload 3D mesh
+        if obj_path and obj_path.exists():
+            mesh_hash = file_content_hash(model_xml)
+            if mesh_hash in mesh_lockdata:
+                mesh_asset_id = mesh_lockdata[mesh_hash]
+                cache_hits += 1
+                print(f"\nMesh: model.obj [CACHED] assetId = {mesh_asset_id}")
+            else:
+                print(f"\nUploading 3D mesh: model.obj...")
+                asset_id = upload_mesh_to_roblox(
+                    obj_path, args.api_key, args.creator_id,
+                    display_name=f"{metadata.get('title', 'Loco')} Mesh",
+                    description=f"3D mesh for {metadata.get('title', '')} by {metadata.get('author', '')}",
+                )
+                if asset_id:
+                    mesh_asset_id = asset_id
+                    mesh_lockdata[mesh_hash] = asset_id
+                    save_lockfile(MESH_LOCKFILE, mesh_lockdata)
                     uploads_made += 1
                     print(f"  Uploaded: assetId = {asset_id}")
 
         print(f"\nSummary: {uploads_made} uploaded, {cache_hits} cached")
 
-    # 4. Generate Lua
+    # 6. Generate Lua
     output_path = Path(args.output) if args.output else loco_dir / "loco_data.lua"
     print(f"\nGenerating Lua metadata file...")
-    generate_lua(metadata, thumbnail_asset_id, texture_assets, output_path.resolve())
+    generate_lua(metadata, thumbnail_asset_id, texture_assets, mesh_asset_id, output_path.resolve())
     print("Done!")
 
 
