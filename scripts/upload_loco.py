@@ -15,7 +15,9 @@ Example:
 
 import argparse
 import hashlib
+import io
 import json
+import math
 import os
 import struct
 import sys
@@ -39,25 +41,35 @@ except ImportError:
 
 
 ROBLOX_ASSETS_API = "https://apis.roblox.com/assets/v1/assets"
-TEXTURE_LOCKFILE = "roblox_assets.lock.json"
-MESH_LOCKFILE = "roblox_meshes.lock.json"
+LOCKFILE_NAME = "roblox_uploads.lock.json"
+
+# Built-in material colors for "material:xxx.bmp" texture references
+MATERIAL_COLORS = {
+    "black": (0, 0, 0, 255),
+    "white": (255, 255, 255, 255),
+    "grey": (128, 128, 128, 255),
+    "gray": (128, 128, 128, 255),
+    "red": (255, 0, 0, 255),
+    "green": (0, 128, 0, 255),
+    "blue": (0, 0, 255, 255),
+}
 
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parent.parent
 
 
-def load_lockfile(name: str) -> dict:
-    """Load a lockfile by name. Returns {content_hash: asset_id} mapping."""
-    path = _repo_root() / name
+def load_lockfile() -> dict:
+    """Load the upload lockfile. Returns {lock_key: asset_id} mapping."""
+    path = _repo_root() / LOCKFILE_NAME
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
     return {}
 
 
-def save_lockfile(name: str, lockdata: dict):
-    """Save a lockfile (sorted for stable diffs)."""
-    path = _repo_root() / name
+def save_lockfile(lockdata: dict):
+    """Save the upload lockfile (sorted for stable diffs)."""
+    path = _repo_root() / LOCKFILE_NAME
     path.write_text(
         json.dumps(lockdata, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
@@ -71,6 +83,11 @@ def file_content_hash(file_path: Path) -> str:
         for chunk in iter(lambda: f.read(8192), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def make_lock_key(rel_path: str, content_hash: str) -> str:
+    """Build a lockfile key: relative_path:content_hash."""
+    return f"{rel_path}:{content_hash}"
 
 
 def convert_bmp_to_png(bmp_path: Path) -> Path:
@@ -112,21 +129,126 @@ def parse_loco_metadata(index_xml_path: Path) -> dict:
     return metadata
 
 
-def collect_textures(model_dir: Path) -> list[dict]:
-    """Collect all BMP texture files from the model directory (recursive)."""
-    textures = []
-    for bmp_file in sorted(model_dir.rglob("*.bmp")):
-        rel = bmp_file.relative_to(model_dir)
-        textures.append({
-            "path": str(bmp_file),
-            "relativePath": str(rel),
-            "name": bmp_file.stem,
-        })
-    return textures
+def build_texture_atlas(model_dir: Path, model_xml_path: Path) -> tuple[bytes, dict, list[str]]:
+    """Parse model XML for texture references and build a combined atlas.
+
+    Returns:
+        (atlas_png_bytes, atlas_map, texture_refs)
+        - atlas_png_bytes: PNG data of the combined atlas
+        - atlas_map: {texture_ref: (u_offset, v_offset, u_scale, v_scale)}
+        - texture_refs: sorted unique texture references
+    """
+    if not HAS_PIL:
+        print("  [ERROR] Pillow required for atlas. Install with: pip install Pillow")
+        return b"", {}, []
+
+    tree = ET.parse(model_xml_path)
+    root = tree.getroot()
+    model_el = root.find("model")
+    if model_el is None:
+        return b"", {}, []
+
+    # Collect unique texture references from polygons
+    texture_refs_set: set[str] = set()
+    for polygon in model_el.findall("polygon"):
+        tex = polygon.get("texture", "")
+        if tex:
+            texture_refs_set.add(tex)
+
+    if not texture_refs_set:
+        return b"", {}, []
+
+    # Load image for each reference
+    images: dict[str, Image.Image] = {}
+    for ref in sorted(texture_refs_set):
+        if ref.startswith("pack:"):
+            path = model_dir / ref[5:]
+            if path.exists():
+                images[ref] = Image.open(path).convert("RGBA")
+            else:
+                print(f"  [WARN] Texture not found: {path}")
+                images[ref] = Image.new("RGBA", (16, 16), (255, 0, 255, 255))
+        elif ref.startswith("material:"):
+            mat_name = ref[9:].replace(".bmp", "")
+            color = MATERIAL_COLORS.get(mat_name, (128, 128, 128, 255))
+            images[ref] = Image.new("RGBA", (16, 16), color)
+        else:
+            images[ref] = Image.new("RGBA", (16, 16), (255, 0, 255, 255))
+
+    # Shelf packing — sort by height descending for better fit
+    padding = 1
+    sorted_refs = sorted(images.keys(), key=lambda r: images[r].height, reverse=True)
+
+    max_w = max(img.width for img in images.values())
+    total_w = sum(img.width + padding for img in images.values())
+    max_h = max(img.height for img in images.values())
+    target_width = max(max_w + padding, int(math.sqrt(total_w * max_h)))
+
+    shelves: list[tuple[int, int, list[tuple[str, int]]]] = []  # (y, height, [(ref, x)])
+    for ref in sorted_refs:
+        img = images[ref]
+        placed = False
+        for shelf in shelves:
+            sy, sh, items = shelf
+            used_w = items[-1][1] + images[items[-1][0]].width + padding if items else 0
+            if used_w + img.width <= target_width and img.height <= sh:
+                items.append((ref, used_w))
+                placed = True
+                break
+        if not placed:
+            y = (shelves[-1][0] + shelves[-1][1] + padding) if shelves else 0
+            shelves.append((y, img.height, [(ref, 0)]))
+
+    atlas_w = max(items[-1][1] + images[items[-1][0]].width for _, _, items in shelves)
+    atlas_h = shelves[-1][0] + shelves[-1][1]
+
+    atlas = Image.new("RGBA", (atlas_w, atlas_h), (0, 0, 0, 0))
+    atlas_map: dict[str, tuple[float, float, float, float]] = {}
+
+    for sy, sh, items in shelves:
+        for ref, x in items:
+            img = images[ref]
+            atlas.paste(img, (x, sy))
+            atlas_map[ref] = (
+                x / atlas_w,
+                sy / atlas_h,
+                img.width / atlas_w,
+                img.height / atlas_h,
+            )
+
+    buf = io.BytesIO()
+    atlas.save(buf, "PNG")
+    png_bytes = buf.getvalue()
+
+    print(f"  Atlas: {atlas_w}x{atlas_h}, {len(images)} textures, {len(png_bytes)} bytes")
+    for ref, (uo, vo, us, vs) in sorted(atlas_map.items()):
+        print(f"    {ref} -> u={uo:.3f} v={vo:.3f} w={us:.3f} h={vs:.3f}")
+
+    return png_bytes, atlas_map, sorted(texture_refs_set)
 
 
-def convert_model_xml_to_glb(model_index_xml: Path, output_glb: Path) -> dict:
-    """Convert the simplemodel XML <model> section to glTF Binary (.glb).
+def compute_atlas_source_hash(model_dir: Path, texture_refs: list[str]) -> str:
+    """Compute combined hash of all source textures for lockfile keying."""
+    h = hashlib.sha256()
+    for ref in sorted(texture_refs):
+        h.update(ref.encode("utf-8"))
+        if ref.startswith("pack:"):
+            path = model_dir / ref[5:]
+            if path.exists():
+                with open(path, "rb") as f:
+                    for chunk in iter(lambda: f.read(8192), b""):
+                        h.update(chunk)
+    return h.hexdigest()
+
+
+def convert_model_xml_to_glb(
+    model_index_xml: Path,
+    output_glb: Path,
+    atlas_png: bytes,
+    atlas_map: dict[str, tuple[float, float, float, float]],
+) -> dict:
+    """Convert the simplemodel XML <model> section to glTF Binary (.glb)
+    with remapped UVs and embedded atlas texture.
 
     Returns stats dict with vertex/triangle counts.
     """
@@ -151,6 +273,9 @@ def convert_model_xml_to_glb(model_index_xml: Path, output_glb: Path) -> dict:
         ny = float(polygon.get("ny", "0"))
         nz = float(polygon.get("nz", "0"))
 
+        tex_ref = polygon.get("texture", "")
+        mapping = atlas_map.get(tex_ref)
+
         poly_verts = []
         for vert in polygon.findall("vertex"):
             x = float(vert.get("x", "0"))
@@ -158,7 +283,17 @@ def convert_model_xml_to_glb(model_index_xml: Path, output_glb: Path) -> dict:
             z = float(vert.get("z", "0"))
             s = float(vert.get("s", "0"))
             t = float(vert.get("t", "0"))
-            poly_verts.append((x, y, z, nx, ny, nz, s, 1.0 - t))
+
+            # Remap UVs from individual-texture space to atlas space
+            if mapping:
+                u_off, v_off, u_sc, v_sc = mapping
+                u = u_off + s * u_sc
+                v = v_off + (1.0 - t) * v_sc
+            else:
+                u = s
+                v = 1.0 - t
+
+            poly_verts.append((x, y, z, nx, ny, nz, u, v))
 
         if len(poly_verts) < 3:
             continue
@@ -205,13 +340,15 @@ def convert_model_xml_to_glb(model_index_xml: Path, output_glb: Path) -> dict:
     norm_data = pad4(norm_data)
     uv_data = pad4(uv_data)
     idx_data = pad4(idx_data)
+    img_data = pad4(atlas_png)
 
     # Buffer layout offsets
     pos_offset = 0
     norm_offset = pos_offset + len(pos_data)
     uv_offset = norm_offset + len(norm_data)
     idx_offset = uv_offset + len(uv_data)
-    bin_data = pos_data + norm_data + uv_data + idx_data
+    img_offset = idx_offset + len(idx_data)
+    bin_data = pos_data + norm_data + uv_data + idx_data + img_data
 
     # Bounding box for positions accessor (required by glTF spec)
     min_pos = [float('inf')] * 3
@@ -222,7 +359,7 @@ def convert_model_xml_to_glb(model_index_xml: Path, output_glb: Path) -> dict:
             min_pos[c] = min(min_pos[c], val)
             max_pos[c] = max(max_pos[c], val)
 
-    # Build glTF JSON descriptor
+    # Build glTF JSON descriptor (with embedded atlas texture + material)
     gltf = {
         "asset": {"version": "2.0", "generator": "vlakosimdb upload_loco.py"},
         "scene": 0,
@@ -236,7 +373,23 @@ def convert_model_xml_to_glb(model_index_xml: Path, output_glb: Path) -> dict:
                     "TEXCOORD_0": 2,
                 },
                 "indices": 3,
+                "material": 0,
             }]
+        }],
+        "materials": [{
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {"index": 0},
+                "metallicFactor": 0.0,
+                "roughnessFactor": 0.8,
+            },
+        }],
+        "textures": [{"source": 0, "sampler": 0}],
+        "images": [{"bufferView": 4, "mimeType": "image/png"}],
+        "samplers": [{
+            "magFilter": 9729,   # LINEAR
+            "minFilter": 9987,   # LINEAR_MIPMAP_LINEAR
+            "wrapS": 33071,      # CLAMP_TO_EDGE
+            "wrapT": 33071,
         }],
         "accessors": [
             {
@@ -261,6 +414,7 @@ def convert_model_xml_to_glb(model_index_xml: Path, output_glb: Path) -> dict:
             {"buffer": 0, "byteOffset": norm_offset, "byteLength": vertex_count * 12, "target": 34962},
             {"buffer": 0, "byteOffset": uv_offset, "byteLength": vertex_count * 8, "target": 34962},
             {"buffer": 0, "byteOffset": idx_offset, "byteLength": idx_byte_len, "target": 34963},
+            {"buffer": 0, "byteOffset": img_offset, "byteLength": len(atlas_png)},
         ],
         "buffers": [{"byteLength": len(bin_data)}],
     }
@@ -414,7 +568,7 @@ def poll_operation(operation_path: str, api_key: str, max_attempts: int = 20) ->
 
 
 def generate_lua(metadata: dict, thumbnail_asset_id: str,
-                 texture_assets: list[dict], mesh_asset_id: str,
+                 atlas_asset_id: str, mesh_asset_id: str,
                  output_path: Path):
     """Generate a Lua metadata file."""
     lines = []
@@ -444,17 +598,13 @@ def generate_lua(metadata: dict, thumbnail_asset_id: str,
     lines.append("")
 
     # 3D Mesh
-    lines.append("\t-- 3D mesh asset")
+    lines.append("\t-- 3D mesh asset (GLB with embedded atlas texture)")
     lines.append(f'\tmeshAssetId = "{mesh_asset_id}",') 
+    lines.append("")
 
-    # Textures
-    lines.append("\t-- Model textures")
-    lines.append("\ttextures = {")
-    for tex in texture_assets:
-        asset_id = tex.get("assetId", "PENDING")
-        rel_path = tex.get("relativePath", "")
-        lines.append(f'\t\t{{ name = "{tex["name"]}", path = "{rel_path}", assetId = "{asset_id}" }},')
-    lines.append("\t},")
+    # Atlas texture
+    lines.append("\t-- Atlas texture asset (all model textures combined)")
+    lines.append(f'\tatlasTextureAssetId = "{atlas_asset_id}",') 
 
     lines.append("}")
     lines.append("")
@@ -495,6 +645,8 @@ def main():
 
     thumbnail = loco_dir / "image.bmp"
     model_dir = loco_dir / "model"
+    model_xml = model_dir / "index.xml" if model_dir.is_dir() else None
+    loco_rel = str(loco_dir.relative_to(_repo_root()))
 
     # 1. Parse metadata
     print(f"Parsing metadata from {index_xml}...")
@@ -502,33 +654,38 @@ def main():
     print(f"  Name: {metadata.get('name')}  Title: {metadata.get('title')}")
     print(f"  Author: {metadata.get('author')}  Max Speed: {metadata.get('maxspeed')} km/h")
 
-    # 2. Collect textures
-    textures = []
-    if model_dir.is_dir():
-        textures = collect_textures(model_dir)
-        print(f"  Found {len(textures)} texture(s) in model/")
-
-    # 3. Convert model XML to OBJ mesh
-    model_xml = model_dir / "index.xml" if model_dir.is_dir() else None
+    # 2. Build texture atlas
+    atlas_png = b""
+    atlas_map = {}
+    atlas_path = None
     glb_path = None
+    tex_refs: list[str] = []
+
     if model_xml and model_xml.exists():
+        print(f"\nBuilding texture atlas...")
+        atlas_png, atlas_map, tex_refs = build_texture_atlas(model_dir, model_xml)
+
+        if atlas_png:
+            atlas_path = loco_dir / "atlas.png"
+            atlas_path.write_bytes(atlas_png)
+            print(f"  Saved: {atlas_path}")
+
+        # 3. Convert model to GLB with embedded atlas
         glb_path = loco_dir / "model.glb"
         print(f"\nConverting 3D model to GLB...")
-        convert_model_xml_to_glb(model_xml, glb_path)
+        convert_model_xml_to_glb(model_xml, glb_path, atlas_png, atlas_map)
     else:
-        print("  [WARN] model/index.xml not found, skipping mesh conversion")
+        print("  [WARN] model/index.xml not found, skipping atlas & mesh")
 
-    # 4. Load lockfiles
-    tex_lockdata = load_lockfile(TEXTURE_LOCKFILE)
-    mesh_lockdata = load_lockfile(MESH_LOCKFILE)
+    # 4. Load lockfile
+    lockdata = load_lockfile()
     uploads_made = 0
     cache_hits = 0
 
     # 5. Upload or use placeholders
     thumbnail_asset_id = "PENDING_UPLOAD"
+    atlas_asset_id = "PENDING_UPLOAD"
     mesh_asset_id = "PENDING_UPLOAD"
-    texture_assets = [{"name": t["name"], "relativePath": t["relativePath"], "assetId": "PENDING_UPLOAD"}
-                      for t in textures]
 
     if args.dry_run:
         print("\n[DRY RUN] Skipping uploads, using placeholder asset IDs.")
@@ -540,12 +697,13 @@ def main():
         # Upload thumbnail
         if thumbnail.exists():
             thumb_hash = file_content_hash(thumbnail)
-            if thumb_hash in tex_lockdata:
-                thumbnail_asset_id = tex_lockdata[thumb_hash]
+            thumb_key = make_lock_key(f"{loco_rel}/image.bmp", thumb_hash)
+            if thumb_key in lockdata:
+                thumbnail_asset_id = lockdata[thumb_key]
                 cache_hits += 1
-                print(f"\nThumbnail: {thumbnail.name} [CACHED] assetId = {thumbnail_asset_id}")
+                print(f"\nThumbnail: [CACHED] assetId = {thumbnail_asset_id}")
             else:
-                print(f"\nUploading thumbnail: {thumbnail.name}...")
+                print(f"\nUploading thumbnail: image.bmp...")
                 asset_id = upload_image_to_roblox(
                     thumbnail, args.api_key, args.creator_id,
                     display_name=f"{metadata.get('title', 'Loco')} Thumbnail",
@@ -553,42 +711,48 @@ def main():
                 )
                 if asset_id:
                     thumbnail_asset_id = asset_id
-                    tex_lockdata[thumb_hash] = asset_id
-                    save_lockfile(TEXTURE_LOCKFILE, tex_lockdata)
+                    lockdata[thumb_key] = asset_id
+                    save_lockfile(lockdata)
                     uploads_made += 1
                     print(f"  Uploaded: assetId = {asset_id}")
         else:
             print(f"  [WARN] Thumbnail not found: {thumbnail}")
 
-        # Upload textures
-        for i, tex in enumerate(textures):
-            tex_path = Path(tex["path"])
-            tex_hash = file_content_hash(tex_path)
-            if tex_hash in tex_lockdata:
-                texture_assets[i]["assetId"] = tex_lockdata[tex_hash]
+        # Upload atlas texture (single combined image)
+        if atlas_path and atlas_path.exists():
+            atlas_hash = compute_atlas_source_hash(model_dir, tex_refs)
+            atlas_key = make_lock_key(f"{loco_rel}/atlas.png", atlas_hash)
+            if atlas_key in lockdata:
+                atlas_asset_id = lockdata[atlas_key]
                 cache_hits += 1
-                print(f"\nTexture [{i+1}/{len(textures)}]: {tex['relativePath']} [CACHED] assetId = {tex_lockdata[tex_hash]}")
+                print(f"\nAtlas texture: [CACHED] assetId = {atlas_asset_id}")
             else:
-                print(f"\nUploading texture [{i+1}/{len(textures)}]: {tex['relativePath']}...")
+                print(f"\nUploading atlas texture: atlas.png...")
                 asset_id = upload_image_to_roblox(
-                    tex_path, args.api_key, args.creator_id,
-                    display_name=f"{metadata.get('name', 'Loco')}_{tex['name']}",
-                    description=f"Texture {tex['relativePath']} for {metadata.get('title', '')}",
+                    atlas_path, args.api_key, args.creator_id,
+                    display_name=f"{metadata.get('name', 'Loco')} Atlas",
+                    description=f"Texture atlas for {metadata.get('title', '')}",
                 )
                 if asset_id:
-                    texture_assets[i]["assetId"] = asset_id
-                    tex_lockdata[tex_hash] = asset_id
-                    save_lockfile(TEXTURE_LOCKFILE, tex_lockdata)
+                    atlas_asset_id = asset_id
+                    lockdata[atlas_key] = asset_id
+                    save_lockfile(lockdata)
                     uploads_made += 1
                     print(f"  Uploaded: assetId = {asset_id}")
 
-        # Upload 3D mesh
+        # Upload 3D mesh (GLB with embedded atlas)
         if glb_path and glb_path.exists():
-            mesh_hash = file_content_hash(model_xml)
-            if mesh_hash in mesh_lockdata:
-                mesh_asset_id = mesh_lockdata[mesh_hash]
+            # Mesh depends on model XML + all textures (atlas layout affects UVs)
+            model_hash = file_content_hash(model_xml)
+            atlas_hash_for_mesh = compute_atlas_source_hash(model_dir, tex_refs)
+            combined_hash = hashlib.sha256(
+                (model_hash + atlas_hash_for_mesh).encode()
+            ).hexdigest()
+            mesh_key = make_lock_key(f"{loco_rel}/model.glb", combined_hash)
+            if mesh_key in lockdata:
+                mesh_asset_id = lockdata[mesh_key]
                 cache_hits += 1
-                print(f"\nMesh: model.glb [CACHED] assetId = {mesh_asset_id}")
+                print(f"\nMesh: [CACHED] assetId = {mesh_asset_id}")
             else:
                 print(f"\nUploading 3D mesh: model.glb...")
                 asset_id = upload_mesh_to_roblox(
@@ -598,8 +762,8 @@ def main():
                 )
                 if asset_id:
                     mesh_asset_id = asset_id
-                    mesh_lockdata[mesh_hash] = asset_id
-                    save_lockfile(MESH_LOCKFILE, mesh_lockdata)
+                    lockdata[mesh_key] = asset_id
+                    save_lockfile(lockdata)
                     uploads_made += 1
                     print(f"  Uploaded: assetId = {asset_id}")
 
@@ -608,7 +772,7 @@ def main():
     # 6. Generate Lua
     output_path = Path(args.output) if args.output else loco_dir / "loco_data.lua"
     print(f"\nGenerating Lua metadata file...")
-    generate_lua(metadata, thumbnail_asset_id, texture_assets, mesh_asset_id, output_path.resolve())
+    generate_lua(metadata, thumbnail_asset_id, atlas_asset_id, mesh_asset_id, output_path.resolve())
     print("Done!")
 
 
