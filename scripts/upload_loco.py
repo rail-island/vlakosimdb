@@ -14,6 +14,7 @@ Example:
 """
 
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -37,6 +38,38 @@ except ImportError:
 
 
 ROBLOX_ASSETS_API = "https://apis.roblox.com/assets/v1/assets"
+LOCKFILE_NAME = "roblox_assets.lock.json"
+
+
+def get_lockfile_path() -> Path:
+    """Return path to the lockfile in the repository root."""
+    return Path(__file__).resolve().parent.parent / LOCKFILE_NAME
+
+
+def load_lockfile() -> dict:
+    """Load the lockfile. Returns {content_hash: asset_id} mapping."""
+    path = get_lockfile_path()
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {}
+
+
+def save_lockfile(lockdata: dict):
+    """Save the lockfile (sorted for stable diffs)."""
+    path = get_lockfile_path()
+    path.write_text(
+        json.dumps(lockdata, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def file_content_hash(file_path: Path) -> str:
+    """Compute SHA-256 hash of file contents."""
+    h = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def convert_bmp_to_png(bmp_path: Path) -> Path:
@@ -256,7 +289,12 @@ def main():
         textures = collect_textures(model_dir)
         print(f"  Found {len(textures)} texture(s) in model/")
 
-    # 3. Upload or use placeholders
+    # 3. Load lockfile
+    lockdata = load_lockfile()
+    uploads_made = 0
+    cache_hits = 0
+
+    # 4. Upload or use placeholders
     thumbnail_asset_id = "PENDING_UPLOAD"
     texture_assets = [{"name": t["name"], "relativePath": t["relativePath"], "assetId": "PENDING_UPLOAD"}
                       for t in textures]
@@ -270,30 +308,50 @@ def main():
 
         # Upload thumbnail
         if thumbnail.exists():
-            print(f"\nUploading thumbnail: {thumbnail.name}...")
-            asset_id = upload_image_to_roblox(
-                thumbnail, args.api_key, args.creator_id,
-                display_name=f"{metadata.get('title', 'Loco')} Thumbnail",
-                description=f"Thumbnail for {metadata.get('title', '')} by {metadata.get('author', '')}",
-            )
-            if asset_id:
-                thumbnail_asset_id = asset_id
-                print(f"  Uploaded: assetId = {asset_id}")
+            thumb_hash = file_content_hash(thumbnail)
+            if thumb_hash in lockdata:
+                thumbnail_asset_id = lockdata[thumb_hash]
+                cache_hits += 1
+                print(f"\nThumbnail: {thumbnail.name} [CACHED] assetId = {thumbnail_asset_id}")
+            else:
+                print(f"\nUploading thumbnail: {thumbnail.name}...")
+                asset_id = upload_image_to_roblox(
+                    thumbnail, args.api_key, args.creator_id,
+                    display_name=f"{metadata.get('title', 'Loco')} Thumbnail",
+                    description=f"Thumbnail for {metadata.get('title', '')} by {metadata.get('author', '')}",
+                )
+                if asset_id:
+                    thumbnail_asset_id = asset_id
+                    lockdata[thumb_hash] = asset_id
+                    save_lockfile(lockdata)
+                    uploads_made += 1
+                    print(f"  Uploaded: assetId = {asset_id}")
         else:
             print(f"  [WARN] Thumbnail not found: {thumbnail}")
 
         # Upload textures
         for i, tex in enumerate(textures):
             tex_path = Path(tex["path"])
-            print(f"\nUploading texture [{i+1}/{len(textures)}]: {tex['relativePath']}...")
-            asset_id = upload_image_to_roblox(
-                tex_path, args.api_key, args.creator_id,
-                display_name=f"{metadata.get('name', 'Loco')}_{tex['name']}",
-                description=f"Texture {tex['relativePath']} for {metadata.get('title', '')}",
-            )
-            if asset_id:
-                texture_assets[i]["assetId"] = asset_id
-                print(f"  Uploaded: assetId = {asset_id}")
+            tex_hash = file_content_hash(tex_path)
+            if tex_hash in lockdata:
+                texture_assets[i]["assetId"] = lockdata[tex_hash]
+                cache_hits += 1
+                print(f"\nTexture [{i+1}/{len(textures)}]: {tex['relativePath']} [CACHED] assetId = {lockdata[tex_hash]}")
+            else:
+                print(f"\nUploading texture [{i+1}/{len(textures)}]: {tex['relativePath']}...")
+                asset_id = upload_image_to_roblox(
+                    tex_path, args.api_key, args.creator_id,
+                    display_name=f"{metadata.get('name', 'Loco')}_{tex['name']}",
+                    description=f"Texture {tex['relativePath']} for {metadata.get('title', '')}",
+                )
+                if asset_id:
+                    texture_assets[i]["assetId"] = asset_id
+                    lockdata[tex_hash] = asset_id
+                    save_lockfile(lockdata)
+                    uploads_made += 1
+                    print(f"  Uploaded: assetId = {asset_id}")
+
+        print(f"\nSummary: {uploads_made} uploaded, {cache_hits} cached")
 
     # 4. Generate Lua
     output_path = Path(args.output) if args.output else loco_dir / "loco_data.lua"
