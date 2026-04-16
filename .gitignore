@@ -2,3 +2,4 @@
 *.png
 *.obj
 *.glb
+.DS_Store
