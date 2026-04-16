@@ -596,8 +596,7 @@ def generate_combined_lua(all_locos: list[dict], output_path: Path):
 
         lines.append(f'\t\tpath = "{meta.get("path", "")}",')
         lines.append(f'\t\tthumbnailAssetId = "{loco["thumbnailAssetId"]}",')
-        lines.append(f'\t\tmeshAssetId = "{loco["meshAssetId"]}",')
-        lines.append(f'\t\tatlasTextureAssetId = "{loco["atlasAssetId"]}",')
+        lines.append(f'\t\tmodelAssetId = "{loco["modelAssetId"]}",')
         lines.append("\t},")
 
     lines.append("}")
@@ -673,7 +672,6 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
 
     # 3. Upload or placeholders
     thumbnail_asset_id = "PENDING_UPLOAD"
-    atlas_asset_id = "PENDING_UPLOAD"
     mesh_asset_id = "PENDING_UPLOAD"
     uploads_made = 0
     cache_hits = 0
@@ -698,26 +696,7 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
                     save_lockfile(lockdata)
                     uploads_made += 1
 
-        # Atlas
-        if atlas_path and atlas_path.exists():
-            atlas_hash = compute_atlas_source_hash(model_dir, tex_refs)
-            atlas_key = make_lock_key(f"{loco_rel}/atlas.png", atlas_hash)
-            if atlas_key in lockdata:
-                atlas_asset_id = lockdata[atlas_key]
-                cache_hits += 1
-            else:
-                asset_id = upload_image_to_roblox(
-                    atlas_path, api_key, creator_id,
-                    display_name=f"{metadata.get('name', 'Loco')} Atlas",
-                    description=f"Texture atlas for {metadata.get('title', '')}",
-                )
-                if asset_id:
-                    atlas_asset_id = asset_id
-                    lockdata[atlas_key] = asset_id
-                    save_lockfile(lockdata)
-                    uploads_made += 1
-
-        # Mesh
+        # Mesh (model)
         if glb_path and glb_path.exists():
             model_hash = file_content_hash(model_xml)
             atlas_hash_for_mesh = compute_atlas_source_hash(model_dir, tex_refs)
@@ -745,8 +724,7 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
     return {
         "metadata": metadata,
         "thumbnailAssetId": thumbnail_asset_id,
-        "atlasAssetId": atlas_asset_id,
-        "meshAssetId": mesh_asset_id,
+        "modelAssetId": mesh_asset_id,
     }
 
 
