@@ -11,9 +11,8 @@ local LocoDatabase = {
 		weight = 85,
 		power = 3480,
 		path = "Loco/Electric",
-		thumbnailAssetId = "87493111947595",
-		meshAssetId = "130475454220207",
-		atlasTextureAssetId = "111481785239926",
+		thumbnailAssetId = "115737661874309",
+		modelAssetId = "84953471896023",
 	},
 	["CD_180"] = {
 		name = "CD_180",
@@ -24,9 +23,8 @@ local LocoDatabase = {
 		weight = 120,
 		power = 2790,
 		path = "Loco/Electric",
-		thumbnailAssetId = "112865746725557",
-		meshAssetId = "136022905502158",
-		atlasTextureAssetId = "116224582024639",
+		thumbnailAssetId = "80525570047953",
+		modelAssetId = "73359129735475",
 	},
 }
 
