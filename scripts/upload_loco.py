@@ -465,8 +465,7 @@ def upload_mesh_to_roblox(obj_path: Path, api_key: str, creator_id: str,
         "creationContext": {
             "creator": {
                 "userId": creator_id,
-            },
-            "expectedPrice": 0,
+            }
         },
     }
 
@@ -514,8 +513,7 @@ def upload_image_to_roblox(file_path: Path, api_key: str, creator_id: str,
         "creationContext": {
             "creator": {
                 "userId": creator_id,
-            },
-            "expectedPrice": 0,
+            }
         },
     }
 
@@ -550,81 +548,6 @@ def upload_image_to_roblox(file_path: Path, api_key: str, creator_id: str,
         return result["response"].get("assetId")
 
     return result.get("assetId")
-
-
-def enable_asset_open_use(asset_id: str, api_key: str) -> bool:
-    """Update an uploaded asset to be open/public (not restricted).
-
-    Uses the PATCH /assets/v1/assets/{assetId} endpoint to enable distribution,
-    and also tries the asset-permissions-api to grant broad use rights.
-    """
-    if not HAS_REQUESTS:
-        return False
-
-    # 1. Try updating via the assets v1 PATCH endpoint with open distribution
-    url = f"https://apis.roblox.com/assets/v1/assets/{asset_id}"
-    resp = requests.patch(
-        url,
-        headers={
-            "x-api-key": api_key,
-            "Content-Type": "application/json",
-        },
-        params={"updateMask": "description"},
-        json={
-            "assetId": asset_id,
-        },
-        timeout=30,
-    )
-    if resp.status_code == 200:
-        print(f"  [OK] Asset {asset_id} metadata confirmed accessible")
-    else:
-        print(f"  [WARN] PATCH metadata for {asset_id}: {resp.status_code} {resp.text[:200]}")
-
-    # 2. Try granting open use via asset-permissions-api
-    perm_url = "https://apis.roblox.com/asset-permissions-api/v1/assets/permissions"
-    perm_body = {
-        "requests": [
-            {
-                "subjectType": "Universe",
-                "subjectId": "*",
-                "action": "Use",
-                "assetIds": [int(asset_id)],
-            }
-        ]
-    }
-    resp2 = requests.patch(
-        perm_url,
-        headers={
-            "x-api-key": api_key,
-            "Content-Type": "application/json",
-        },
-        json=perm_body,
-        timeout=30,
-    )
-    if resp2.status_code == 200:
-        print(f"  [OK] Asset {asset_id} permissions set to open use")
-        return True
-    else:
-        print(f"  [WARN] Permissions API for {asset_id}: {resp2.status_code} {resp2.text[:200]}")
-
-    # 3. Fallback: try the legacy develop API to uncopylocked the asset
-    legacy_url = f"https://develop.roblox.com/v1/assets/{asset_id}"
-    resp3 = requests.patch(
-        legacy_url,
-        headers={
-            "x-api-key": api_key,
-            "Content-Type": "application/json",
-        },
-        json={"isCopylocked": False},
-        timeout=30,
-    )
-    if resp3.status_code == 200:
-        print(f"  [OK] Asset {asset_id} isCopylocked set to false (legacy API)")
-        return True
-    else:
-        print(f"  [INFO] Legacy API for {asset_id}: {resp3.status_code}")
-
-    return False
 
 
 def poll_operation(operation_path: str, api_key: str, max_attempts: int = 20) -> str | None:
@@ -774,7 +697,6 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
                     lockdata[thumb_key] = asset_id
                     save_lockfile(lockdata)
                     uploads_made += 1
-                    enable_asset_open_use(asset_id, api_key)
 
         # Atlas
         if atlas_path and atlas_path.exists():
@@ -794,7 +716,6 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
                     lockdata[atlas_key] = asset_id
                     save_lockfile(lockdata)
                     uploads_made += 1
-                    enable_asset_open_use(asset_id, api_key)
 
         # Mesh
         if glb_path and glb_path.exists():
@@ -818,7 +739,6 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
                     lockdata[mesh_key] = asset_id
                     save_lockfile(lockdata)
                     uploads_made += 1
-                    enable_asset_open_use(asset_id, api_key)
 
         print(f"  Uploads: {uploads_made} new, {cache_hits} cached")
 
@@ -842,8 +762,6 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="Skip uploads, use placeholder IDs")
     parser.add_argument("--input", help=f"Input file (default: {INPUT_FILE})")
     parser.add_argument("--output", help=f"Output Lua file (default: {OUTPUT_LUA})")
-    parser.add_argument("--update-permissions", action="store_true",
-                        help="Update all previously uploaded assets to open/public access")
     args = parser.parse_args()
 
     api_key = args.api_key or os.environ.get("ROBLOX_API_KEY")
@@ -852,22 +770,6 @@ def main():
     if not args.dry_run and (not api_key or not creator_id):
         print("Error: --api-key and --creator-id are required (or use --dry-run)")
         sys.exit(1)
-
-    # Update permissions for all previously uploaded assets
-    if args.update_permissions:
-        lockdata = load_lockfile()
-        asset_ids = sorted(set(lockdata.values()))
-        print(f"Updating permissions for {len(asset_ids)} previously uploaded asset(s)...")
-        success = 0
-        for i, asset_id in enumerate(asset_ids, 1):
-            if asset_id in ("PENDING_UPLOAD", ""):
-                continue
-            print(f"  [{i}/{len(asset_ids)}] Asset {asset_id}...")
-            if enable_asset_open_use(asset_id, api_key):
-                success += 1
-            time.sleep(1)  # Rate limit
-        print(f"\nDone! Updated {success}/{len(asset_ids)} assets.")
-        return
 
     # Resolve input directories
     input_file = _repo_root() / (args.input or INPUT_FILE)
