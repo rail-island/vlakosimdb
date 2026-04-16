@@ -11,9 +11,9 @@ local LocoDatabase = {
 		weight = 85,
 		power = 3480,
 		path = "Loco/Electric",
-		thumbnailAssetId = "87493111947595",
-		meshAssetId = "130475454220207",
-		atlasTextureAssetId = "111481785239926",
+		thumbnailAssetId = "104421050620274",
+		meshAssetId = "128204107724908",
+		atlasTextureAssetId = "117916632369086",
 	},
 }
 
