@@ -507,7 +507,7 @@ def upload_image_to_roblox(file_path: Path, api_key: str, creator_id: str,
     png_path = convert_bmp_to_png(file_path) if file_path.suffix.lower() == ".bmp" else file_path
 
     request_body = {
-        "assetType": "Decal",
+        "assetType": "Image",
         "displayName": display_name[:50],  # Roblox limit
         "description": description[:1000],
         "creationContext": {

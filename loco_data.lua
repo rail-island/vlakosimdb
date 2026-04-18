@@ -11,8 +11,8 @@ local LocoDatabase = {
 		weight = 85,
 		power = 3480,
 		path = "Loco/Electric",
-		thumbnailAssetId = "115737661874309",
-		modelAssetId = "84953471896023",
+		thumbnailAssetId = "85290837236770",
+		modelAssetId = "123113402580146",
 	},
 	["CD_180"] = {
 		name = "CD_180",
@@ -23,8 +23,8 @@ local LocoDatabase = {
 		weight = 120,
 		power = 2790,
 		path = "Loco/Electric",
-		thumbnailAssetId = "80525570047953",
-		modelAssetId = "73359129735475",
+		thumbnailAssetId = "118799584960358",
+		modelAssetId = "101118950243750",
 	},
 }
 

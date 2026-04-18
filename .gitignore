@@ -2,4 +2,5 @@
 *.png
 *.obj
 *.glb
+*.pyc
 .DS_Store
