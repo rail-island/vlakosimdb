@@ -446,8 +446,8 @@ def convert_model_xml_to_glb(
         f.write(struct.pack("<I", 0x004E4942))    # chunk type "BIN\0"
         f.write(bin_data)
 
-    stats = {"vertices": vertex_count, "faces": triangle_count}
-    print(f"  GLB written: {output_glb} ({stats['vertices']} vertices, {stats['faces']} triangles)")
+    stats = {"vertices": vertex_count, "faces": triangle_count, "length": round(max_pos[0] - min_pos[0], 3)}
+    print(f"  GLB written: {output_glb} ({stats['vertices']} vertices, {stats['faces']} triangles, length={stats['length']})")
     return stats
 
 
@@ -595,6 +595,7 @@ def generate_combined_lua(all_locos: list[dict], output_path: Path):
             lines.append(f"\t\t{field} = {val},")
 
         lines.append(f'\t\tpath = "{meta.get("path", "")}",')
+        lines.append(f'\t\tlength = {loco["length"]},')
         lines.append(f'\t\tthumbnailAssetId = "{loco["thumbnailAssetId"]}",')
         lines.append(f'\t\tmodelAssetId = "{loco["modelAssetId"]}",')
         lines.append("\t},")
@@ -668,11 +669,12 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
             atlas_path.write_bytes(atlas_png)
 
         glb_path = loco_dir / "model.glb"
-        convert_model_xml_to_glb(model_xml, glb_path, atlas_png, atlas_map)
+        glb_stats = convert_model_xml_to_glb(model_xml, glb_path, atlas_png, atlas_map)
 
     # 3. Upload or placeholders
     thumbnail_asset_id = "PENDING_UPLOAD"
     mesh_asset_id = "PENDING_UPLOAD"
+    length = glb_stats.get("length", 0) if model_xml and model_xml.exists() else 0
     uploads_made = 0
     cache_hits = 0
 
@@ -725,6 +727,7 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
         "metadata": metadata,
         "thumbnailAssetId": thumbnail_asset_id,
         "modelAssetId": mesh_asset_id,
+        "length": length,
     }
 
 
