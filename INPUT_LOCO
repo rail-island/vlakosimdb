@@ -2,7 +2,8 @@
 # Lines ending with /* expand to all sub-directories
 # Lines starting with # are comments
 
-db/train/loco/electric/cd_163
-db/train/loco/electric/cd_180
+db/train/loco/electric/*
 db/train/loco/diesel/*
+db/train/loco/steam/*
+db/train/loco/muv/*
 db/train/coach/*
