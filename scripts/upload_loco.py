@@ -610,32 +610,54 @@ def generate_combined_lua(all_locos: list[dict], output_path: Path):
     print(f"\nLua file written to: {output_path}")
 
 
-def resolve_input_dirs(input_file: Path) -> list[Path]:
-    """Read INPUT_LOCO file and resolve paths, expanding wildcards."""
+def resolve_input_dirs(input_file: Path) -> list[tuple[str | None, Path]]:
+    """Read INPUT_LOCO file and resolve paths, expanding wildcards.
+
+    Lines may start with !PREFIX: to override the 'path' field in the output,
+    e.g. ``!EMU:db/train/emu/*/*`` sets path="EMU" for all matched dirs.
+    Paths ending with ``/*/*`` expand two directory levels deep.
+    """
     if not input_file.exists():
         print(f"Error: {input_file} not found")
         sys.exit(1)
 
     root = _repo_root()
-    dirs: list[Path] = []
+    dirs: list[tuple[str | None, Path]] = []
 
     for raw_line in input_file.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#"):
             continue
 
-        if line.endswith("/*"):
+        # Handle !PREFIX:path syntax — strip ! and split on first :
+        path_override: str | None = None
+        if line.startswith("!"):
+            prefix, _, rest = line[1:].partition(":")
+            path_override = prefix
+            line = rest
+
+        if line.endswith("/*/*"):
+            parent = root / line[:-4]
+            if not parent.is_dir():
+                print(f"  [WARN] Directory not found: {parent}")
+                continue
+            for child in sorted(parent.iterdir()):
+                if child.is_dir():
+                    for grandchild in sorted(child.iterdir()):
+                        if grandchild.is_dir() and (grandchild / "index.xml").exists():
+                            dirs.append((path_override, grandchild))
+        elif line.endswith("/*"):
             parent = root / line[:-2]
             if not parent.is_dir():
                 print(f"  [WARN] Directory not found: {parent}")
                 continue
             for child in sorted(parent.iterdir()):
                 if child.is_dir() and (child / "index.xml").exists():
-                    dirs.append(child)
+                    dirs.append((path_override, child))
         else:
             d = root / line
             if d.is_dir():
-                dirs.append(d)
+                dirs.append((path_override, d))
             else:
                 print(f"  [WARN] Directory not found: {d}")
 
@@ -767,7 +789,7 @@ def main():
     lockdata = load_lockfile()
     all_locos: list[dict] = []
 
-    for i, loco_dir in enumerate(loco_dirs, 1):
+    for i, (path_override, loco_dir) in enumerate(loco_dirs, 1):
         loco_rel = loco_dir.relative_to(_repo_root())
         print(f"[{i}/{len(loco_dirs)}] Processing {loco_rel}...")
 
@@ -776,6 +798,8 @@ def main():
             continue
 
         result = process_loco(loco_dir, lockdata, api_key, creator_id, args.dry_run)
+        if path_override is not None:
+            result["metadata"]["path"] = path_override
         all_locos.append(result)
 
     # Generate combined Lua

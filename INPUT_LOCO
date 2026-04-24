@@ -7,7 +7,7 @@ db/train/loco/diesel/*
 db/train/loco/steam/*
 db/train/loco/muv/*
 db/train/coach/*
-db/train/emu/*
+!EMU:db/train/emu/*/*
 db/train/dmu/*
 db/train/truck/*
 db/train/760_mm/*
