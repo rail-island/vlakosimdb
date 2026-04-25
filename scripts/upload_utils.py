@@ -35,7 +35,13 @@ except ImportError:
 ROBLOX_ASSETS_API = "https://apis.roblox.com/assets/v1/assets"
 LOCKFILE_NAME = "roblox_uploads.lock.json"
 
-# Built-in material colors for "material:xxx.bmp" texture references
+# Directory (relative to repo root) where material texture files can be placed.
+# If a file matching the material reference (e.g. metal052.bmp) exists there it
+# will be used as the atlas tile instead of the solid-colour fallback.
+MATERIALS_DIR = "materials"
+
+# Built-in material colours for "material:xxx.bmp" texture references
+# (used when no matching file is found in MATERIALS_DIR)
 MATERIAL_COLORS: dict[str, tuple[int, int, int, int]] = {
     "black": (0, 0, 0, 255),
     "white": (255, 255, 255, 255),
@@ -47,6 +53,21 @@ MATERIAL_COLORS: dict[str, tuple[int, int, int, int]] = {
     "wall": (180, 150, 120, 255),
     "roof": (100, 80, 60, 255),
     "glass": (200, 220, 255, 200),
+}
+
+# PBR (metallic/roughness) properties inferred from material name substrings.
+# Each entry: name_substring -> (metallic_factor, roughness_factor)
+# Used by detect_material_pbr() and passed on to the GLB builder.
+MATERIAL_PBR: dict[str, tuple[float, float]] = {
+    "metal": (1.0, 0.35),
+    "chrome": (1.0, 0.10),
+    "steel": (1.0, 0.40),
+    "iron": (0.9, 0.50),
+    "copper": (1.0, 0.40),
+    "gold": (1.0, 0.30),
+    "silver": (1.0, 0.20),
+    "aluminum": (1.0, 0.30),
+    "aluminium": (1.0, 0.30),
 }
 
 
@@ -176,6 +197,7 @@ def build_texture_atlas(
     if not texture_refs_set:
         return b"", {}, []
 
+    materials_dir = _repo_root() / MATERIALS_DIR
     images: dict[str, "Image.Image"] = {}
     for ref in sorted(texture_refs_set):
         if ref.startswith("pack:"):
@@ -186,9 +208,18 @@ def build_texture_atlas(
                 print(f"  [WARN] Texture not found: {tex_path}")
                 images[ref] = Image.new("RGBA", (16, 16), (255, 0, 255, 255))
         elif ref.startswith("material:"):
-            mat_name = ref[9:].replace(".bmp", "")
-            color = MATERIAL_COLORS.get(mat_name, (128, 128, 128, 255))
-            images[ref] = Image.new("RGBA", (16, 16), color)
+            mat_filename = ref[9:]  # e.g. "metal052.bmp"
+            mat_name = mat_filename.replace(".bmp", "").lower()
+            # Prefer a real texture file from the materials/ folder
+            mat_path = materials_dir / mat_filename
+            if not mat_path.exists():
+                mat_path = materials_dir / mat_filename.upper()
+            if mat_path.exists():
+                images[ref] = Image.open(mat_path).convert("RGBA")
+                print(f"  [MAT] Using texture file: {mat_path.name}")
+            else:
+                color = MATERIAL_COLORS.get(mat_name, (128, 128, 128, 255))
+                images[ref] = Image.new("RGBA", (64, 64), color)
         else:
             images[ref] = Image.new("RGBA", (16, 16), (255, 0, 255, 255))
 
@@ -244,6 +275,38 @@ def build_texture_atlas(
     return png_bytes, atlas_map, sorted(texture_refs_set)
 
 
+def detect_material_pbr(texture_refs: list[str]) -> tuple[float, float]:
+    """Infer dominant PBR metallic/roughness from a model's texture references.
+
+    Scans ``material:`` references and pattern-matches against ``MATERIAL_PBR``.
+    Pack textures (``pack:``) are treated as non-metallic and dilute the result.
+
+    Returns ``(metallic_factor, roughness_factor)``; defaults to ``(0.0, 0.8)``
+    when no metallic materials are detected.
+    """
+    metallic_sum = 0.0
+    roughness_sum = 0.0
+    matched = 0
+
+    for ref in texture_refs:
+        if ref.startswith("material:"):
+            mat_name = ref[9:].replace(".bmp", "").lower()
+            for pattern, (mf, rf) in MATERIAL_PBR.items():
+                if pattern in mat_name:
+                    metallic_sum += mf
+                    roughness_sum += rf
+                    matched += 1
+                    break
+
+    if matched == 0:
+        return 0.0, 0.8
+
+    # Dilute by pack textures — assume they carry non-metallic surface colour
+    pack_count = sum(1 for ref in texture_refs if ref.startswith("pack:"))
+    total = matched + pack_count
+    return metallic_sum / total, (roughness_sum + pack_count * 0.8) / total
+
+
 def compute_atlas_source_hash(model_dir: Path, texture_refs: list[str]) -> str:
     """Compute a combined hash of all source pack: textures for lockfile keying."""
     h = hashlib.sha256()
@@ -267,6 +330,8 @@ def convert_model_xml_to_glb(
     output_glb: Path,
     atlas_png: bytes,
     atlas_map: dict[str, tuple[float, float, float, float]],
+    metallic_factor: float = 0.0,
+    roughness_factor: float = 0.8,
 ) -> dict:
     """Convert a model XML ``<model>`` section to glTF Binary (.glb).
 
@@ -274,6 +339,9 @@ def convert_model_xml_to_glb(
     ``<model>`` child element containing ``<polygon>/<vertex>`` data.
     UVs are remapped into the atlas. When ``atlas_png`` is empty a plain
     grey PBR material is used instead.
+
+    ``metallic_factor`` and ``roughness_factor`` control the PBR material
+    properties; use ``detect_material_pbr()`` to derive sensible values.
 
     Returns a stats dict: ``{vertices, faces, length}``.
     """
@@ -382,8 +450,8 @@ def convert_model_xml_to_glb(
         materials = [{
             "pbrMetallicRoughness": {
                 "baseColorTexture": {"index": 0},
-                "metallicFactor": 0.0,
-                "roughnessFactor": 0.8,
+                "metallicFactor": metallic_factor,
+                "roughnessFactor": roughness_factor,
             },
         }]
         textures_gltf = [{"source": 0, "sampler": 0}]
@@ -411,8 +479,8 @@ def convert_model_xml_to_glb(
         materials = [{
             "pbrMetallicRoughness": {
                 "baseColorFactor": [0.7, 0.7, 0.7, 1.0],
-                "metallicFactor": 0.0,
-                "roughnessFactor": 0.8,
+                "metallicFactor": metallic_factor,
+                "roughnessFactor": roughness_factor,
             },
         }]
         textures_gltf = []

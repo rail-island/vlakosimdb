@@ -30,6 +30,7 @@ from upload_utils import (
     build_texture_atlas,
     compute_atlas_source_hash,
     convert_model_xml_to_glb,
+    detect_material_pbr,
     file_content_hash,
     load_lockfile,
     make_lock_key,
@@ -176,7 +177,9 @@ def process_building(building_dir: Path, lockdata: dict, api_key: str | None,
             atlas_path.write_bytes(atlas_png)
 
         glb_path = building_dir / "model.glb"
-        glb_stats = convert_model_xml_to_glb(model_xml, glb_path, atlas_png, atlas_map)
+        metallic, roughness = detect_material_pbr(tex_refs)
+        glb_stats = convert_model_xml_to_glb(model_xml, glb_path, atlas_png, atlas_map,
+                                             metallic_factor=metallic, roughness_factor=roughness)
         if glb_stats.get("vertices", 0) == 0:
             glb_path = None  # Don't upload an empty GLB
     else:

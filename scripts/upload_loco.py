@@ -29,6 +29,7 @@ from upload_utils import (
     build_texture_atlas,
     compute_atlas_source_hash,
     convert_model_xml_to_glb,
+    detect_material_pbr,
     file_content_hash,
     load_lockfile,
     make_lock_key,
@@ -187,7 +188,9 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
             atlas_path.write_bytes(atlas_png)
 
         glb_path = loco_dir / "model.glb"
-        glb_stats = convert_model_xml_to_glb(model_xml, glb_path, atlas_png, atlas_map)
+        metallic, roughness = detect_material_pbr(tex_refs)
+        glb_stats = convert_model_xml_to_glb(model_xml, glb_path, atlas_png, atlas_map,
+                                             metallic_factor=metallic, roughness_factor=roughness)
 
     # 3. Upload or placeholders
     thumbnail_asset_id = "PENDING_UPLOAD"
