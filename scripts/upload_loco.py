@@ -120,10 +120,17 @@ def resolve_input_dirs(input_file: Path) -> list[tuple[str | None, Path]]:
 
     root = _repo_root()
     dirs: list[tuple[str | None, Path]] = []
+    skip_dirs: set[Path] = set()
 
     for raw_line in input_file.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#"):
+            continue
+
+        # Handle SKIP:path — collect skip set first pass isn't needed;
+        # we handle it inline and continue.
+        if line.upper().startswith("SKIP:"):
+            skip_dirs.add((root / line[5:]).resolve())
             continue
 
         # Handle !PREFIX:path syntax — strip ! and split on first :
@@ -142,7 +149,8 @@ def resolve_input_dirs(input_file: Path) -> list[tuple[str | None, Path]]:
                 if child.is_dir():
                     for grandchild in sorted(child.iterdir()):
                         if grandchild.is_dir() and (grandchild / "index.xml").exists():
-                            dirs.append((path_override, grandchild))
+                            if grandchild.resolve() not in skip_dirs:
+                                dirs.append((path_override, grandchild))
         elif line.endswith("/*"):
             parent = root / line[:-2]
             if not parent.is_dir():
@@ -150,11 +158,13 @@ def resolve_input_dirs(input_file: Path) -> list[tuple[str | None, Path]]:
                 continue
             for child in sorted(parent.iterdir()):
                 if child.is_dir() and (child / "index.xml").exists():
-                    dirs.append((path_override, child))
+                    if child.resolve() not in skip_dirs:
+                        dirs.append((path_override, child))
         else:
             d = root / line
             if d.is_dir():
-                dirs.append((path_override, d))
+                if d.resolve() not in skip_dirs:
+                    dirs.append((path_override, d))
             else:
                 print(f"  [WARN] Directory not found: {d}")
 

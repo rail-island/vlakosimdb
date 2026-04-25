@@ -2,4 +2,5 @@
 # Lines ending with /* expand to all sub-directories
 # Lines starting with # are comments
 
+SKIP:db/building/castle
 db/building/*

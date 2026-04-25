@@ -110,10 +110,16 @@ def resolve_input_dirs(input_file: Path) -> list[Path]:
 
     root = _repo_root()
     dirs: list[Path] = []
+    skip_dirs: set[Path] = set()
 
     for raw_line in input_file.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#"):
+            continue
+
+        # SKIP:path — exclude a specific directory
+        if line.upper().startswith("SKIP:"):
+            skip_dirs.add((root / line[5:]).resolve())
             continue
 
         if line.endswith("/*/*"):
@@ -125,7 +131,8 @@ def resolve_input_dirs(input_file: Path) -> list[Path]:
                 if child.is_dir():
                     for grandchild in sorted(child.iterdir()):
                         if grandchild.is_dir() and (grandchild / "index.xml").exists():
-                            dirs.append(grandchild)
+                            if grandchild.resolve() not in skip_dirs:
+                                dirs.append(grandchild)
         elif line.endswith("/*"):
             parent = root / line[:-2]
             if not parent.is_dir():
@@ -133,11 +140,13 @@ def resolve_input_dirs(input_file: Path) -> list[Path]:
                 continue
             for child in sorted(parent.iterdir()):
                 if child.is_dir() and (child / "index.xml").exists():
-                    dirs.append(child)
+                    if child.resolve() not in skip_dirs:
+                        dirs.append(child)
         else:
             d = root / line
             if d.is_dir() and (d / "index.xml").exists():
-                dirs.append(d)
+                if d.resolve() not in skip_dirs:
+                    dirs.append(d)
             else:
                 print(f"  [WARN] Directory not found or missing index.xml: {d}")
 

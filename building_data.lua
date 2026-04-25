@@ -1,5 +1,5 @@
 -- Auto-generated building database
--- 20 building(s)
+-- 19 building(s)
 
 local BuildingDatabase = {
 	["Berlin  wall"] = {
@@ -19,17 +19,6 @@ local BuildingDatabase = {
 		email = "zputil@centrum.cz",
 		w = 1,
 		h = 1,
-		repName = "emptyobj.building",
-		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
-	},
-	["castle"] = {
-		name = "castle",
-		title = "Castle",
-		author = "Jan Prochazka",
-		email = "zputil@centrum.cz",
-		w = 5,
-		h = 4,
 		repName = "emptyobj.building",
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "PENDING_UPLOAD",
