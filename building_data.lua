@@ -10,7 +10,7 @@ local BuildingDatabase = {
 		w = 2,
 		h = 1,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "76232829036809",
 	},
 	["building1"] = {
 		name = "building1",
@@ -20,8 +20,8 @@ local BuildingDatabase = {
 		w = 1,
 		h = 1,
 		repName = "emptyobj.building",
-		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		thumbnailAssetId = "103119509039806",
+		modelAssetId = "120817526118425",
 	},
 	["cathedral"] = {
 		name = "cathedral",
@@ -31,7 +31,7 @@ local BuildingDatabase = {
 		w = 2,
 		h = 2,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "82482380934235",
 	},
 	["cityhall1"] = {
 		name = "cityhall1",
@@ -41,7 +41,7 @@ local BuildingDatabase = {
 		w = 1,
 		h = 1,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "124510460149402",
 	},
 	["eiffel"] = {
 		name = "eiffel",
@@ -52,7 +52,7 @@ local BuildingDatabase = {
 		h = 3,
 		repName = "emptyobj.building",
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "70986137040719",
 	},
 	["factory1"] = {
 		name = "factory1",
@@ -62,7 +62,7 @@ local BuildingDatabase = {
 		w = 3,
 		h = 2,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "100546069034002",
 	},
 	["house1"] = {
 		name = "house1",
@@ -72,7 +72,7 @@ local BuildingDatabase = {
 		w = 1,
 		h = 1,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "87262931514689",
 	},
 	["house2"] = {
 		name = "house2",
@@ -82,7 +82,7 @@ local BuildingDatabase = {
 		w = 1,
 		h = 1,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "77479033794879",
 	},
 	["house3"] = {
 		name = "house3",
@@ -92,7 +92,7 @@ local BuildingDatabase = {
 		w = 1,
 		h = 1,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "101474956152535",
 	},
 	["house4"] = {
 		name = "house4",
@@ -102,7 +102,7 @@ local BuildingDatabase = {
 		w = 1,
 		h = 1,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "80537496248381",
 	},
 	["Neonka"] = {
 		name = "Neonka",
@@ -112,7 +112,7 @@ local BuildingDatabase = {
 		w = 1,
 		h = 1,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "115474291872063",
 	},
 	["panelak"] = {
 		name = "panelak",
@@ -122,7 +122,7 @@ local BuildingDatabase = {
 		w = 2,
 		h = 1,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "83023182661715",
 	},
 	["powerplant1"] = {
 		name = "powerplant1",
@@ -132,7 +132,7 @@ local BuildingDatabase = {
 		w = 3,
 		h = 2,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "114739349688205",
 	},
 	["rstatin_bld2"] = {
 		name = "rstatin_bld2",
@@ -143,7 +143,7 @@ local BuildingDatabase = {
 		h = 1,
 		repName = "emptyobj.building",
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "114124330505241",
 	},
 	["rstation_bld3"] = {
 		name = "rstation_bld3",
@@ -153,8 +153,8 @@ local BuildingDatabase = {
 		w = 3,
 		h = 1,
 		repName = "emptyobj.building",
-		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		thumbnailAssetId = "114948757140988",
+		modelAssetId = "133844075976021",
 	},
 	["Skladiste"] = {
 		name = "Skladiste",
@@ -164,7 +164,7 @@ local BuildingDatabase = {
 		w = 2,
 		h = 1,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "88549369110741",
 	},
 	["vezak1"] = {
 		name = "vezak1",
@@ -174,7 +174,7 @@ local BuildingDatabase = {
 		w = 1,
 		h = 1,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "75173291833233",
 	},
 	["vezak2"] = {
 		name = "vezak2",
@@ -184,7 +184,7 @@ local BuildingDatabase = {
 		w = 1,
 		h = 1,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "101281499910067",
 	},
 	["vezak3"] = {
 		name = "vezak3",
@@ -194,7 +194,7 @@ local BuildingDatabase = {
 		w = 2,
 		h = 2,
 		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "PENDING_UPLOAD",
+		modelAssetId = "112270593765899",
 	},
 }
 
