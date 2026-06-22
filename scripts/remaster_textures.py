@@ -49,7 +49,7 @@ except ImportError:
 INPUT_FILE = "INPUT_REMASTER"
 OUT_DIR = "generated"
 MANIFEST_NAME = "manifest.json"
-MODEL = "gpt-image-1"
+MODEL = "gpt-image-2"  # newest/best OpenAI image model available on this account
 
 # The thumbnail lives at the loco root; the UV sheets live in model/.
 THUMBNAIL_NAME = "image.bmp"
@@ -80,21 +80,42 @@ TEXTURE_SUBJECTS: list[tuple[str, str]] = [
 ]
 DEFAULT_SUBJECT = "a flat UV texture sheet for one part of a locomotive"
 
-PROMPT_TEMPLATE = (
-    "This is a single low-resolution UV texture sheet for an old 3D train model. "
-    "It shows {subject}. "
-    "Upscale it to a clean {scale}x high-resolution version. Sharpen and de-alias "
-    "ONLY the detail that is already present, and recover fine texture (panel seams, "
-    "rivets, glass, metal) only where the source already shows it. "
-    "Do NOT invent or add anything that is not in the source: no new parts, no new "
-    "views, no extra vehicles, no imagined scenery. Preserve the original layout, "
-    "proportions, orientation and framing EXACTLY — do not move, crop, rescale or "
-    "re-centre the content. Large flat black areas are UNUSED UV space: keep them "
-    "solid black and never fill them with invented detail. Keep every marking, logo, "
-    "number and text string in its original position and shape; if unsure, preserve "
-    "the original shape rather than inventing new text. The result must read as the "
-    "same texture sheet at higher resolution, not a re-drawing. Output one standalone "
-    "texture sheet with the identical layout to the input."
+# Flat UV sheets (sides, ends, roof, gear): the #1 failure mode is the model
+# re-rendering them as a 3D perspective picture of a train. The prompt hammers
+# FLAT / ORTHOGRAPHIC / HEAD-ON and forbids perspective, camera angle and added
+# lighting so the output stays usable as a texture.
+FLAT_TEMPLATE = (
+    "This is a single flat 2D UV texture sheet for an old low-poly 3D train model — "
+    "a flat painted decal, like a game sprite sheet or a technical orthographic "
+    "elevation drawing. It shows {subject}. "
+    "Redraw it at {scale}x resolution, perfectly FLAT and ORTHOGRAPHIC, viewed "
+    "exactly straight-on and axis-aligned. ABSOLUTELY NO perspective, NO camera "
+    "angle, NO 3/4 view, NO foreshortening, NO added scene lighting, NO drop "
+    "shadows, NO reflections, NO 3D rendering, NO background — it must stay a flat "
+    "head-on sheet. "
+    "Only sharpen and clean the detail that is already present (refine existing "
+    "edges, de-alias, recover plausible fine texture such as panel seams, rivets, "
+    "window frames and paint) where the source already shows it. Do NOT add new "
+    "parts, new views, extra vehicles or imagined detail. Preserve the original "
+    "layout, proportions, orientation and framing EXACTLY, edge to edge — do not "
+    "move, crop, rescale, re-centre or tilt the content, and do not add borders or "
+    "margins. Any solid black area is unused UV space: keep it solid black. Keep "
+    "every marking, logo, number and text string in its original position and shape. "
+    "The result must read as the SAME flat texture sheet at higher resolution, never "
+    "a 3D picture of a train."
+)
+
+# The loco thumbnail (image.bmp) is genuinely a small 3D preview render, not a flat
+# texture — so here we DO allow a richer rendered look, just sharper and cleaner.
+THUMBNAIL_TEMPLATE = (
+    "This is a small low-resolution preview render of a complete locomotive. "
+    "Remaster it to a crisp {scale}x high-resolution version of the SAME image: "
+    "keep the exact same locomotive, livery, colours, camera angle, pose and "
+    "composition. Sharpen edges, clean up aliasing and JPEG/pixel artefacts, and "
+    "recover fine detail (panel lines, windows, glass, metal, markings, lights). "
+    "Do NOT change the design, repaint it, move the camera, add scenery or invent "
+    "new text — just a faithful, higher-resolution, cleaner version of the same "
+    "preview. Keep the background as in the source."
 )
 
 
@@ -107,9 +128,17 @@ def texture_subject(stem: str) -> str:
     return DEFAULT_SUBJECT
 
 
+def is_thumbnail(name: str) -> bool:
+    """True for the loco preview render (image.bmp), which is not a flat texture."""
+    return Path(name).stem.lower() == "image"
+
+
 def build_prompt(stem: str) -> tuple[str, str]:
     """Return (prompt, prompt_hash) tailored to one texture."""
-    prompt = PROMPT_TEMPLATE.format(subject=texture_subject(stem), scale=UPSCALE)
+    if is_thumbnail(stem):
+        prompt = THUMBNAIL_TEMPLATE.format(scale=UPSCALE)
+    else:
+        prompt = FLAT_TEMPLATE.format(subject=texture_subject(stem), scale=UPSCALE)
     return prompt, hashlib.sha256(prompt.encode("utf-8")).hexdigest()
 
 UPSCALE = 4  # target output scale relative to the source
@@ -120,9 +149,10 @@ SIZE_PORTRAIT = "1024x1536"
 SIZE_SQUARE = "1024x1024"
 
 # --- Pricing -------------------------------------------------------------
-# gpt-image-1 is billed per token. These USD-per-million-token constants are
+# These models are billed per token. The USD-per-million-token constants are
 # split out so they can be corrected against current OpenAI pricing without
-# touching the cost logic. Output-token price varies with quality.
+# touching the cost logic. Output-token price varies with quality. Treat the
+# reported cost_usd as approximate; the raw token usage is always recorded.
 PRICE_TEXT_INPUT_PER_M = 5.0
 PRICE_IMAGE_INPUT_PER_M = 10.0
 PRICE_IMAGE_OUTPUT_PER_M = {
@@ -170,7 +200,7 @@ def bmp_to_png_bytes(bmp_path: Path) -> tuple[bytes, tuple[int, int]]:
 
 
 def pick_size(w: int, h: int) -> str:
-    """Closest gpt-image-1 output size by aspect ratio."""
+    """Closest supported output size by aspect ratio."""
     ratio = w / h if h else 1.0
     if ratio > 1.3:
         return SIZE_LANDSCAPE
@@ -179,35 +209,47 @@ def pick_size(w: int, h: int) -> str:
     return SIZE_SQUARE
 
 
-def fit_to_exact(img: Image.Image, tw: int, th: int, mode: str) -> Image.Image:
-    """Return ``img`` resized to exactly (tw, th).
+def size_ratio(size: str) -> float:
+    """W/H of a 'WxH' size string."""
+    w, h = (int(x) for x in size.split("x"))
+    return w / h
 
-    ``crop``: center-crop the source to the target aspect ratio first (fills the
-    frame, no distortion). ``pad``: contain the whole source and pad with black.
+
+def pad_to_ratio(img: Image.Image, ratio: float) -> tuple[Image.Image, tuple[float, float, float, float]]:
+    """Letterbox ``img`` with black to the given W/H ``ratio``.
+
+    Returns the padded image plus the content box as fractions
+    ``(left, top, right, bottom)`` of the padded canvas. Because the source is
+    only ever padded (never cropped or distorted), the model edits the content
+    in place and the very same fractional box can be cropped back out of the
+    output afterwards — so the result keeps the source's exact aspect with no
+    content lost.
     """
     img = img.convert("RGB")
-    sw, sh = img.size
-    target_ratio = tw / th
-    src_ratio = sw / sh
+    w, h = img.size
+    cur = w / h
+    if cur < ratio:  # too narrow -> add width (vertical bars)
+        new_w = max(w, round(h * ratio))
+        left = (new_w - w) // 2
+        canvas = Image.new("RGB", (new_w, h), (0, 0, 0))
+        canvas.paste(img, (left, 0))
+        return canvas, (left / new_w, 0.0, (left + w) / new_w, 1.0)
+    if cur > ratio:  # too wide -> add height (horizontal bars)
+        new_h = max(h, round(w / ratio))
+        top = (new_h - h) // 2
+        canvas = Image.new("RGB", (w, new_h), (0, 0, 0))
+        canvas.paste(img, (0, top))
+        return canvas, (0.0, top / new_h, 1.0, (top + h) / new_h)
+    return img, (0.0, 0.0, 1.0, 1.0)
 
-    if mode == "pad":
-        scale = min(tw / sw, th / sh)
-        rw, rh = max(1, round(sw * scale)), max(1, round(sh * scale))
-        resized = img.resize((rw, rh), Image.LANCZOS)
-        canvas = Image.new("RGB", (tw, th), (0, 0, 0))
-        canvas.paste(resized, ((tw - rw) // 2, (th - rh) // 2))
-        return canvas
 
-    # crop: trim the longer dimension to match the target aspect, then resize.
-    if src_ratio > target_ratio:
-        new_w = round(sh * target_ratio)
-        left = (sw - new_w) // 2
-        img = img.crop((left, 0, left + new_w, sh))
-    elif src_ratio < target_ratio:
-        new_h = round(sw / target_ratio)
-        top = (sh - new_h) // 2
-        img = img.crop((0, top, sw, top + new_h))
-    return img.resize((tw, th), Image.LANCZOS)
+def crop_fraction_resize(img: Image.Image, box: tuple[float, float, float, float],
+                         tw: int, th: int) -> Image.Image:
+    """Crop ``img`` to the fractional ``box`` then LANCZOS-resize to (tw, th)."""
+    img = img.convert("RGB")
+    w, h = img.size
+    crop = (round(box[0] * w), round(box[1] * h), round(box[2] * w), round(box[3] * h))
+    return img.crop(crop).resize((tw, th), Image.LANCZOS)
 
 
 def apply_black_mask(final: Image.Image, source: Image.Image, threshold: int = 16) -> Image.Image:
@@ -306,7 +348,8 @@ def load_manifest(path: Path) -> dict:
             return json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             pass
-    return {"prompt_template": PROMPT_TEMPLATE, "entries": {}}
+    return {"flat_template": FLAT_TEMPLATE, "thumbnail_template": THUMBNAIL_TEMPLATE,
+            "entries": {}}
 
 
 def save_manifest(path: Path, manifest: dict) -> None:
@@ -338,14 +381,16 @@ def call_openai_edit(client, primary_png: bytes, prompt: str, size: str, quality
 
 def process_texture(
     tex_path: Path, out_dir: Path, slug: str, model_rel: str, client,
-    quality: str, fit: str, dry_run: bool, db_copy: bool, black_mask: bool,
+    quality: str, dry_run: bool, db_copy: bool, black_mask: bool,
 ) -> dict:
     """Remaster one texture. Returns its manifest entry."""
     stem = tex_path.stem
+    thumb = is_thumbnail(stem)
     src_hash = file_content_hash(tex_path)
     prompt, prompt_hash = build_prompt(stem)
     primary_png, (w, h) = bmp_to_png_bytes(tex_path)
     tw, th = w * UPSCALE, h * UPSCALE
+    size = pick_size(w, h)
 
     raw_path = out_dir / f"{stem}_ai_raw.png"
     final_path = out_dir / f"{stem}_4x.png"
@@ -365,9 +410,10 @@ def process_texture(
         "model_used": MODEL,
         "quality": quality,
         "subject": texture_subject(stem),
+        "is_thumbnail": thumb,
         "prompt_hash": prompt_hash,
         "source_hash": src_hash,
-        "size_requested": pick_size(w, h),
+        "size_requested": size,
         "usage": {},
         "cost_usd": 0.0,
         "status": "ok",
@@ -376,13 +422,17 @@ def process_texture(
 
     original = Image.open(io.BytesIO(primary_png)).convert("RGB")
     classical = original.resize((tw, th), Image.LANCZOS)
+    # Pad the source to the API output aspect ratio so the model never has to
+    # re-frame the content; the same fractional box is cropped back out below,
+    # giving the exact source aspect at 4x with nothing cut off.
+    padded, content_box = pad_to_ratio(original, size_ratio(size))
 
     if dry_run:
-        # No API call: synthesize a placeholder AI raw from the classical upscale
-        # so layout/contact-sheet/cost logic can be exercised for free. Never
-        # writes into db/ (placeholder data must not pollute the tracked tree).
+        # No API call: placeholder AI raw from the classical upscale so layout/
+        # contact-sheet/cost logic can be exercised for free. Never writes into
+        # db/ (placeholder data must not pollute the tracked tree).
         ai_raw = classical.copy()
-        final = fit_to_exact(ai_raw, tw, th, fit)
+        final = classical.copy()
         out_dir.mkdir(parents=True, exist_ok=True)
         ai_raw.save(raw_path, "PNG")
         final.save(final_path, "PNG")
@@ -391,17 +441,21 @@ def process_texture(
         return entry
 
     try:
-        resp = call_openai_edit(client, primary_png, prompt, entry["size_requested"], quality)
+        padded_png = io.BytesIO()
+        padded.save(padded_png, "PNG")
+        resp = call_openai_edit(client, padded_png.getvalue(), prompt, size, quality)
         b64 = resp.data[0].b64_json
         raw_bytes = base64.b64decode(b64)
         ai_raw = Image.open(io.BytesIO(raw_bytes)).convert("RGB")
 
         out_dir.mkdir(parents=True, exist_ok=True)
         raw_path.write_bytes(raw_bytes)
-        final = fit_to_exact(ai_raw, tw, th, fit)
-        # Safety net: force originally-black UV space back to black so the model
-        # cannot leave invented detail in regions that are empty in the source.
-        if black_mask:
+        # Crop the padded margins back out, then resize to the exact 4x target.
+        final = crop_fraction_resize(ai_raw, content_box, tw, th)
+        # Safety net (flat textures only): force originally-black UV space back to
+        # black so the model can't leave invented detail in empty regions. The
+        # thumbnail is a real render, so it is never masked.
+        if black_mask and not thumb:
             final = apply_black_mask(final, original)
         final.save(final_path, "PNG")
         build_contact_sheet(original, classical, ai_raw, final, contact_path)
@@ -431,9 +485,7 @@ def main():
     parser.add_argument("--api-key", help="OpenAI API key (overrides .env / env)")
     parser.add_argument("--input", default=INPUT_FILE, help=f"Input file (default: {INPUT_FILE})")
     parser.add_argument("--out-dir", default=OUT_DIR, help=f"Output dir (default: {OUT_DIR})")
-    parser.add_argument("--quality", choices=["low", "medium", "high"], default="medium")
-    parser.add_argument("--fit", choices=["crop", "pad"], default="crop",
-                        help="Exact-4x post-process mode (default: crop)")
+    parser.add_argument("--quality", choices=["low", "medium", "high"], default="high")
     parser.add_argument("--no-db-copy", action="store_true",
                         help="Do not write the _4x.png result next to the source in db/")
     parser.add_argument("--no-black-mask", action="store_true",
@@ -470,7 +522,8 @@ def main():
     manifest_path = out_root / MANIFEST_NAME
     manifest = load_manifest(manifest_path)
     entries: dict = manifest["entries"]
-    manifest["prompt_template"] = PROMPT_TEMPLATE
+    manifest["flat_template"] = FLAT_TEMPLATE
+    manifest["thumbnail_template"] = THUMBNAIL_TEMPLATE
 
     processed = 0
     total_cost = 0.0
@@ -505,7 +558,7 @@ def main():
 
             entry = process_texture(
                 tex, out_dir, slug, model_rel, client,
-                args.quality, args.fit, args.dry_run, db_copy, black_mask,
+                args.quality, args.dry_run, db_copy, black_mask,
             )
             entries[key] = entry
             save_manifest(manifest_path, manifest)  # persist after each texture
