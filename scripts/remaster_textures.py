@@ -54,22 +54,63 @@ MODEL = "gpt-image-1"
 # The thumbnail lives at the loco root; the UV sheets live in model/.
 THUMBNAIL_NAME = "image.bmp"
 
-PROMPT = (
-    "Edit the primary train texture and remaster it as an aggressive 4x "
-    "high-resolution AI texture. Preserve the original layout, proportions, "
-    "orientation, black background, and UV sheet structure exactly. Do not "
-    "redesign the train, move parts, crop the texture, add new views, or change "
-    "the color scheme. This is a low-resolution train texture sheet, so infer "
-    "plausible missing details: sharpen edges, clean aliasing, refine windows, "
-    "doors, vents, roof details, panel seams, undercarriage details, lights, "
-    "buffers, pantographs, pipes, rivets, shadows, glass reflections, and "
-    "metallic surfaces. Keep markings, logos, numbers, and text as close to the "
-    "source as possible; if uncertain, prefer preserving the original shape over "
-    "inventing new text. The output should look like a faithful high-resolution "
-    "remaster of the same old texture, not a pixelated enlargement. Output a "
-    "single standalone texture sheet."
+# Per-texture-type subject descriptions, keyed by filename. The model is told
+# exactly what each UV sheet depicts so it sharpens the right thing instead of
+# inventing a whole vehicle in empty space (e.g. z_inc = side, y_dec = roof).
+# Matched in order: first key that is a prefix of the lowercased stem wins, so
+# more specific prefixes (gearx, ploughx, ...) must come before the bare axis.
+TEXTURE_SUBJECTS: list[tuple[str, str]] = [
+    ("gearx", "the running gear / underframe at one END of the vehicle (bogies, "
+              "wheels, buffers, coupler, brake pipes) sitting in a mostly-empty "
+              "black sheet — most of this sheet is unused black space with detail "
+              "only in a small band"),
+    ("ploughx", "the snow plough / pilot at the END of the vehicle, on an otherwise "
+                "mostly-black sheet"),
+    ("downx", "the underframe / underbody detail at the vehicle END, on a mostly-black sheet"),
+    ("pant", "a roof-mounted pantograph (current collector): thin metal arms, "
+             "springs and contact strip, on a black sheet"),
+    ("ins", "an insulator / roof electrical fitting, on a black sheet"),
+    ("x", "the flat END face of the locomotive (front or rear cab end): cab "
+          "windows, headlights/marker lights, buffers and coupling, end door"),
+    ("y", "the ROOF / top-down view of the locomotive (roof panels and seams, "
+          "vents, fan grilles, pantograph mounts, insulators, cable runs)"),
+    ("z", "the long SIDE elevation of the locomotive body (side windows, doors, "
+          "louvres/grilles, body panel seams, numbering and markings along the side)"),
+    ("image", "a small preview thumbnail showing the whole locomotive"),
+]
+DEFAULT_SUBJECT = "a flat UV texture sheet for one part of a locomotive"
+
+PROMPT_TEMPLATE = (
+    "This is a single low-resolution UV texture sheet for an old 3D train model. "
+    "It shows {subject}. "
+    "Upscale it to a clean {scale}x high-resolution version. Sharpen and de-alias "
+    "ONLY the detail that is already present, and recover fine texture (panel seams, "
+    "rivets, glass, metal) only where the source already shows it. "
+    "Do NOT invent or add anything that is not in the source: no new parts, no new "
+    "views, no extra vehicles, no imagined scenery. Preserve the original layout, "
+    "proportions, orientation and framing EXACTLY — do not move, crop, rescale or "
+    "re-centre the content. Large flat black areas are UNUSED UV space: keep them "
+    "solid black and never fill them with invented detail. Keep every marking, logo, "
+    "number and text string in its original position and shape; if unsure, preserve "
+    "the original shape rather than inventing new text. The result must read as the "
+    "same texture sheet at higher resolution, not a re-drawing. Output one standalone "
+    "texture sheet with the identical layout to the input."
 )
-PROMPT_HASH = hashlib.sha256(PROMPT.encode("utf-8")).hexdigest()
+
+
+def texture_subject(stem: str) -> str:
+    """Return the subject description for a texture, matched by filename prefix."""
+    s = stem.lower()
+    for prefix, desc in TEXTURE_SUBJECTS:
+        if s.startswith(prefix):
+            return desc
+    return DEFAULT_SUBJECT
+
+
+def build_prompt(stem: str) -> tuple[str, str]:
+    """Return (prompt, prompt_hash) tailored to one texture."""
+    prompt = PROMPT_TEMPLATE.format(subject=texture_subject(stem), scale=UPSCALE)
+    return prompt, hashlib.sha256(prompt.encode("utf-8")).hexdigest()
 
 UPSCALE = 4  # target output scale relative to the source
 
@@ -169,6 +210,22 @@ def fit_to_exact(img: Image.Image, tw: int, th: int, mode: str) -> Image.Image:
     return img.resize((tw, th), Image.LANCZOS)
 
 
+def apply_black_mask(final: Image.Image, source: Image.Image, threshold: int = 16) -> Image.Image:
+    """Force pixels that are near-black in the source back to black in ``final``.
+
+    The source is upscaled (NEAREST, blocky) to the final size to build a mask;
+    wherever the source luminance is below ``threshold`` the output is set to
+    black. This keeps unused/empty UV space empty so the model cannot leave
+    hallucinated detail there, while detailed regions pass through untouched.
+    """
+    final = final.convert("RGB")
+    mask_src = source.convert("L").resize(final.size, Image.NEAREST)
+    black = Image.new("RGB", final.size, (0, 0, 0))
+    # keep_mask: white (255) where source has content -> use final; else black.
+    keep_mask = mask_src.point(lambda p: 255 if p >= threshold else 0)
+    return Image.composite(final, black, keep_mask)
+
+
 def build_contact_sheet(
     original: Image.Image,
     classical: Image.Image,
@@ -249,7 +306,7 @@ def load_manifest(path: Path) -> dict:
             return json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             pass
-    return {"prompt": PROMPT, "prompt_hash": PROMPT_HASH, "entries": {}}
+    return {"prompt_template": PROMPT_TEMPLATE, "entries": {}}
 
 
 def save_manifest(path: Path, manifest: dict) -> None:
@@ -263,39 +320,38 @@ def save_manifest(path: Path, manifest: dict) -> None:
 # Core per-texture processing
 # ---------------------------------------------------------------------------
 
-def call_openai_edit(
-    client, primary_png: bytes, sibling_pngs: list[bytes],
-    size: str, quality: str, primary_name: str,
-):
-    """Call images.edit with the primary first and siblings as references."""
-    files = [("primary.png", primary_png)]
-    files += [(f"ref_{i}.png", b) for i, b in enumerate(sibling_pngs)]
-    image_args = [
-        (name, io.BytesIO(data), "image/png") for name, data in files
-    ]
+def call_openai_edit(client, primary_png: bytes, prompt: str, size: str, quality: str):
+    """Remaster a single texture via images.edit.
+
+    Only the target image is sent. gpt-image-1's images.edit *composites* every
+    image passed in the ``image[]`` array, so sending sibling textures as
+    "references" merges them into the output sheet — never do that here.
+    """
     return client.images.edit(
         model=MODEL,
-        image=image_args,
-        prompt=PROMPT,
+        image=("primary.png", io.BytesIO(primary_png), "image/png"),
+        prompt=prompt,
         size=size,
         quality=quality,
     )
 
 
 def process_texture(
-    tex_path: Path, sibling_paths: list[Path], out_dir: Path, slug: str,
-    model_rel: str, client, quality: str, fit: str, dry_run: bool,
-    use_references: bool,
+    tex_path: Path, out_dir: Path, slug: str, model_rel: str, client,
+    quality: str, fit: str, dry_run: bool, db_copy: bool, black_mask: bool,
 ) -> dict:
     """Remaster one texture. Returns its manifest entry."""
     stem = tex_path.stem
     src_hash = file_content_hash(tex_path)
+    prompt, prompt_hash = build_prompt(stem)
     primary_png, (w, h) = bmp_to_png_bytes(tex_path)
     tw, th = w * UPSCALE, h * UPSCALE
 
     raw_path = out_dir / f"{stem}_ai_raw.png"
     final_path = out_dir / f"{stem}_4x.png"
     contact_path = out_dir / f"{stem}_contact.png"
+    # Result copy written next to the source in db/ (git-tracked deliverable).
+    db_path = tex_path.with_name(f"{stem}_4x.png")
 
     entry = {
         "model": model_rel,
@@ -304,10 +360,12 @@ def process_texture(
         "source_size": [w, h],
         "ai_raw_path": str(raw_path.relative_to(_repo_root())),
         "final_path": str(final_path.relative_to(_repo_root())),
+        "db_copy_path": None,
         "final_size": [tw, th],
         "model_used": MODEL,
         "quality": quality,
-        "prompt_hash": PROMPT_HASH,
+        "subject": texture_subject(stem),
+        "prompt_hash": prompt_hash,
         "source_hash": src_hash,
         "size_requested": pick_size(w, h),
         "usage": {},
@@ -321,7 +379,8 @@ def process_texture(
 
     if dry_run:
         # No API call: synthesize a placeholder AI raw from the classical upscale
-        # so layout/contact-sheet/cost logic can be exercised for free.
+        # so layout/contact-sheet/cost logic can be exercised for free. Never
+        # writes into db/ (placeholder data must not pollute the tracked tree).
         ai_raw = classical.copy()
         final = fit_to_exact(ai_raw, tw, th, fit)
         out_dir.mkdir(parents=True, exist_ok=True)
@@ -331,19 +390,8 @@ def process_texture(
         entry["status"] = "dry-run"
         return entry
 
-    sibling_pngs: list[bytes] = []
-    if use_references:
-        for sib in sibling_paths:
-            try:
-                sibling_pngs.append(bmp_to_png_bytes(sib)[0])
-            except Exception:  # noqa: BLE001 - a bad sibling shouldn't fail the primary
-                pass
-
     try:
-        resp = call_openai_edit(
-            client, primary_png, sibling_pngs,
-            entry["size_requested"], quality, tex_path.name,
-        )
+        resp = call_openai_edit(client, primary_png, prompt, entry["size_requested"], quality)
         b64 = resp.data[0].b64_json
         raw_bytes = base64.b64decode(b64)
         ai_raw = Image.open(io.BytesIO(raw_bytes)).convert("RGB")
@@ -351,8 +399,17 @@ def process_texture(
         out_dir.mkdir(parents=True, exist_ok=True)
         raw_path.write_bytes(raw_bytes)
         final = fit_to_exact(ai_raw, tw, th, fit)
+        # Safety net: force originally-black UV space back to black so the model
+        # cannot leave invented detail in regions that are empty in the source.
+        if black_mask:
+            final = apply_black_mask(final, original)
         final.save(final_path, "PNG")
         build_contact_sheet(original, classical, ai_raw, final, contact_path)
+
+        # Git-tracked deliverable next to the source — real successful runs only.
+        if db_copy:
+            final.save(db_path, "PNG")
+            entry["db_copy_path"] = str(db_path.relative_to(_repo_root()))
 
         entry["usage"] = extract_usage(resp)
         entry["cost_usd"] = compute_cost(entry["usage"], quality)
@@ -377,15 +434,18 @@ def main():
     parser.add_argument("--quality", choices=["low", "medium", "high"], default="medium")
     parser.add_argument("--fit", choices=["crop", "pad"], default="crop",
                         help="Exact-4x post-process mode (default: crop)")
-    parser.add_argument("--no-references", action="store_true",
-                        help="Do not send sibling textures as reference images")
+    parser.add_argument("--no-db-copy", action="store_true",
+                        help="Do not write the _4x.png result next to the source in db/")
+    parser.add_argument("--no-black-mask", action="store_true",
+                        help="Do not force originally-black source pixels back to black in the output")
     parser.add_argument("--dry-run", action="store_true",
                         help="Skip the API call; still write source/classical/contact/manifest")
     parser.add_argument("--limit", type=int, default=0,
                         help="Cap number of textures processed this run (0 = no cap)")
     args = parser.parse_args()
 
-    use_references = not args.no_references
+    db_copy = not args.no_db_copy
+    black_mask = not args.no_black_mask
 
     client = None
     if not args.dry_run:
@@ -410,8 +470,7 @@ def main():
     manifest_path = out_root / MANIFEST_NAME
     manifest = load_manifest(manifest_path)
     entries: dict = manifest["entries"]
-    manifest["prompt"] = PROMPT
-    manifest["prompt_hash"] = PROMPT_HASH
+    manifest["prompt_template"] = PROMPT_TEMPLATE
 
     processed = 0
     total_cost = 0.0
@@ -444,10 +503,9 @@ def main():
                 counts["cached"] += 1
                 continue
 
-            siblings = [t for t in textures if t != tex]
             entry = process_texture(
-                tex, siblings, out_dir, slug, model_rel, client,
-                args.quality, args.fit, args.dry_run, use_references,
+                tex, out_dir, slug, model_rel, client,
+                args.quality, args.fit, args.dry_run, db_copy, black_mask,
             )
             entries[key] = entry
             save_manifest(manifest_path, manifest)  # persist after each texture
