@@ -75,7 +75,16 @@ TEXTURE_SUBJECTS: list[tuple[str, str]] = [
     ("y", "the ROOF / top-down view of the locomotive (roof panels and seams, "
           "vents, fan grilles, pantograph mounts, insulators, cable runs)"),
     ("z", "the long SIDE elevation of the locomotive body (side windows, doors, "
-          "louvres/grilles, body panel seams, numbering and markings along the side)"),
+          "louvres/grilles, body panel seams, numbering and markings along the side, "
+          "and a row of wheels along the bottom). The wheels must be perfectly "
+          "CIRCULAR in outline (a round rim, not oval or elliptical) and of equal size, "
+          "evenly spaced; keep each wheel's internal structure — hub, axle, spokes/rays "
+          "and rim — as in the source, do NOT fill them in as plain solid discs. The "
+          "bottom of each wheel must sit EXACTLY on the bottom edge of the texture sheet, so the "
+          "lowest pixels of the wheels are the very bottom row of the image with no gap "
+          "beneath. Do NOT draw any rail, track, sleeper, ground, ground line, baseline, "
+          "platform, shadow or any strip below the wheels — there is nothing under the "
+          "wheels, the image simply ends at the bottom of the wheels"),
     ("image", "a small preview thumbnail showing the whole locomotive"),
 ]
 DEFAULT_SUBJECT = "a flat UV texture sheet for one part of a locomotive"
@@ -97,14 +106,16 @@ FLAT_TEMPLATE = (
     "recover plausible fine detail (panel seams, rivets, window frames, paint, "
     "metal surfaces), and produce NO pixelation, blockiness or jagged/aliased edges. "
     "Do NOT add new parts, new views, extra vehicles or imagined detail. Preserve "
-    "the original layout, proportions, orientation and framing EXACTLY. Match the "
-    "input's framing one-to-one: FILL the output frame exactly as the input fills "
-    "its own frame, all the way to every edge and corner. Do NOT zoom in, crop, "
-    "shrink or re-centre the subject, and do NOT add any margins, borders or "
-    "background bars — if the input content runs to the edges, the output must too. "
-    "Keep every marking, logo, number and text string in its "
-    "original position and shape. The result must read as the SAME flat texture "
-    "sheet at higher resolution, never a 3D picture of a train."
+    "the original layout, proportions, orientation and framing EXACTLY. Reproduce "
+    "the input's framing one-to-one: the input may be LETTERBOXED with solid black "
+    "bars/margins — KEEP those black bars exactly where they are, do NOT draw into "
+    "them, and do NOT enlarge, zoom, shrink, crop or re-centre the train to fill "
+    "them; keep the train at its current size and position within its band. Do not "
+    "stretch or squash the content: aspect ratios must be preserved, so round shapes "
+    "(wheels, buffers, lamps) stay perfectly round and not oval. Keep every marking, "
+    "logo, number and text string in its original position and shape. The result "
+    "must read as the SAME flat texture sheet at higher resolution, never a 3D "
+    "picture of a train."
 )
 
 # The loco thumbnail (image.bmp) is genuinely a small 3D preview render, not a flat
@@ -115,6 +126,9 @@ THUMBNAIL_TEMPLATE = (
     "keep the exact same locomotive, livery, colours, camera angle, pose and "
     "composition. Sharpen edges, clean up aliasing and JPEG/pixel artefacts, and "
     "recover fine detail (panel lines, windows, glass, metal, markings, lights). "
+    "Render the side windows, doors and body markings to match THIS locomotive's "
+    "actual side texture sheets and the reference facts below (same window count and "
+    "shape for the side that is shown), not a generic locomotive. "
     "Do NOT change the design, repaint it, move the camera, add scenery or invent "
     "new text — just a faithful, higher-resolution, cleaner version of the same "
     "preview. Keep the background as in the source."
@@ -146,11 +160,13 @@ def is_sparse(stem: str) -> bool:
     return stem.lower().startswith(SPARSE_PREFIXES)
 
 
-def build_prompt(stem: str, facts: str = "") -> tuple[str, str]:
+def build_prompt(stem: str, facts: str = "", palette: str = "") -> tuple[str, str]:
     """Return (prompt, prompt_hash) tailored to one texture.
 
     ``facts`` is the per-model text read from all of its sheets (Pass 1); when
     present it is appended so the model renders numbers/markings correctly.
+    ``palette`` is the model's exact livery hex colours (same for every sheet) so
+    shades stay consistent across sheets.
     """
     if is_thumbnail(stem):
         prompt = THUMBNAIL_TEMPLATE.format(scale=UPSCALE)
@@ -158,9 +174,22 @@ def build_prompt(stem: str, facts: str = "") -> tuple[str, str]:
         prompt = FLAT_TEMPLATE.format(subject=texture_subject(stem), scale=UPSCALE)
     if facts:
         prompt += (
-            " Reference facts read from all texture sheets of this same locomotive: "
-            f"{facts} Use these to render any running number, lettering or marking on "
-            "THIS sheet to match exactly; do not invent different digits or text."
+            " Reference facts read from all texture sheets of this same locomotive "
+            f"(facts may be labelled by sheet filename):\n{facts}\nUse the facts that "
+            "apply to THIS sheet to render its running number, lettering, markings AND "
+            "its window layout/shape to match. The two sides of the locomotive can "
+            "legitimately differ, so follow the facts for THIS specific sheet rather "
+            "than copying another side. Do not invent different digits, text or window "
+            "shapes. Reproduce any operator logo/emblem EXACTLY as it appears in the "
+            "source image (identical shape, letters and any diacritics such as the caron "
+            "in 'ČD') — do not redesign it or replace it with a generic or different logo."
+        )
+    if palette:
+        prompt += (
+            f" Livery colour palette — use these EXACT colours and no others for the "
+            f"paintwork, identical on every sheet of this locomotive: {palette}. Match "
+            "these hex values precisely (e.g. the same single yellow for the band and "
+            "the same green for the body) so all sheets share one consistent livery."
         )
     return prompt, hashlib.sha256(prompt.encode("utf-8")).hexdigest()
 
@@ -222,6 +251,37 @@ def bmp_to_png_bytes(bmp_path: Path) -> tuple[bytes, tuple[int, int]]:
     return buf.getvalue(), img.size
 
 
+def extract_palette(paths: list[Path], k: int = 5) -> str:
+    """Deterministically sample the dominant livery colours of a model.
+
+    Quantises the body sheets (sides/ends/roof — skips the mostly-black gear/pant
+    sheets and the thumbnail), drops the near-black UV background, and returns the
+    top ``k`` colours as a hex string. Injecting the SAME palette into every sheet's
+    prompt keeps shades consistent across sheets (e.g. x_both's yellow == z_dec's).
+    """
+    bodies = [Image.open(p).convert("RGB") for p in paths
+              if not is_sparse(p.stem) and not is_thumbnail(p.name)]
+    if not bodies:
+        return ""
+    width = max(b.width for b in bodies)
+    canvas = Image.new("RGB", (width, sum(b.height for b in bodies)), (0, 0, 0))
+    y = 0
+    for b in bodies:
+        canvas.paste(b, (0, y))
+        y += b.height
+    quant = canvas.quantize(colors=16, method=Image.MEDIANCUT)
+    palette = quant.getpalette()
+    hexes: list[str] = []
+    for _count, idx in sorted(quant.getcolors(), reverse=True):
+        r, g, b = palette[idx * 3:idx * 3 + 3]
+        if r < 24 and g < 24 and b < 24:
+            continue  # skip the black UV background
+        hexes.append(f"#{r:02X}{g:02X}{b:02X}")
+        if len(hexes) >= k:
+            break
+    return ", ".join(hexes)
+
+
 def pick_size(w: int, h: int) -> str:
     """Closest supported output size by aspect ratio."""
     ratio = w / h if h else 1.0
@@ -230,6 +290,36 @@ def pick_size(w: int, h: int) -> str:
     if ratio < 0.77:
         return SIZE_PORTRAIT
     return SIZE_SQUARE
+
+
+def letterbox_to_size(img: Image.Image, api_w: int, api_h: int
+                      ) -> tuple[Image.Image, tuple[float, float, float, float]]:
+    """Fit ``img`` into an (api_w, api_h) frame WITHOUT distortion (black bars).
+
+    Returns the framed image plus the content box as fractions
+    ``(left, top, right, bottom)`` of the frame. Preserving aspect this way keeps
+    circles circular (round wheels): the content sub-rectangle has the source
+    aspect, and after the model edit we crop that exact box back out and scale it
+    uniformly to the 4x target — so no squish/stretch is ever introduced.
+    """
+    img = img.convert("RGB")
+    w, h = img.size
+    scale = min(api_w / w, api_h / h)
+    cw, ch = max(1, round(w * scale)), max(1, round(h * scale))
+    left, top = (api_w - cw) // 2, (api_h - ch) // 2
+    canvas = Image.new("RGB", (api_w, api_h), (0, 0, 0))
+    canvas.paste(img.resize((cw, ch), Image.LANCZOS), (left, top))
+    box = (left / api_w, top / api_h, (left + cw) / api_w, (top + ch) / api_h)
+    return canvas, box
+
+
+def crop_fraction_resize(img: Image.Image, box: tuple[float, float, float, float],
+                         tw: int, th: int) -> Image.Image:
+    """Crop ``img`` to the fractional ``box`` then LANCZOS-resize to (tw, th)."""
+    img = img.convert("RGB")
+    w, h = img.size
+    crop = (round(box[0] * w), round(box[1] * h), round(box[2] * w), round(box[3] * h))
+    return img.crop(crop).resize((tw, th), Image.LANCZOS)
 
 
 def apply_black_mask(final: Image.Image, source: Image.Image, threshold: int = 16) -> Image.Image:
@@ -354,15 +444,27 @@ VISION_UPSCALE_W = 512   # enlarge each tiny sheet before sending so text is leg
 
 FACTS_PROMPT = (
     "These images are the low-resolution texture sheets of a single old 3D train "
-    "model (different views of the SAME locomotive: sides, ends, roof, gear, and a "
-    "preview thumbnail). Read them together and report concise PLAIN-TEXT facts that "
-    "should stay consistent across all sheets, focusing on text that the sheets share:\n"
+    "model (different views of the SAME locomotive: side elevations, end faces, roof, "
+    "gear, and a preview thumbnail). Read them together and report concise PLAIN-TEXT "
+    "facts, LABELLED BY SHEET FILENAME where they differ. Cover:\n"
     "- every running/serial number and registration plate you can read, with the "
     "EXACT digits, and which sheet shows it most clearly\n"
-    "- railway/operator lettering, logos and any other markings\n"
-    "- the livery colours and their arrangement\n"
-    "Be precise about digits. If a number is partly illegible, give your best single "
-    "reading. Keep it short (a few lines); do not describe geometry or shape."
+    "- railway/operator lettering and any other markings\n"
+    "- the operator LOGO/EMBLEM: describe it precisely — the exact letters (with any "
+    "diacritics, e.g. 'ČD' has a caron over the C), its style/shape, colour and where "
+    "it sits. State that it must be reproduced exactly, not redrawn as a generic logo\n"
+    "- the livery colours and their arrangement, described precisely (e.g. which exact "
+    "green, which exact yellow) and confirm the SAME shades are used on every sheet\n"
+    "- the SIDE WINDOW layout of each side sheet: how many windows/openings, their "
+    "shape (rectangular, rounded-corner, square or round), how they are grouped and "
+    "roughly where they sit along the side. IMPORTANT: the two sides of this "
+    "locomotive (e.g. z_dec vs z_inc) may GENUINELY DIFFER, so describe each side "
+    "sheet separately and state which side the preview thumbnail shows.\n"
+    "- the wheels along the bottom of the side sheets: how many, and confirm they are "
+    "round and sit right at the very bottom edge of the sheet (there is NO rail, track "
+    "or ground drawn beneath them).\n"
+    "Be precise about digits. If something is partly illegible, give your best single "
+    "reading. Keep it reasonably short."
 )
 
 
@@ -420,7 +522,8 @@ def call_openai_edit(client, primary_png: bytes, prompt: str, size: str, quality
 
 def process_texture(
     tex_path: Path, out_dir: Path, slug: str, model_rel: str, client,
-    quality: str, dry_run: bool, db_copy: bool, black_mask: bool, facts: str = "",
+    quality: str, dry_run: bool, db_copy: bool, black_mask: bool,
+    facts: str = "", palette: str = "",
 ) -> dict:
     """Remaster one texture. Returns its manifest entry."""
     stem = tex_path.stem
@@ -428,7 +531,7 @@ def process_texture(
     sparse = is_sparse(stem)
     masked = black_mask and sparse  # body sheets are never masked (avoids pixelation)
     src_hash = file_content_hash(tex_path)
-    prompt, prompt_hash = build_prompt(stem, facts)
+    prompt, prompt_hash = build_prompt(stem, facts, palette)
     primary_png, (w, h) = bmp_to_png_bytes(tex_path)
     tw, th = w * UPSCALE, h * UPSCALE
     size = pick_size(w, h)
@@ -453,6 +556,7 @@ def process_texture(
         "subject": texture_subject(stem),
         "is_thumbnail": thumb,
         "masked": masked,
+        "palette": palette,
         "prompt_hash": prompt_hash,
         "source_hash": src_hash,
         "size_requested": size,
@@ -479,15 +583,16 @@ def process_texture(
         return entry
 
     try:
-        # Pre-resize the source to the exact API output size and send THAT. This
-        # forces the model to fill the whole frame (no letterbox bars, so content
-        # like the x_both cab face stays edge-to-edge), and avoids any crop. The
-        # aspect stretch here is undone when we resize the full output back to the
-        # exact 4x target below — the two resizes cancel, so the final keeps the
-        # source's proportions with nothing cut and no added margins.
+        # Letterbox the source into the API frame WITHOUT distortion (black bars),
+        # then crop the same region back out below. This keeps the scale uniform
+        # end-to-end so circles stay circular (round wheels). Stretching the source
+        # to fill the frame instead would squish wheels into ellipses whenever the
+        # source aspect is far from the API's (e.g. wide z_* side sheets at 2.8:1
+        # vs the API's max 1.5:1). The prompt tells the model to keep the bars black.
         api_w, api_h = (int(v) for v in size.split("x"))
+        framed, content_box = letterbox_to_size(original, api_w, api_h)
         api_input = io.BytesIO()
-        original.resize((api_w, api_h), Image.LANCZOS).save(api_input, "PNG")
+        framed.save(api_input, "PNG")
         resp = call_openai_edit(client, api_input.getvalue(), prompt, size, quality)
         b64 = resp.data[0].b64_json
         raw_bytes = base64.b64decode(b64)
@@ -495,7 +600,9 @@ def process_texture(
 
         out_dir.mkdir(parents=True, exist_ok=True)
         raw_path.write_bytes(raw_bytes)
-        final = ai_raw.resize((tw, th), Image.LANCZOS)
+        # Crop the content region back out (undoing the letterbox), then scale
+        # uniformly to the exact 4x target — no aspect distortion, no squished wheels.
+        final = crop_fraction_resize(ai_raw, content_box, tw, th)
         # Safety net for genuinely-sparse sheets only (gear/pant/...): force the
         # large empty UV regions back to black so the model can't leave invented
         # detail there. Body sheets and the thumbnail are never masked — masking
@@ -537,14 +644,16 @@ def main():
                         help="Do not force originally-black source pixels back to black in the output")
     parser.add_argument("--no-context", action="store_true",
                         help="Skip the Pass-1 vision read of numbers/markings from sibling sheets")
+    parser.add_argument("--refresh-facts", action="store_true",
+                        help="Force a fresh Pass-1 vision read, ignoring any cached facts")
     parser.add_argument("--dry-run", action="store_true",
                         help="Skip the API call; still write source/classical/contact/manifest")
     parser.add_argument("--limit", type=int, default=0,
                         help="Cap number of textures processed this run (0 = no cap)")
     parser.add_argument("--only", default="",
-                        help="Only process the texture with this exact name/stem "
-                             "(e.g. --only x_both, matches x_both.bmp but NOT gearx_both). "
-                             "Saves credits when debugging one texture.")
+                        help="Only process textures with these exact name(s)/stem(s), "
+                             "comma-separated (e.g. --only z_dec,z_inc — matches z_dec.bmp "
+                             "and z_inc.bmp but NOT gearx_both). Saves credits when debugging.")
     args = parser.parse_args()
 
     db_copy = not args.no_db_copy
@@ -585,8 +694,11 @@ def main():
     for mi, (_override, model_dir) in enumerate(model_dirs, 1):
         model_rel = str(model_dir.relative_to(_repo_root()))
         all_textures = collect_textures(model_dir)  # full set (always used for facts context)
-        textures = ([t for t in all_textures if args.only in (t.stem, t.name)]
-                    if args.only else all_textures)
+        if args.only:
+            wanted = {s.strip() for s in args.only.split(",") if s.strip()}
+            textures = [t for t in all_textures if wanted & {t.stem, t.name}]
+        else:
+            textures = all_textures
         if not textures:
             print(f"[{mi}/{len(model_dirs)}] {model_rel}: no textures, skipping")
             continue
@@ -615,8 +727,10 @@ def main():
             ).hexdigest()
             cached = manifest["models"].get(model_rel)
             # Reuse only a *successful* (non-empty) cached read; an empty result
-            # was a failure and must be retried, not cached forever.
-            if cached and cached.get("facts_key") == facts_key and cached.get("facts"):
+            # was a failure and must be retried, not cached forever. --refresh-facts
+            # bypasses the cache and forces a fresh read.
+            if (not args.refresh_facts and cached
+                    and cached.get("facts_key") == facts_key and cached.get("facts")):
                 facts = cached["facts"]
                 tag = "cached"
             else:
@@ -629,6 +743,12 @@ def main():
                 tag = "read"
             shown = facts.replace("\n", "\n    ") if facts else "(none)"
             print(f"  [facts] ({tag}) {model_rel}:\n    {shown}")
+
+        # Deterministic livery palette (local, no API) shared by every sheet so
+        # colours stay consistent across them (e.g. x_both's yellow == z_dec's).
+        palette = extract_palette(all_textures) if (any_work and not args.dry_run) else ""
+        if palette:
+            print(f"  [palette] {palette}")
 
         for tex in textures:
             if args.limit and processed >= args.limit:
@@ -649,7 +769,7 @@ def main():
 
             entry = process_texture(
                 tex, out_dir, slug, model_rel, client,
-                args.quality, args.dry_run, db_copy, black_mask, facts,
+                args.quality, args.dry_run, db_copy, black_mask, facts, palette,
             )
             entries[key] = entry
             save_manifest(manifest_path, manifest)  # persist after each texture
