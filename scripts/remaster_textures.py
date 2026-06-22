@@ -34,7 +34,7 @@ import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 
 from upload_utils import _repo_root, file_content_hash  # noqa: F401
 from upload_loco import resolve_input_dirs
@@ -88,21 +88,20 @@ FLAT_TEMPLATE = (
     "This is a single flat 2D UV texture sheet for an old low-poly 3D train model — "
     "a flat painted decal, like a game sprite sheet or a technical orthographic "
     "elevation drawing. It shows {subject}. "
-    "Redraw it at {scale}x resolution, perfectly FLAT and ORTHOGRAPHIC, viewed "
-    "exactly straight-on and axis-aligned. ABSOLUTELY NO perspective, NO camera "
-    "angle, NO 3/4 view, NO foreshortening, NO added scene lighting, NO drop "
-    "shadows, NO reflections, NO 3D rendering, NO background — it must stay a flat "
-    "head-on sheet. "
-    "Only sharpen and clean the detail that is already present (refine existing "
-    "edges, de-alias, recover plausible fine texture such as panel seams, rivets, "
-    "window frames and paint) where the source already shows it. Do NOT add new "
-    "parts, new views, extra vehicles or imagined detail. Preserve the original "
-    "layout, proportions, orientation and framing EXACTLY, edge to edge — do not "
-    "move, crop, rescale, re-centre or tilt the content, and do not add borders or "
-    "margins. Any solid black area is unused UV space: keep it solid black. Keep "
-    "every marking, logo, number and text string in its original position and shape. "
-    "The result must read as the SAME flat texture sheet at higher resolution, never "
-    "a 3D picture of a train."
+    "Render it crisp and clean at {scale}x resolution, perfectly FLAT and "
+    "ORTHOGRAPHIC, viewed exactly straight-on and axis-aligned. ABSOLUTELY NO "
+    "perspective, NO camera angle, NO 3/4 view, NO foreshortening, NO added scene "
+    "lighting, NO drop shadows, NO reflections, NO 3D rendering, NO background — it "
+    "must stay a flat head-on sheet. "
+    "Make it look like a clean high-resolution texture: smooth gradients and edges, "
+    "recover plausible fine detail (panel seams, rivets, window frames, paint, "
+    "metal surfaces), and produce NO pixelation, blockiness or jagged/aliased edges. "
+    "Do NOT add new parts, new views, extra vehicles or imagined detail. Preserve "
+    "the original layout, proportions, orientation and framing EXACTLY, edge to edge "
+    "— do not move, crop, rescale, re-centre or tilt the content, and do not add "
+    "borders or margins. Keep every marking, logo, number and text string in its "
+    "original position and shape. The result must read as the SAME flat texture "
+    "sheet at higher resolution, never a 3D picture of a train."
 )
 
 # The loco thumbnail (image.bmp) is genuinely a small 3D preview render, not a flat
@@ -128,17 +127,38 @@ def texture_subject(stem: str) -> str:
     return DEFAULT_SUBJECT
 
 
+# Genuinely-sparse sheets (mostly empty black UV space) where the black-mask is
+# worth keeping to stop hallucination. The body sheets (x_/y_/z_) fill the frame,
+# so they are NOT masked — masking them only produced blocky/"pixelated" edges.
+SPARSE_PREFIXES = ("gearx", "ploughx", "downx", "pant", "ins")
+
+
 def is_thumbnail(name: str) -> bool:
     """True for the loco preview render (image.bmp), which is not a flat texture."""
     return Path(name).stem.lower() == "image"
 
 
-def build_prompt(stem: str) -> tuple[str, str]:
-    """Return (prompt, prompt_hash) tailored to one texture."""
+def is_sparse(stem: str) -> bool:
+    """True for mostly-black sheets that still benefit from the (soft) black-mask."""
+    return stem.lower().startswith(SPARSE_PREFIXES)
+
+
+def build_prompt(stem: str, facts: str = "") -> tuple[str, str]:
+    """Return (prompt, prompt_hash) tailored to one texture.
+
+    ``facts`` is the per-model text read from all of its sheets (Pass 1); when
+    present it is appended so the model renders numbers/markings correctly.
+    """
     if is_thumbnail(stem):
         prompt = THUMBNAIL_TEMPLATE.format(scale=UPSCALE)
     else:
         prompt = FLAT_TEMPLATE.format(subject=texture_subject(stem), scale=UPSCALE)
+    if facts:
+        prompt += (
+            " Reference facts read from all texture sheets of this same locomotive: "
+            f"{facts} Use these to render any running number, lettering or marking on "
+            "THIS sheet to match exactly; do not invent different digits or text."
+        )
     return prompt, hashlib.sha256(prompt.encode("utf-8")).hexdigest()
 
 UPSCALE = 4  # target output scale relative to the source
@@ -253,19 +273,25 @@ def crop_fraction_resize(img: Image.Image, box: tuple[float, float, float, float
 
 
 def apply_black_mask(final: Image.Image, source: Image.Image, threshold: int = 16) -> Image.Image:
-    """Force pixels that are near-black in the source back to black in ``final``.
+    """Force the large empty (near-black) UV regions of ``source`` back to black.
 
-    The source is upscaled (NEAREST, blocky) to the final size to build a mask;
-    wherever the source luminance is below ``threshold`` the output is set to
-    black. This keeps unused/empty UV space empty so the model cannot leave
-    hallucinated detail there, while detailed regions pass through untouched.
+    Used only for genuinely-sparse sheets (gear/pant/...), to stop the model
+    hallucinating in empty space. The boundary is feathered so it does NOT
+    reintroduce blocky/"pixelated" edges: the keep-region is built at source
+    resolution, eroded 1px so content edges aren't clipped, upscaled with LANCZOS
+    (not NEAREST), and Gaussian-blurred before compositing.
     """
     final = final.convert("RGB")
-    mask_src = source.convert("L").resize(final.size, Image.NEAREST)
+    src_l = source.convert("L")
+    # Binary keep-mask at source resolution (white = has content).
+    keep = src_l.point(lambda p: 255 if p >= threshold else 0)
+    # Erode 1px (MinFilter shrinks the white region) so we never clip content edges.
+    keep = keep.filter(ImageFilter.MinFilter(3))
+    # Smooth upscale to target, then feather the boundary.
+    keep = keep.resize(final.size, Image.LANCZOS)
+    keep = keep.filter(ImageFilter.GaussianBlur(radius=max(1, final.size[0] // 256)))
     black = Image.new("RGB", final.size, (0, 0, 0))
-    # keep_mask: white (255) where source has content -> use final; else black.
-    keep_mask = mask_src.point(lambda p: 255 if p >= threshold else 0)
-    return Image.composite(final, black, keep_mask)
+    return Image.composite(final, black, keep)
 
 
 def build_contact_sheet(
@@ -360,6 +386,52 @@ def save_manifest(path: Path, manifest: dict) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Pass 1: read shared facts (numbers/markings) from all of a model's sheets
+# ---------------------------------------------------------------------------
+
+VISION_MODEL = "gpt-4o-mini"
+
+FACTS_PROMPT = (
+    "These images are the low-resolution texture sheets of a single old 3D train "
+    "model (different views of the SAME locomotive: sides, ends, roof, gear, and a "
+    "preview thumbnail). Read them together and report concise PLAIN-TEXT facts that "
+    "should stay consistent across all sheets, focusing on text that the sheets share:\n"
+    "- every running/serial number and registration plate you can read, with the "
+    "EXACT digits, and which sheet shows it most clearly\n"
+    "- railway/operator lettering, logos and any other markings\n"
+    "- the livery colours and their arrangement\n"
+    "Be precise about digits. If a number is partly illegible, give your best single "
+    "reading. Keep it short (a few lines); do not describe geometry or shape."
+)
+
+
+def read_model_facts(textures: list[Path], client) -> str:
+    """Pass 1: one vision call over all of a model's sheets -> shared text facts.
+
+    Returns '' on any failure (the batch then proceeds without injected facts).
+    """
+    try:
+        content: list[dict] = [{"type": "text", "text": FACTS_PROMPT}]
+        for t in textures:
+            png, _ = bmp_to_png_bytes(t)
+            b64 = base64.b64encode(png).decode("ascii")
+            content.append({"type": "text", "text": f"Sheet: {t.name}"})
+            content.append({
+                "type": "image_url",
+                "image_url": {"url": f"data:image/png;base64,{b64}", "detail": "high"},
+            })
+        resp = client.chat.completions.create(
+            model=VISION_MODEL,
+            messages=[{"role": "user", "content": content}],
+            max_tokens=400,
+        )
+        return (resp.choices[0].message.content or "").strip()
+    except Exception as exc:  # noqa: BLE001 - facts are best-effort; never break the batch
+        print(f"  [facts] WARNING: vision read failed ({type(exc).__name__}: {exc})")
+        return ""
+
+
+# ---------------------------------------------------------------------------
 # Core per-texture processing
 # ---------------------------------------------------------------------------
 
@@ -381,13 +453,15 @@ def call_openai_edit(client, primary_png: bytes, prompt: str, size: str, quality
 
 def process_texture(
     tex_path: Path, out_dir: Path, slug: str, model_rel: str, client,
-    quality: str, dry_run: bool, db_copy: bool, black_mask: bool,
+    quality: str, dry_run: bool, db_copy: bool, black_mask: bool, facts: str = "",
 ) -> dict:
     """Remaster one texture. Returns its manifest entry."""
     stem = tex_path.stem
     thumb = is_thumbnail(stem)
+    sparse = is_sparse(stem)
+    masked = black_mask and sparse  # body sheets are never masked (avoids pixelation)
     src_hash = file_content_hash(tex_path)
-    prompt, prompt_hash = build_prompt(stem)
+    prompt, prompt_hash = build_prompt(stem, facts)
     primary_png, (w, h) = bmp_to_png_bytes(tex_path)
     tw, th = w * UPSCALE, h * UPSCALE
     size = pick_size(w, h)
@@ -411,6 +485,7 @@ def process_texture(
         "quality": quality,
         "subject": texture_subject(stem),
         "is_thumbnail": thumb,
+        "masked": masked,
         "prompt_hash": prompt_hash,
         "source_hash": src_hash,
         "size_requested": size,
@@ -452,10 +527,11 @@ def process_texture(
         raw_path.write_bytes(raw_bytes)
         # Crop the padded margins back out, then resize to the exact 4x target.
         final = crop_fraction_resize(ai_raw, content_box, tw, th)
-        # Safety net (flat textures only): force originally-black UV space back to
-        # black so the model can't leave invented detail in empty regions. The
-        # thumbnail is a real render, so it is never masked.
-        if black_mask and not thumb:
+        # Safety net for genuinely-sparse sheets only (gear/pant/...): force the
+        # large empty UV regions back to black so the model can't leave invented
+        # detail there. Body sheets and the thumbnail are never masked — masking
+        # them only reintroduced blocky/pixelated edges.
+        if masked:
             final = apply_black_mask(final, original)
         final.save(final_path, "PNG")
         build_contact_sheet(original, classical, ai_raw, final, contact_path)
@@ -490,6 +566,8 @@ def main():
                         help="Do not write the _4x.png result next to the source in db/")
     parser.add_argument("--no-black-mask", action="store_true",
                         help="Do not force originally-black source pixels back to black in the output")
+    parser.add_argument("--no-context", action="store_true",
+                        help="Skip the Pass-1 vision read of numbers/markings from sibling sheets")
     parser.add_argument("--dry-run", action="store_true",
                         help="Skip the API call; still write source/classical/contact/manifest")
     parser.add_argument("--limit", type=int, default=0,
@@ -498,6 +576,7 @@ def main():
 
     db_copy = not args.no_db_copy
     black_mask = not args.no_black_mask
+    use_context = not args.no_context
 
     client = None
     if not args.dry_run:
@@ -522,6 +601,7 @@ def main():
     manifest_path = out_root / MANIFEST_NAME
     manifest = load_manifest(manifest_path)
     entries: dict = manifest["entries"]
+    manifest.setdefault("models", {})  # per-model facts cache
     manifest["flat_template"] = FLAT_TEMPLATE
     manifest["thumbnail_template"] = THUMBNAIL_TEMPLATE
 
@@ -540,6 +620,36 @@ def main():
         out_dir = out_root / slug
         print(f"[{mi}/{len(model_dirs)}] {model_rel} -> {slug} ({len(textures)} texture(s))")
 
+        def _needs_work(tex: Path) -> bool:
+            if args.dry_run:
+                return True
+            p = entries.get(f"{slug}/{tex.name}")
+            fp = out_dir / f"{tex.stem}_4x.png"
+            return not (p and p.get("status") in ("ok", "dry-run") and fp.exists()
+                        and p.get("source_hash") == file_content_hash(tex))
+
+        # Pass 1: read shared numbers/markings once per model (cached by source
+        # hashes), but only when there is real work and the API is in play.
+        facts = ""
+        any_work = (not args.limit or processed < args.limit) and any(_needs_work(t) for t in textures)
+        if use_context and any_work and not args.dry_run and client is not None:
+            facts_key = hashlib.sha256(
+                "".join(sorted(file_content_hash(t) for t in textures)).encode()
+            ).hexdigest()
+            cached = manifest["models"].get(model_rel)
+            if cached and cached.get("facts_key") == facts_key and "facts" in cached:
+                facts = cached["facts"]
+                tag = "cached"
+            else:
+                print(f"  [facts] reading numbers/markings from {len(textures)} sheet(s)...")
+                facts = read_model_facts(textures, client)
+                manifest["models"][model_rel] = {
+                    "facts": facts, "vision_model": VISION_MODEL, "facts_key": facts_key,
+                }
+                tag = "read"
+            shown = facts.replace("\n", "\n    ") if facts else "(none)"
+            print(f"  [facts] ({tag}) {model_rel}:\n    {shown}")
+
         for tex in textures:
             if args.limit and processed >= args.limit:
                 print(f"  --limit {args.limit} reached, stopping.")
@@ -548,8 +658,9 @@ def main():
             key = f"{slug}/{tex.name}"
             final_path = out_dir / f"{tex.stem}_4x.png"
             prev = entries.get(key)
-            # Resume guard: completed + unchanged source -> skip.
-            if (not args.dry_run and prev and prev.get("status") in ("ok", "dry-run")
+            # Resume guard: a real successful result + unchanged source -> skip.
+            # Only "ok" counts; a "dry-run" placeholder must never block a real run.
+            if (not args.dry_run and prev and prev.get("status") == "ok"
                     and final_path.exists()
                     and prev.get("source_hash") == file_content_hash(tex)):
                 print(f"  [cached] {tex.name}")
@@ -558,7 +669,7 @@ def main():
 
             entry = process_texture(
                 tex, out_dir, slug, model_rel, client,
-                args.quality, args.dry_run, db_copy, black_mask,
+                args.quality, args.dry_run, db_copy, black_mask, facts,
             )
             entries[key] = entry
             save_manifest(manifest_path, manifest)  # persist after each texture
