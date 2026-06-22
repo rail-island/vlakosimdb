@@ -66,9 +66,12 @@ ATLAS_PROMPT = (
     "sharper, cleaner, higher-detail version. IMPORTANT: keep every element in EXACTLY "
     "the same position, size and layout — do not move, add, remove, rearrange, crop or "
     "recolour anything, and keep the black gaps between the tiles. Keep all logos, text, "
-    "numbers and colours exactly as they are. Render the vehicle's WHEELS as clean, "
-    "perfectly ROUND circles (not ovals, not polygons). Only sharpen edges and add fine, "
-    "plausible detail to what is already present."
+    "numbers and colours exactly as they are. LOGOS/EMBLEMS (e.g. the operator emblem): "
+    "reproduce every logo with its correct, original orientation and shape — NEVER mirror, "
+    "flip, rotate or reverse a logo, and make sure EVERY instance of the same logo on the "
+    "sheet looks identical (same direction, not a mirror image of another). Render the "
+    "vehicle's WHEELS as clean, perfectly ROUND circles (not ovals, not polygons). Only "
+    "sharpen edges and add fine, plausible detail to what is already present."
 )
 
 
