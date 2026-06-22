@@ -34,6 +34,7 @@ from dotenv import load_dotenv
 from PIL import Image
 
 from atlas import build_texture_atlas
+from atlas_padded import build_padded_atlas
 from upload_loco import resolve_input_dirs
 from upload_utils import _repo_root
 
@@ -256,6 +257,11 @@ def main():
                         help="Skip the API call; still write atlas/raw/contact/manifest")
     parser.add_argument("--limit", type=int, default=0,
                         help="Cap number of models processed this run (0 = no cap)")
+    parser.add_argument("--padded", action="store_true",
+                        help="POC: use the padded-grid atlas (atlas_padded.py) instead of the "
+                             "real packed atlas, to test whether sub-textures keep their positions")
+    parser.add_argument("--pad", type=int, default=8,
+                        help="Gutter padding (source px) for --padded (default 8)")
     args = parser.parse_args()
 
     db_copy = not args.no_db_copy
@@ -304,7 +310,10 @@ def main():
             print("  [skip] no model/index.xml")
             counts["skip"] += 1
             continue
-        atlas_png, _m, _r = build_texture_atlas(model_sub, model_xml)
+        if args.padded:
+            atlas_png, _m, _r = build_padded_atlas(model_sub, model_xml, args.pad)
+        else:
+            atlas_png, _m, _r = build_texture_atlas(model_sub, model_xml)
         if not atlas_png:
             print("  [skip] no textures in atlas")
             counts["skip"] += 1
