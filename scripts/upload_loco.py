@@ -12,8 +12,9 @@ Each line is a path relative to the repo root, e.g.:
 
 Lines ending with /* will expand to all sub-directories.
 
-Configure ROBLOX_API_KEY and ROBLOX_CREATOR_ID in a .env file at the project root,
-or pass them via --api-key / --creator-id flags (flags override .env values).
+Configure ROBLOX_UPLOAD_ASSETS_KEY (falls back to ROBLOX_API_KEY) and
+ROBLOX_CREATOR_ID in a .env file at the project root, or pass them via
+--api-key / --creator-id flags (flags override .env values).
 """
 
 import argparse
@@ -190,15 +191,28 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
     glb_path = None
     tex_refs: list[str] = []
 
+    atlas_4x_path = loco_dir / "atlas_4x.png"
+    use_4x_atlas = False
+
     if model_xml and model_xml.exists():
         atlas_png, atlas_map, tex_refs = build_texture_atlas(model_dir, model_xml)
         if atlas_png:
             atlas_path = loco_dir / "atlas.png"
             atlas_path.write_bytes(atlas_png)
 
+        # Prefer the AI-remastered 4x atlas when present. It is built to match the
+        # compact build_texture_atlas layout exactly (just 4x resolution), so the
+        # normalized UVs in atlas_map are unchanged — it is a drop-in higher-res
+        # texture for the GLB.
+        glb_atlas = atlas_png
+        if atlas_png and atlas_4x_path.exists():
+            glb_atlas = atlas_4x_path.read_bytes()
+            use_4x_atlas = True
+            print(f"  Using AI-remastered atlas: {atlas_4x_path.name}")
+
         glb_path = loco_dir / "model.glb"
         metallic, roughness = detect_material_pbr(tex_refs)
-        glb_stats = convert_model_xml_to_glb(model_xml, glb_path, atlas_png, atlas_map,
+        glb_stats = convert_model_xml_to_glb(model_xml, glb_path, glb_atlas, atlas_map,
                                              metallic_factor=metallic, roughness_factor=roughness)
 
     # 3. Upload or placeholders
@@ -231,7 +245,13 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
         # Mesh (model)
         if glb_path and glb_path.exists():
             model_hash = file_content_hash(model_xml)
-            atlas_hash_for_mesh = compute_atlas_source_hash(model_dir, tex_refs)
+            # When the 4x atlas is baked into the GLB, key the lockfile on that file
+            # so editing/regenerating atlas_4x.png re-uploads the mesh. Otherwise key
+            # on the source pack textures as before.
+            if use_4x_atlas:
+                atlas_hash_for_mesh = file_content_hash(atlas_4x_path)
+            else:
+                atlas_hash_for_mesh = compute_atlas_source_hash(model_dir, tex_refs)
             combined_hash = hashlib.sha256(
                 (model_hash + atlas_hash_for_mesh).encode()
             ).hexdigest()
@@ -316,7 +336,8 @@ def main():
     parser.add_argument("--output", help=f"Output Lua file (default: {OUTPUT_LUA})")
     args = parser.parse_args()
 
-    api_key = args.api_key or os.environ.get("ROBLOX_API_KEY")
+    api_key = (args.api_key or os.environ.get("ROBLOX_UPLOAD_ASSETS_KEY")
+               or os.environ.get("ROBLOX_API_KEY"))
     creator_id = args.creator_id or os.environ.get("ROBLOX_CREATOR_ID")
 
     if not args.dry_run and (not api_key or not creator_id):

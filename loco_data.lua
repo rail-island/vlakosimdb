@@ -221,7 +221,7 @@ local LocoDatabase = {
 		path = "Loco/Electric",
 		length = 16.853,
 		thumbnailAssetId = "85290837236770",
-		modelAssetId = "123113402580146",
+		modelAssetId = "109141747798402",
 	},
 	["CD_163.022"] = {
 		name = "CD_163.022",
