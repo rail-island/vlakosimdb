@@ -70,8 +70,13 @@ TEXTURE_SUBJECTS: list[tuple[str, str]] = [
     ("pant", "a roof-mounted pantograph (current collector): thin metal arms, "
              "springs and contact strip, on a black sheet"),
     ("ins", "an insulator / roof electrical fitting, on a black sheet"),
-    ("x", "the flat END face of the locomotive (front or rear cab end): cab "
-          "windows, headlights/marker lights, buffers and coupling, end door"),
+    ("x", "the flat END (front/rear cab) face of the locomotive viewed straight-on: "
+          "cab windows, headlights/marker lights, buffers and coupling, end door, and "
+          "at the bottom the wheels/bogie seen end-on. The locomotive RESTS ON THE "
+          "GROUND: the bottom of the wheels and the lowest part of the end must sit "
+          "EXACTLY on the bottom edge of the texture sheet (just like the side sheets) "
+          "— the train must not float, there must be no empty gap below it, and no "
+          "rail, track or ground line drawn beneath it"),
     ("y", "the ROOF / top-down view of the locomotive (roof panels and seams, "
           "vents, fan grilles, pantograph mounts, insulators, cable runs)"),
     ("z", "the long SIDE elevation of the locomotive body (side windows, doors, "
