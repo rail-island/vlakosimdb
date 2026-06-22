@@ -59,6 +59,18 @@ UPSCALE = 4
 RECOMPACT_NAME = "recompact.json"
 DB_SEARCH_ROOT = "db/train"
 
+ATLAS_PROMPT = (
+    "This is a flat texture atlas for an old 3D RAILROAD VEHICLE (a locomotive, "
+    "railcar or coach) — several small low-resolution textures packed onto one sheet "
+    "with black gaps between them, already upscaled and slightly blurry. Return a "
+    "sharper, cleaner, higher-detail version. IMPORTANT: keep every element in EXACTLY "
+    "the same position, size and layout — do not move, add, remove, rearrange, crop or "
+    "recolour anything, and keep the black gaps between the tiles. Keep all logos, text, "
+    "numbers and colours exactly as they are. Render the vehicle's WHEELS as clean, "
+    "perfectly ROUND circles (not ovals, not polygons). Only sharpen edges and add fine, "
+    "plausible detail to what is already present."
+)
+
 
 # ---------------------------------------------------------------------------
 # Model resolution
@@ -171,11 +183,10 @@ def detect_tile_boxes(ai: Image.Image, padded_map: dict, threshold: int = 12) ->
         band = sub[ry0:ry1]
         for (rx0, rx1) in _runs(band.any(axis=0), min_gap):
             # tight vertical extent of this column run within the band
-            colmask = band[:, rx0:rx1]
-            rows_here = np.where(colmask.any(axis=1))[0]
-            ty0 = ry0 + int(rows_here.min())
-            ty1 = ry0 + int(rows_here.max()) + 1
-            detected.append([cx0 + rx0, cy0 + ty0, cx0 + rx1, cy0 + ty1])
+            # Use the ROW band's full y-extent (tiles in a shelf row are top-aligned
+            # at the same height), not each blob's tight y — otherwise a mostly-black
+            # tile (e.g. the gear strip) collapses to just its visible detail.
+            detected.append([cx0 + rx0, cy0 + ry0, cx0 + rx1, cy0 + ry1])
 
     out: dict = {"_content_rect": list(crect)}
     cw, ch = cx1 - cx0, cy1 - cy0
@@ -214,6 +225,15 @@ def detect_tile_boxes(ai: Image.Image, padded_map: dict, threshold: int = 12) ->
     return out
 
 
+def content_bbox(img: Image.Image, box, threshold: int = 14) -> list[int] | None:
+    """Absolute bbox of non-black content inside ``box`` (None if all black)."""
+    crop = img.crop(box).convert("L").point(lambda p: 255 if p > threshold else 0)
+    bb = crop.getbbox()
+    if bb is None:
+        return None
+    return [box[0] + bb[0], box[1] + bb[1], box[0] + bb[2], box[1] + bb[3]]
+
+
 def safe_ref_name(ref: str) -> str:
     """Filesystem-safe name for a texture ref (pack:z_dec.bmp -> pack_z_dec.bmp)."""
     return ref.replace(":", "_").replace("/", "_")
@@ -246,24 +266,25 @@ def prepare(model_dir: Path, out_root: Path, client, quality: str, pad: int,
     compact.resize((cw4, ch4), Image.LANCZOS).save(out_dir / "atlas_4x_raw.png")
     compact_boxes = map_to_boxes(compact_map, cw4, ch4)
 
-    # ... and the padded atlas (sent to the AI).
+    # ... and the padded atlas (sent to the AI). Pre-upscale it LOCALLY (LANCZOS) to
+    # the exact API output size, so the model only has to sharpen at native target
+    # resolution — it does no upscaling itself, and tiles carry more pixels for detail
+    # (rounder wheels, less pixelation). Saved as atlas_padded_4x_raw.png.
     padded_png, padded_map, _ = build_padded_atlas(model_sub, model_xml, pad)
     padded = Image.open(io.BytesIO(padded_png)).convert("RGB")
     pw, ph = padded.size
-    pw4, ph4 = pw * UPSCALE, ph * UPSCALE
-    raw4x = padded.resize((pw4, ph4), Image.LANCZOS)
+    size = pick_size(pw * UPSCALE, ph * UPSCALE)
+    aw, ah = (int(v) for v in size.split("x"))
+    raw_for_ai = padded.resize((aw, ah), Image.LANCZOS)
+    raw_for_ai.save(out_dir / "atlas_padded_4x_raw.png")
 
     usage, cost = {}, 0.0
     if dry_run:
-        ai = raw4x.copy()  # stand-in
+        ai = raw_for_ai.copy()  # stand-in
     else:
         buf = io.BytesIO()
-        raw4x.save(buf, "PNG")
-        resp = call_openai_edit(client, buf.getvalue(), pick_size(pw4, ph4), quality)
-        # Keep the AI output at its FULL native resolution (e.g. 1024x1536) — do NOT
-        # downscale it to the padded-4x size here. Cropping tiles from the full-res
-        # output and downscaling each straight to its compact box is a single LANCZOS
-        # step = sharp; the old intermediate downscale softened every tile.
+        raw_for_ai.save(buf, "PNG")
+        resp = call_openai_edit(client, buf.getvalue(), size, quality, prompt=ATLAS_PROMPT)
         ai = Image.open(io.BytesIO(base64.b64decode(resp.data[0].b64_json))).convert("RGB")
         usage = extract_usage(resp)
         cost = compute_cost(usage, quality)
@@ -302,7 +323,7 @@ def prepare(model_dir: Path, out_root: Path, client, quality: str, pad: int,
     }
     (out_dir / RECOMPACT_NAME).write_text(json.dumps(recompact, indent=2) + "\n", encoding="utf-8")
 
-    print(f"  prepared: {len(tiles)} tiles | padded_4x {pw4}x{ph4} -> compact {cw4}x{ch4} "
+    print(f"  prepared: {len(tiles)} tiles | AI input/output {aw}x{ah} -> compact {cw4}x{ch4} "
           f"| ${cost:.4f}")
     print(f"  inspect: {out_dir / 'atlas_padded_4x.png'}  and  {out_dir / 'tiles'}/")
     print(f"  edit content_box if needed in: {out_dir / RECOMPACT_NAME}")
@@ -323,12 +344,23 @@ def assemble(model_dir: Path, out_root: Path, db_copy: bool) -> dict:
     rc = json.loads(rc_path.read_text(encoding="utf-8"))
 
     ai = Image.open(out_dir / "atlas_padded_4x.png").convert("RGB")
+    raw_ref = Image.open(out_dir / "atlas_4x_raw.png").convert("RGB")  # correct layout
     cw4, ch4 = rc["compact_size"]
     canvas = Image.new("RGB", (cw4, ch4), (0, 0, 0))
     for t in rc["tiles"]:
         cb = t["compact_box"]
-        tile = ai.crop(t["content_box"]).resize((cb[2] - cb[0], cb[3] - cb[1]), Image.LANCZOS)
-        canvas.paste(tile, (cb[0], cb[1]))
+        # Anchor to the RAW reference: place the AI tile's content into the exact
+        # sub-rectangle the original texture occupies inside this cell. This matches
+        # both the content's position (e.g. x_both's cab sits at the bottom with a
+        # black top) AND its aspect — no centring, no stretch mismatch.
+        raw_sub = content_bbox(raw_ref, cb)
+        ai_sub = content_bbox(ai, t["content_box"])
+        if raw_sub and ai_sub:
+            tw, th = raw_sub[2] - raw_sub[0], raw_sub[3] - raw_sub[1]
+            canvas.paste(ai.crop(ai_sub).resize((tw, th), Image.LANCZOS), (raw_sub[0], raw_sub[1]))
+        else:  # solid/empty tile (e.g. material:black) — just fill the cell
+            tile = ai.crop(t["content_box"]).resize((cb[2] - cb[0], cb[3] - cb[1]), Image.LANCZOS)
+            canvas.paste(tile, (cb[0], cb[1]))
 
     final_path = out_dir / "atlas_4x.png"
     canvas.save(final_path)
@@ -355,6 +387,55 @@ def assemble(model_dir: Path, out_root: Path, db_copy: bool) -> dict:
     return rc
 
 
+def check(model_dir: Path, out_root: Path) -> dict:
+    """Build a per-tile comparison of atlas_4x_raw (reference layout) vs atlas_4x
+    (the AI result) so each tile can be verified to show the SAME content in the
+    SAME place. Writes atlas_4x_check.png and prints a per-tile mismatch score."""
+    from PIL import ImageDraw
+
+    slug = model_slug(model_dir)
+    out_dir = out_root / slug
+    rc = json.loads((out_dir / RECOMPACT_NAME).read_text(encoding="utf-8"))
+    raw = Image.open(out_dir / "atlas_4x_raw.png").convert("RGB")
+    ai = Image.open(out_dir / "atlas_4x.png").convert("RGB")
+
+    import numpy as np
+    rows, row_h, pad = [], 120, 6
+    print("  per-tile mismatch (raw vs AI, lower = better aligned; high => fix content_box):")
+    for t in rc["tiles"]:
+        if not t["ref"].startswith("pack:"):
+            continue
+        cb = t["compact_box"]
+        rt = raw.crop(cb)
+        at = ai.crop(cb)
+        # alignment score: edge-map correlation is robust to the AI's extra sharpness;
+        # here a simple downsized abs-diff of normalized tiles flags gross mispositions.
+        small = (32, 32)
+        a = np.asarray(rt.resize(small).convert("L")).astype(float)
+        b = np.asarray(at.resize(small).convert("L")).astype(float)
+        a -= a.mean(); b -= b.mean()
+        score = round(float(np.abs(a - b).mean()), 1)
+        w = max(1, round((cb[2] - cb[0]) * row_h / (cb[3] - cb[1])))
+        strip = Image.new("RGB", (w * 2 + pad * 3, row_h + 18), (32, 32, 32))
+        strip.paste(rt.resize((w, row_h)), (pad, 16))
+        strip.paste(at.resize((w, row_h)), (w + pad * 2, 16))
+        ImageDraw.Draw(strip).text((pad, 3), f"{t['ref']}  raw | AI   mismatch={score}",
+                                   fill=(230, 230, 230))
+        rows.append(strip)
+        print(f"    {t['ref']:22} mismatch={score}")
+
+    width = max(r.width for r in rows)
+    sheet = Image.new("RGB", (width, sum(r.height for r in rows)), (20, 20, 20))
+    y = 0
+    for r in rows:
+        sheet.paste(r, (0, y))
+        y += r.height
+    sheet.save(out_dir / "atlas_4x_check.png")
+    print(f"  wrote {out_dir / 'atlas_4x_check.png'} — read it: each tile's raw and AI "
+          "halves must show the SAME thing; a high mismatch means fix that content_box.")
+    return rc
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -362,7 +443,7 @@ def assemble(model_dir: Path, out_root: Path, db_copy: bool) -> dict:
 def main():
     load_dotenv(_repo_root() / ".env")
     parser = argparse.ArgumentParser(description="Atlas remaster (prepare/assemble) by model name.")
-    parser.add_argument("phase", choices=["prepare", "assemble"])
+    parser.add_argument("phase", choices=["prepare", "assemble", "check"])
     parser.add_argument("--model", required=True, help="Model name (cd_163) or repo path")
     parser.add_argument("--out-dir", default=OUT_DIR)
     parser.add_argument("--quality", choices=["low", "medium", "high"], default="high")
@@ -388,8 +469,10 @@ def main():
                 sys.exit(1)
             client = OpenAI(api_key=key)
         prepare(model_dir, out_root, client, args.quality, args.pad, args.dry_run)
-    else:
+    elif args.phase == "assemble":
         assemble(model_dir, out_root, not args.no_db_copy)
+    else:
+        check(model_dir, out_root)
 
 
 if __name__ == "__main__":

@@ -91,12 +91,12 @@ def model_slug(model_dir: Path) -> str:
     return str(model_dir.relative_to(_repo_root())).replace("/", "__").replace(" ", "_")
 
 
-def call_openai_edit(client, png_bytes: bytes, size: str, quality: str):
-    """Sharpen a single image via images.edit."""
+def call_openai_edit(client, png_bytes: bytes, size: str, quality: str, prompt: str = PROMPT):
+    """Sharpen a single image via images.edit (optionally with a custom prompt)."""
     return client.images.edit(
         model=MODEL,
         image=("atlas.png", io.BytesIO(png_bytes), "image/png"),
-        prompt=PROMPT,
+        prompt=prompt,
         size=size,
         quality=quality,
     )

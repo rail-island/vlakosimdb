@@ -47,10 +47,21 @@ All commands run from the repo root. The model name comes from the user's reques
    Writes the compact `generated/<slug>/atlas_4x.png` (size == `atlas.png`×4, no padding), an
    `atlas_4x_overlay.png`, and the git-tracked `db/.../atlas_4x.png`.
 
-4. **Verify positions.** Read `generated/<slug>/atlas_4x_overlay.png` (a 50% blend of your result
-   over `atlas_4x_raw.png`, the non-AI compact upscale). Every sub-texture must line up. If any
-   tile is shifted/scaled wrong, adjust its `content_box` in `recompact.json` and re-run
-   `assemble`. Iterate until aligned.
+4. **Verify positions — REQUIRED.** Run:
+   ```
+   python3 scripts/remaster_atlas.py check --model <NAME>
+   ```
+   This prints a per-tile mismatch score and writes `generated/<slug>/atlas_4x_check.png` — a
+   per-tile **`raw | AI`** side-by-side (`atlas_4x_raw` is the correct compact layout; `atlas_4x` is
+   your assembled result). **Read `atlas_4x_check.png`.** For every tile the two halves must show
+   the SAME part in the SAME position/shape (the AI half just sharper, and its number/markings may
+   differ — that is fine). A tile is WRONG only if its AI half shows a different part, is shifted,
+   cropped, or stretched. (Also glance at `atlas_4x_overlay.png`, the 50% blend, for gross drift.)
+   - A **high mismatch score alone is not a failure** — the AI re-renders content, so sharp tiles
+     score high. Use the score only to decide which tiles to look at; judge by eye.
+   - If a tile is genuinely wrong, find its real rectangle in `atlas_padded_4x.png`, fix that tile's
+     `content_box` in `recompact.json` (keep the source aspect ratio), re-run `assemble`, then
+     `check` again. Iterate until every tile matches.
 
 5. **Report** to the user: the compact `atlas_4x.png` (dimensions, confirms it matches the original
    `atlas.png` layout so it's a drop-in higher-res texture), that `db/.../atlas_4x.png` was written,
