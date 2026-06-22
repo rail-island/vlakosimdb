@@ -97,9 +97,12 @@ FLAT_TEMPLATE = (
     "recover plausible fine detail (panel seams, rivets, window frames, paint, "
     "metal surfaces), and produce NO pixelation, blockiness or jagged/aliased edges. "
     "Do NOT add new parts, new views, extra vehicles or imagined detail. Preserve "
-    "the original layout, proportions, orientation and framing EXACTLY, edge to edge "
-    "— do not move, crop, rescale, re-centre or tilt the content, and do not add "
-    "borders or margins. Keep every marking, logo, number and text string in its "
+    "the original layout, proportions, orientation and framing EXACTLY. Match the "
+    "input's framing one-to-one: FILL the output frame exactly as the input fills "
+    "its own frame, all the way to every edge and corner. Do NOT zoom in, crop, "
+    "shrink or re-centre the subject, and do NOT add any margins, borders or "
+    "background bars — if the input content runs to the edges, the output must too. "
+    "Keep every marking, logo, number and text string in its "
     "original position and shape. The result must read as the SAME flat texture "
     "sheet at higher resolution, never a 3D picture of a train."
 )
@@ -229,49 +232,6 @@ def pick_size(w: int, h: int) -> str:
     return SIZE_SQUARE
 
 
-def size_ratio(size: str) -> float:
-    """W/H of a 'WxH' size string."""
-    w, h = (int(x) for x in size.split("x"))
-    return w / h
-
-
-def pad_to_ratio(img: Image.Image, ratio: float) -> tuple[Image.Image, tuple[float, float, float, float]]:
-    """Letterbox ``img`` with black to the given W/H ``ratio``.
-
-    Returns the padded image plus the content box as fractions
-    ``(left, top, right, bottom)`` of the padded canvas. Because the source is
-    only ever padded (never cropped or distorted), the model edits the content
-    in place and the very same fractional box can be cropped back out of the
-    output afterwards — so the result keeps the source's exact aspect with no
-    content lost.
-    """
-    img = img.convert("RGB")
-    w, h = img.size
-    cur = w / h
-    if cur < ratio:  # too narrow -> add width (vertical bars)
-        new_w = max(w, round(h * ratio))
-        left = (new_w - w) // 2
-        canvas = Image.new("RGB", (new_w, h), (0, 0, 0))
-        canvas.paste(img, (left, 0))
-        return canvas, (left / new_w, 0.0, (left + w) / new_w, 1.0)
-    if cur > ratio:  # too wide -> add height (horizontal bars)
-        new_h = max(h, round(w / ratio))
-        top = (new_h - h) // 2
-        canvas = Image.new("RGB", (w, new_h), (0, 0, 0))
-        canvas.paste(img, (0, top))
-        return canvas, (0.0, top / new_h, 1.0, (top + h) / new_h)
-    return img, (0.0, 0.0, 1.0, 1.0)
-
-
-def crop_fraction_resize(img: Image.Image, box: tuple[float, float, float, float],
-                         tw: int, th: int) -> Image.Image:
-    """Crop ``img`` to the fractional ``box`` then LANCZOS-resize to (tw, th)."""
-    img = img.convert("RGB")
-    w, h = img.size
-    crop = (round(box[0] * w), round(box[1] * h), round(box[2] * w), round(box[3] * h))
-    return img.crop(crop).resize((tw, th), Image.LANCZOS)
-
-
 def apply_black_mask(final: Image.Image, source: Image.Image, threshold: int = 16) -> Image.Image:
     """Force the large empty (near-black) UV regions of ``source`` back to black.
 
@@ -389,7 +349,8 @@ def save_manifest(path: Path, manifest: dict) -> None:
 # Pass 1: read shared facts (numbers/markings) from all of a model's sheets
 # ---------------------------------------------------------------------------
 
-VISION_MODEL = "gpt-4o-mini"
+VISION_MODEL = "gpt-4o"  # better at reading tiny digits than -mini
+VISION_UPSCALE_W = 512   # enlarge each tiny sheet before sending so text is legible
 
 FACTS_PROMPT = (
     "These images are the low-resolution texture sheets of a single old 3D train "
@@ -413,8 +374,14 @@ def read_model_facts(textures: list[Path], client) -> str:
     try:
         content: list[dict] = [{"type": "text", "text": FACTS_PROMPT}]
         for t in textures:
-            png, _ = bmp_to_png_bytes(t)
-            b64 = base64.b64encode(png).decode("ascii")
+            img = Image.open(t).convert("RGB")
+            # Upscale tiny sheets so the vision model can actually read the digits.
+            if img.width < VISION_UPSCALE_W:
+                scale = VISION_UPSCALE_W / img.width
+                img = img.resize((VISION_UPSCALE_W, max(1, round(img.height * scale))), Image.LANCZOS)
+            buf = io.BytesIO()
+            img.save(buf, "PNG")
+            b64 = base64.b64encode(buf.getvalue()).decode("ascii")
             content.append({"type": "text", "text": f"Sheet: {t.name}"})
             content.append({
                 "type": "image_url",
@@ -497,10 +464,6 @@ def process_texture(
 
     original = Image.open(io.BytesIO(primary_png)).convert("RGB")
     classical = original.resize((tw, th), Image.LANCZOS)
-    # Pad the source to the API output aspect ratio so the model never has to
-    # re-frame the content; the same fractional box is cropped back out below,
-    # giving the exact source aspect at 4x with nothing cut off.
-    padded, content_box = pad_to_ratio(original, size_ratio(size))
 
     if dry_run:
         # No API call: placeholder AI raw from the classical upscale so layout/
@@ -516,17 +479,23 @@ def process_texture(
         return entry
 
     try:
-        padded_png = io.BytesIO()
-        padded.save(padded_png, "PNG")
-        resp = call_openai_edit(client, padded_png.getvalue(), prompt, size, quality)
+        # Pre-resize the source to the exact API output size and send THAT. This
+        # forces the model to fill the whole frame (no letterbox bars, so content
+        # like the x_both cab face stays edge-to-edge), and avoids any crop. The
+        # aspect stretch here is undone when we resize the full output back to the
+        # exact 4x target below — the two resizes cancel, so the final keeps the
+        # source's proportions with nothing cut and no added margins.
+        api_w, api_h = (int(v) for v in size.split("x"))
+        api_input = io.BytesIO()
+        original.resize((api_w, api_h), Image.LANCZOS).save(api_input, "PNG")
+        resp = call_openai_edit(client, api_input.getvalue(), prompt, size, quality)
         b64 = resp.data[0].b64_json
         raw_bytes = base64.b64decode(b64)
         ai_raw = Image.open(io.BytesIO(raw_bytes)).convert("RGB")
 
         out_dir.mkdir(parents=True, exist_ok=True)
         raw_path.write_bytes(raw_bytes)
-        # Crop the padded margins back out, then resize to the exact 4x target.
-        final = crop_fraction_resize(ai_raw, content_box, tw, th)
+        final = ai_raw.resize((tw, th), Image.LANCZOS)
         # Safety net for genuinely-sparse sheets only (gear/pant/...): force the
         # large empty UV regions back to black so the model can't leave invented
         # detail there. Body sheets and the thumbnail are never masked — masking
@@ -572,6 +541,10 @@ def main():
                         help="Skip the API call; still write source/classical/contact/manifest")
     parser.add_argument("--limit", type=int, default=0,
                         help="Cap number of textures processed this run (0 = no cap)")
+    parser.add_argument("--only", default="",
+                        help="Only process the texture with this exact name/stem "
+                             "(e.g. --only x_both, matches x_both.bmp but NOT gearx_both). "
+                             "Saves credits when debugging one texture.")
     args = parser.parse_args()
 
     db_copy = not args.no_db_copy
@@ -611,7 +584,9 @@ def main():
 
     for mi, (_override, model_dir) in enumerate(model_dirs, 1):
         model_rel = str(model_dir.relative_to(_repo_root()))
-        textures = collect_textures(model_dir)
+        all_textures = collect_textures(model_dir)  # full set (always used for facts context)
+        textures = ([t for t in all_textures if args.only in (t.stem, t.name)]
+                    if args.only else all_textures)
         if not textures:
             print(f"[{mi}/{len(model_dirs)}] {model_rel}: no textures, skipping")
             continue
@@ -633,19 +608,24 @@ def main():
         facts = ""
         any_work = (not args.limit or processed < args.limit) and any(_needs_work(t) for t in textures)
         if use_context and any_work and not args.dry_run and client is not None:
+            # Facts always use the FULL sheet set (so --only x_both still gets the
+            # number read from its clearer sibling z_dec); key is stable too.
             facts_key = hashlib.sha256(
-                "".join(sorted(file_content_hash(t) for t in textures)).encode()
+                "".join(sorted(file_content_hash(t) for t in all_textures)).encode()
             ).hexdigest()
             cached = manifest["models"].get(model_rel)
-            if cached and cached.get("facts_key") == facts_key and "facts" in cached:
+            # Reuse only a *successful* (non-empty) cached read; an empty result
+            # was a failure and must be retried, not cached forever.
+            if cached and cached.get("facts_key") == facts_key and cached.get("facts"):
                 facts = cached["facts"]
                 tag = "cached"
             else:
-                print(f"  [facts] reading numbers/markings from {len(textures)} sheet(s)...")
-                facts = read_model_facts(textures, client)
-                manifest["models"][model_rel] = {
-                    "facts": facts, "vision_model": VISION_MODEL, "facts_key": facts_key,
-                }
+                print(f"  [facts] reading numbers/markings from {len(all_textures)} sheet(s)...")
+                facts = read_model_facts(all_textures, client)
+                if facts:  # never cache a failure
+                    manifest["models"][model_rel] = {
+                        "facts": facts, "vision_model": VISION_MODEL, "facts_key": facts_key,
+                    }
                 tag = "read"
             shown = facts.replace("\n", "\n    ") if facts else "(none)"
             print(f"  [facts] ({tag}) {model_rel}:\n    {shown}")
