@@ -1,27 +1,24 @@
 #!/usr/bin/env python3
 """
-Batch-remaster old, low-resolution train model textures using the OpenAI image
-editing API (gpt-image-1).
+Atlas-based texture remastering.
 
-For each train model listed in INPUT_REMASTER, every BMP texture (the model/*.bmp
-UV sheets plus the loco-level image.bmp thumbnail) is upscaled to a faithful
-high-resolution version at exactly 4x the original dimensions. Originals are never
-modified — all output goes under generated/.
+For each model listed in INPUT_REMASTER, this processes a SINGLE file — the model's
+combined texture atlas — instead of each UV sheet separately:
+
+    1. Build atlas.png for the model (shelf-packed UV textures, via atlas.py).
+    2. Upscale it 4x locally with PIL (LANCZOS)        -> atlas_4x_raw.png
+    3. Send atlas_4x_raw.png to the OpenAI image model with a short generic prompt
+       ("keep every element in the same position, only sharpen and add detail").
+    4. Save the result resized to exactly 4x the atlas size -> atlas_4x.png
+
+No per-texture heuristics and no analysis pass — the model just sharpens the packed
+sheet in place. Originals are never modified; a git-tracked atlas_4x.png copy is
+written next to the model.
 
 Usage:
-    python remaster_textures.py [--dry-run] [--limit N] [--quality medium]
+    python remaster_textures.py [--dry-run] [--limit N] [--quality high]
 
-Configure OPENAI_API_KEY in a .env file at the project root (or the environment),
-or pass it with --api-key. INPUT_REMASTER uses the same syntax as INPUT_LOCO.
-
-Pipeline per texture:
-    1. BMP -> RGB PNG (in memory, recording exact source w,h)
-    2. images.edit(gpt-image-1, primary + sibling references) at the nearest API size
-    3. save raw output         -> generated/<slug>/<texture>_ai_raw.png
-    4. crop/pad + resize to exact (w*4, h*4)
-                               -> generated/<slug>/<texture>_4x.png
-    5. 4-panel contact sheet   -> generated/<slug>/<texture>_contact.png
-    6. record entry in           generated/manifest.json
+Configure OPENAI_API_KEY in a .env file at the project root (or the environment).
 """
 
 import argparse
@@ -34,10 +31,11 @@ import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image
 
-from upload_utils import _repo_root, file_content_hash  # noqa: F401
+from atlas import build_texture_atlas
 from upload_loco import resolve_input_dirs
+from upload_utils import _repo_root
 
 try:
     from openai import OpenAI
@@ -49,307 +47,33 @@ except ImportError:
 INPUT_FILE = "INPUT_REMASTER"
 OUT_DIR = "generated"
 MANIFEST_NAME = "manifest.json"
-MODEL = "gpt-image-2"  # newest/best OpenAI image model available on this account
+MODEL = "gpt-image-2"
+UPSCALE = 4  # target output scale relative to the atlas
 
-# The thumbnail lives at the loco root; the UV sheets live in model/.
-THUMBNAIL_NAME = "image.bmp"
-
-# Subject descriptions are built per-texture AND per vehicle type (locomotive vs
-# passenger coach vs railcar, electric or not). Telling the model exactly what the
-# sheet depicts — including "this is a coach, it has NO pantograph" — stops it
-# inventing loco-only parts on a coach roof, etc.
-
-# Common reusable clauses shared by every side/end sheet.
-WHEELS_CLAUSE = (
-    " All wheels must be perfectly CIRCULAR in outline (a round rim, never oval or "
-    "elliptical), ALL THE SAME diameter and evenly spaced; keep each wheel's internal "
-    "structure — hub, axle, spokes/rays and rim — do NOT fill them in as plain solid "
-    "discs and do NOT make some wheels bigger than others."
-)
-GROUND_CLAUSE = (
-    " The vehicle RESTS ON THE GROUND: the bottom of the wheels must sit EXACTLY on the "
-    "bottom edge of the texture sheet (the lowest pixels of the wheels are the very "
-    "bottom row of the image) — the vehicle must not float, there must be no empty gap "
-    "below it, and do NOT draw any rail, track, sleeper, ground line, baseline, platform "
-    "or shadow beneath the wheels; the image simply ends at the bottom of the wheels."
-)
-
-VEHICLE_LABELS = {
-    "coach": "railway PASSENGER COACH (an unpowered carriage)",
-    "emu": "electric multiple-unit passenger railcar",
-    "dmu": "diesel multiple-unit passenger railcar",
-    "railcar": "self-propelled railcar",
-    "tram": "tram",
-    "metro": "metro / underground car",
-    "loco": "locomotive",
-    "vehicle": "rail vehicle",
-}
-
-
-def vehicle_info(model_dir: Path) -> tuple[str, bool]:
-    """Infer ``(kind, electric)`` from the model's repo path.
-
-    e.g. db/train/coach/cd_a -> ("coach", False);
-         db/train/loco/electric/cd_163 -> ("loco", True);
-         db/train/loco/diesel/... -> ("loco", False).
-    """
-    p = str(model_dir).lower()
-    if "coach" in p:
-        kind = "coach"
-    elif "emu" in p:
-        kind = "emu"
-    elif "dmu" in p:
-        kind = "dmu"
-    elif "motocar" in p:
-        kind = "railcar"
-    elif "tram" in p:
-        kind = "tram"
-    elif "metro" in p:
-        kind = "metro"
-    elif "loco" in p:
-        kind = "loco"
-    else:
-        kind = "vehicle"
-    electric = ("electric" in p) or kind in ("emu", "tram", "metro")
-    return kind, electric
-
-# Flat UV sheets (sides, ends, roof, gear): the #1 failure mode is the model
-# re-rendering them as a 3D perspective picture of a train. The prompt hammers
-# FLAT / ORTHOGRAPHIC / HEAD-ON and forbids perspective, camera angle and added
-# lighting so the output stays usable as a texture.
-FLAT_TEMPLATE = (
-    "This is a single flat 2D UV texture sheet for an old low-poly 3D train model — "
-    "a flat painted decal, like a game sprite sheet or a technical orthographic "
-    "elevation drawing. It shows {subject}. "
-    "Render it crisp and clean at {scale}x resolution, perfectly FLAT and "
-    "ORTHOGRAPHIC, viewed exactly straight-on and axis-aligned. ABSOLUTELY NO "
-    "perspective, NO camera angle, NO 3/4 view, NO foreshortening, NO added scene "
-    "lighting, NO drop shadows, NO reflections, NO 3D rendering, NO background — it "
-    "must stay a flat head-on sheet. "
-    "Make it look like a clean high-resolution texture: smooth gradients and edges, "
-    "recover plausible fine detail (panel seams, rivets, window frames, paint, "
-    "metal surfaces), and produce NO pixelation, blockiness or jagged/aliased edges. "
-    "Do NOT add new parts, new views, extra vehicles or imagined detail. Preserve "
-    "the original layout, proportions, orientation and framing EXACTLY. Reproduce "
-    "the input's framing one-to-one: the input may be LETTERBOXED with solid black "
-    "bars/margins — KEEP those black bars exactly where they are, do NOT draw into "
-    "them, and do NOT enlarge, zoom, shrink, crop or re-centre the train to fill "
-    "them; keep the train at its current size and position within its band. Do not "
-    "stretch or squash the content: aspect ratios must be preserved, so round shapes "
-    "(wheels, buffers, lamps) stay perfectly round and not oval. Keep every marking, "
-    "logo, number and text string in its original position and shape. The result "
-    "must read as the SAME flat texture sheet at higher resolution, never a 3D "
-    "picture of a train."
-)
-
-# The loco thumbnail (image.bmp) is genuinely a small 3D preview render, not a flat
-# texture — so here we DO allow a richer rendered look, just sharper and cleaner.
-THUMBNAIL_TEMPLATE = (
-    "This is a small low-resolution preview render of a complete {vehicle}. "
-    "Remaster it to a crisp {scale}x high-resolution version of the SAME image: "
-    "keep the exact same vehicle, livery, colours, camera angle, pose and "
-    "composition. Sharpen edges, clean up aliasing and JPEG/pixel artefacts, and "
-    "recover fine detail (panel lines, windows, glass, metal, markings, lights). "
-    "Render the side windows, doors and body markings to match THIS vehicle's "
-    "actual side texture sheets and the reference facts below (same window count and "
-    "shape for the side that is shown), not a generic vehicle. "
-    "Do NOT change the design, repaint it, move the camera, add scenery or invent "
-    "new text — just a faithful, higher-resolution, cleaner version of the same "
-    "preview. Keep the background as in the source."
-)
-
-
-def texture_subject(stem: str, kind: str = "loco", electric: bool = True) -> str:
-    """Return the subject description for a texture, tailored to the vehicle.
-
-    Matched by filename prefix; more specific prefixes (gearx, ploughx, ...) must
-    be tested before the bare axis letters. ``kind``/``electric`` adapt the text so
-    a coach is not described with a cab or pantograph, etc.
-    """
-    s = stem.lower()
-    vehicle = VEHICLE_LABELS.get(kind, VEHICLE_LABELS["vehicle"])
-    has_cab = kind != "coach"  # coaches have no driver's cab
-
-    if s.startswith(("gearx", "downx")):
-        return (f"the running gear / underframe at one END of the {vehicle} (bogies, "
-                "wheels, buffers, coupler, brake pipes) sitting in a mostly-empty black "
-                "sheet — most of this sheet is unused black space with detail only in a "
-                "small band")
-    if s.startswith("ploughx"):
-        return f"the snow plough / pilot at the END of the {vehicle}, on a mostly-black sheet"
-    if s.startswith("pant"):
-        return "a roof-mounted pantograph (current collector): thin metal arms, springs and contact strip, on a black sheet"
-    if s.startswith("ins"):
-        return "an insulator / roof electrical fitting, on a black sheet"
-    if s.startswith("x"):
-        face = ("driver's cab windows, headlights/marker lights, "
-                if has_cab else "an end gangway/connection door, end windows, ")
-        return (f"the flat END face of the {vehicle} viewed straight-on: {face}buffers "
-                "and coupling, and at the bottom the bogie/wheels seen end-on."
-                + WHEELS_CLAUSE + GROUND_CLAUSE)
-    if s.startswith("y"):
-        roof = f"the ROOF / top-down view of the {vehicle}: roof panels and seams, roof vents, hatches"
-        if electric:
-            roof += ", pantograph(s), insulators and high-voltage roof cables"
-        else:
-            roof += (". This vehicle is NOT electrically powered from overhead lines, so the roof has "
-                     "NO pantograph, NO insulators and NO high-voltage equipment — do not add any")
-        return roof
-    if s.startswith("z"):
-        windows = ("rows of evenly-spaced passenger windows and entrance/passenger doors"
-                   if kind == "coach"
-                   else "side windows, doors, louvres/grilles")
-        body = (f"the long SIDE elevation of the {vehicle}: {windows}, body panel seams, "
-                "numbering and markings along the side, and bogies with a row of wheels "
-                "along the bottom.")
-        if kind == "coach":
-            body += " It is a plain carriage: no driver's cab and no pantograph."
-        return body + WHEELS_CLAUSE + GROUND_CLAUSE
-    if s.startswith("image"):
-        return f"a small preview thumbnail showing the whole {vehicle}"
-    return f"a flat UV texture sheet for one part of a {vehicle}"
-
-
-# Genuinely-sparse sheets (mostly empty black UV space) where the black-mask is
-# worth keeping to stop hallucination. The body sheets (x_/y_/z_) fill the frame,
-# so they are NOT masked — masking them only produced blocky/"pixelated" edges.
-SPARSE_PREFIXES = ("gearx", "ploughx", "downx", "pant", "ins")
-
-
-def is_thumbnail(name: str) -> bool:
-    """True for the loco preview render (image.bmp), which is not a flat texture."""
-    return Path(name).stem.lower() == "image"
-
-
-def is_sparse(stem: str) -> bool:
-    """True for mostly-black sheets that still benefit from the (soft) black-mask."""
-    return stem.lower().startswith(SPARSE_PREFIXES)
-
-
-def build_prompt(stem: str, facts: str = "", palette: str = "",
-                 kind: str = "loco", electric: bool = True) -> tuple[str, str]:
-    """Return (prompt, prompt_hash) tailored to one texture and vehicle type.
-
-    ``facts`` is the per-model text read from all of its sheets (Pass 1); when
-    present it is appended so the model renders numbers/markings correctly.
-    ``palette`` is the model's exact livery hex colours (same for every sheet) so
-    shades stay consistent across sheets. ``kind``/``electric`` adapt the wording
-    to a coach vs locomotive vs railcar (e.g. a coach has no pantograph).
-    """
-    vehicle = VEHICLE_LABELS.get(kind, VEHICLE_LABELS["vehicle"])
-    if is_thumbnail(stem):
-        prompt = THUMBNAIL_TEMPLATE.format(scale=UPSCALE, vehicle=vehicle)
-    else:
-        prompt = FLAT_TEMPLATE.format(subject=texture_subject(stem, kind, electric), scale=UPSCALE)
-    if facts:
-        prompt += (
-            " Reference facts read from all texture sheets of this same vehicle "
-            f"(facts may be labelled by sheet filename):\n{facts}\nUse the facts that "
-            "apply to THIS sheet to render its running number, lettering, markings AND "
-            "its window layout/shape to match. The two sides of the vehicle can "
-            "legitimately differ, so follow the facts for THIS specific sheet rather "
-            "than copying another side. Do not invent different digits, text or window "
-            "shapes. Reproduce any operator logo/emblem EXACTLY as it appears in the "
-            "source image (identical shape, letters and any diacritics such as the caron "
-            "in 'ČD') — do not redesign it or replace it with a generic or different logo."
-        )
-    if palette:
-        prompt += (
-            f" Livery colour palette — use these EXACT colours and no others for the "
-            f"paintwork, identical on every sheet of this vehicle: {palette}. Match "
-            "these hex values precisely (e.g. the same single yellow for the band and "
-            "the same green for the body) so all sheets share one consistent livery."
-        )
-    return prompt, hashlib.sha256(prompt.encode("utf-8")).hexdigest()
-
-UPSCALE = 4  # target output scale relative to the source
-
-# gpt-image-1 only emits these fixed sizes.
+# gpt-image only emits these fixed sizes; we pick the closest by aspect ratio.
 SIZE_LANDSCAPE = "1536x1024"
 SIZE_PORTRAIT = "1024x1536"
 SIZE_SQUARE = "1024x1024"
 
-# --- Pricing -------------------------------------------------------------
-# These models are billed per token. The USD-per-million-token constants are
-# split out so they can be corrected against current OpenAI pricing without
-# touching the cost logic. Output-token price varies with quality. Treat the
-# reported cost_usd as approximate; the raw token usage is always recorded.
+PROMPT = (
+    "This is a texture atlas — several small low-resolution game textures packed "
+    "onto one sheet, upscaled and slightly blurry. Return a sharper, higher-"
+    "resolution version. IMPORTANT: keep every element in EXACTLY the same position, "
+    "size and layout — do not move, add, remove, rearrange, crop or recolour "
+    "anything, and keep all logos, text, numbers and colours exactly as they are. "
+    "Only sharpen edges and add fine, plausible detail to what is already present."
+)
+PROMPT_HASH = hashlib.sha256(PROMPT.encode("utf-8")).hexdigest()
+
+# --- Pricing (USD per million tokens; approximate — verify against OpenAI) ----
 PRICE_TEXT_INPUT_PER_M = 5.0
 PRICE_IMAGE_INPUT_PER_M = 10.0
-PRICE_IMAGE_OUTPUT_PER_M = {
-    "low": 40.0,
-    "medium": 40.0,
-    "high": 40.0,
-}
+PRICE_IMAGE_OUTPUT_PER_M = {"low": 40.0, "medium": 40.0, "high": 40.0}
 
 
 # ---------------------------------------------------------------------------
-# Texture collection
+# Helpers
 # ---------------------------------------------------------------------------
-
-def collect_textures(model_dir: Path) -> list[Path]:
-    """Return the BMP textures to remaster for one model.
-
-    All ``model/*.bmp`` UV sheets plus the loco ``image.bmp`` thumbnail (if any).
-    """
-    textures: list[Path] = []
-    model_sub = model_dir / "model"
-    if model_sub.is_dir():
-        textures.extend(sorted(model_sub.glob("*.bmp")))
-    thumb = model_dir / THUMBNAIL_NAME
-    if thumb.exists():
-        textures.append(thumb)
-    return textures
-
-
-def model_slug(model_dir: Path) -> str:
-    """Flat output-folder name: repo-relative path with '/' -> '__'."""
-    rel = model_dir.relative_to(_repo_root())
-    return str(rel).replace("/", "__").replace(" ", "_")
-
-
-# ---------------------------------------------------------------------------
-# Image helpers
-# ---------------------------------------------------------------------------
-
-def bmp_to_png_bytes(bmp_path: Path) -> tuple[bytes, tuple[int, int]]:
-    """Load a BMP, return (PNG bytes, (width, height)) without touching disk."""
-    img = Image.open(bmp_path).convert("RGB")
-    buf = io.BytesIO()
-    img.save(buf, "PNG")
-    return buf.getvalue(), img.size
-
-
-def extract_palette(paths: list[Path], k: int = 5) -> str:
-    """Deterministically sample the dominant livery colours of a model.
-
-    Quantises the body sheets (sides/ends/roof — skips the mostly-black gear/pant
-    sheets and the thumbnail), drops the near-black UV background, and returns the
-    top ``k`` colours as a hex string. Injecting the SAME palette into every sheet's
-    prompt keeps shades consistent across sheets (e.g. x_both's yellow == z_dec's).
-    """
-    bodies = [Image.open(p).convert("RGB") for p in paths
-              if not is_sparse(p.stem) and not is_thumbnail(p.name)]
-    if not bodies:
-        return ""
-    width = max(b.width for b in bodies)
-    canvas = Image.new("RGB", (width, sum(b.height for b in bodies)), (0, 0, 0))
-    y = 0
-    for b in bodies:
-        canvas.paste(b, (0, y))
-        y += b.height
-    quant = canvas.quantize(colors=16, method=Image.MEDIANCUT)
-    palette = quant.getpalette()
-    hexes: list[str] = []
-    for _count, idx in sorted(quant.getcolors(), reverse=True):
-        r, g, b = palette[idx * 3:idx * 3 + 3]
-        if r < 24 and g < 24 and b < 24:
-            continue  # skip the black UV background
-        hexes.append(f"#{r:02X}{g:02X}{b:02X}")
-        if len(hexes) >= k:
-            break
-    return ", ".join(hexes)
-
 
 def pick_size(w: int, h: int) -> str:
     """Closest supported output size by aspect ratio."""
@@ -361,100 +85,23 @@ def pick_size(w: int, h: int) -> str:
     return SIZE_SQUARE
 
 
-def letterbox_to_size(img: Image.Image, api_w: int, api_h: int
-                      ) -> tuple[Image.Image, tuple[float, float, float, float]]:
-    """Fit ``img`` into an (api_w, api_h) frame WITHOUT distortion (black bars).
-
-    Returns the framed image plus the content box as fractions
-    ``(left, top, right, bottom)`` of the frame. Preserving aspect this way keeps
-    circles circular (round wheels): the content sub-rectangle has the source
-    aspect, and after the model edit we crop that exact box back out and scale it
-    uniformly to the 4x target — so no squish/stretch is ever introduced.
-    """
-    img = img.convert("RGB")
-    w, h = img.size
-    scale = min(api_w / w, api_h / h)
-    cw, ch = max(1, round(w * scale)), max(1, round(h * scale))
-    left, top = (api_w - cw) // 2, (api_h - ch) // 2
-    canvas = Image.new("RGB", (api_w, api_h), (0, 0, 0))
-    canvas.paste(img.resize((cw, ch), Image.LANCZOS), (left, top))
-    box = (left / api_w, top / api_h, (left + cw) / api_w, (top + ch) / api_h)
-    return canvas, box
+def model_slug(model_dir: Path) -> str:
+    """Flat output-folder name: repo-relative path with '/' -> '__'."""
+    return str(model_dir.relative_to(_repo_root())).replace("/", "__").replace(" ", "_")
 
 
-def crop_fraction_resize(img: Image.Image, box: tuple[float, float, float, float],
-                         tw: int, th: int) -> Image.Image:
-    """Crop ``img`` to the fractional ``box`` then LANCZOS-resize to (tw, th)."""
-    img = img.convert("RGB")
-    w, h = img.size
-    crop = (round(box[0] * w), round(box[1] * h), round(box[2] * w), round(box[3] * h))
-    return img.crop(crop).resize((tw, th), Image.LANCZOS)
+def call_openai_edit(client, png_bytes: bytes, size: str, quality: str):
+    """Sharpen a single image via images.edit."""
+    return client.images.edit(
+        model=MODEL,
+        image=("atlas.png", io.BytesIO(png_bytes), "image/png"),
+        prompt=PROMPT,
+        size=size,
+        quality=quality,
+    )
 
-
-def apply_black_mask(final: Image.Image, source: Image.Image, threshold: int = 16) -> Image.Image:
-    """Force the large empty (near-black) UV regions of ``source`` back to black.
-
-    Used only for genuinely-sparse sheets (gear/pant/...), to stop the model
-    hallucinating in empty space. The boundary is feathered so it does NOT
-    reintroduce blocky/"pixelated" edges: the keep-region is built at source
-    resolution, eroded 1px so content edges aren't clipped, upscaled with LANCZOS
-    (not NEAREST), and Gaussian-blurred before compositing.
-    """
-    final = final.convert("RGB")
-    src_l = source.convert("L")
-    # Binary keep-mask at source resolution (white = has content).
-    keep = src_l.point(lambda p: 255 if p >= threshold else 0)
-    # Erode 1px (MinFilter shrinks the white region) so we never clip content edges.
-    keep = keep.filter(ImageFilter.MinFilter(3))
-    # Smooth upscale to target, then feather the boundary.
-    keep = keep.resize(final.size, Image.LANCZOS)
-    keep = keep.filter(ImageFilter.GaussianBlur(radius=max(1, final.size[0] // 256)))
-    black = Image.new("RGB", final.size, (0, 0, 0))
-    return Image.composite(final, black, keep)
-
-
-def build_contact_sheet(
-    original: Image.Image,
-    classical: Image.Image,
-    ai_raw: Image.Image,
-    final: Image.Image,
-    out_path: Path,
-) -> None:
-    """Write a labelled 4-panel comparison sheet."""
-    labels = ["original", "classical 4x", "AI raw", "final 4x"]
-    panels = [original, classical, ai_raw, final]
-
-    panel_h = 256
-    label_h = 18
-    pad = 8
-
-    scaled = []
-    for p in panels:
-        p = p.convert("RGB")
-        w = max(1, round(p.width * panel_h / p.height))
-        scaled.append(p.resize((w, panel_h), Image.NEAREST))
-
-    total_w = sum(p.width for p in scaled) + pad * (len(scaled) + 1)
-    total_h = panel_h + label_h + pad * 2
-    sheet = Image.new("RGB", (total_w, total_h), (32, 32, 32))
-    draw = ImageDraw.Draw(sheet)
-
-    x = pad
-    for label, p in zip(labels, scaled):
-        sheet.paste(p, (x, pad + label_h))
-        draw.text((x, pad // 2), label, fill=(230, 230, 230))
-        x += p.width + pad
-
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    sheet.save(out_path, "PNG")
-
-
-# ---------------------------------------------------------------------------
-# Cost
-# ---------------------------------------------------------------------------
 
 def extract_usage(resp) -> dict:
-    """Pull token usage out of an images response into a plain dict."""
     usage = getattr(resp, "usage", None)
     if usage is None:
         return {}
@@ -468,24 +115,39 @@ def extract_usage(resp) -> dict:
 
 
 def compute_cost(usage: dict, quality: str) -> float:
-    """USD cost for one call from token usage."""
     if not usage:
         return 0.0
-    text_in = usage.get("input_text_tokens", 0)
-    image_in = usage.get("input_image_tokens", 0)
-    out = usage.get("output_tokens", 0)
     out_price = PRICE_IMAGE_OUTPUT_PER_M.get(quality, 40.0)
     return round(
-        text_in / 1e6 * PRICE_TEXT_INPUT_PER_M
-        + image_in / 1e6 * PRICE_IMAGE_INPUT_PER_M
-        + out / 1e6 * out_price,
+        usage.get("input_text_tokens", 0) / 1e6 * PRICE_TEXT_INPUT_PER_M
+        + usage.get("input_image_tokens", 0) / 1e6 * PRICE_IMAGE_INPUT_PER_M
+        + usage.get("output_tokens", 0) / 1e6 * out_price,
         6,
     )
 
 
-# ---------------------------------------------------------------------------
-# Manifest
-# ---------------------------------------------------------------------------
+def build_contact_sheet(atlas: Image.Image, raw4x: Image.Image, final: Image.Image,
+                        out_path: Path) -> None:
+    """Write a 3-panel before/after comparison (atlas | classical 4x | AI 4x)."""
+    labels = ["atlas", "classical 4x", "AI 4x"]
+    panel_h, pad = 256, 8
+    scaled = []
+    for p in (atlas, raw4x, final):
+        p = p.convert("RGB")
+        w = max(1, round(p.width * panel_h / p.height))
+        scaled.append(p.resize((w, panel_h), Image.NEAREST))
+    total_w = sum(p.width for p in scaled) + pad * (len(scaled) + 1)
+    sheet = Image.new("RGB", (total_w, panel_h + pad * 2 + 16), (32, 32, 32))
+    from PIL import ImageDraw
+    draw = ImageDraw.Draw(sheet)
+    x = pad
+    for label, p in zip(labels, scaled):
+        sheet.paste(p, (x, pad + 16))
+        draw.text((x, pad // 2), label, fill=(230, 230, 230))
+        x += p.width + pad
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    sheet.save(out_path, "PNG")
+
 
 def load_manifest(path: Path) -> dict:
     if path.exists():
@@ -493,199 +155,76 @@ def load_manifest(path: Path) -> dict:
             return json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             pass
-    return {"flat_template": FLAT_TEMPLATE, "thumbnail_template": THUMBNAIL_TEMPLATE,
-            "entries": {}}
+    return {"prompt": PROMPT, "prompt_hash": PROMPT_HASH, "entries": {}}
 
 
 def save_manifest(path: Path, manifest: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-    )
+    path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
+                    encoding="utf-8")
 
 
 # ---------------------------------------------------------------------------
-# Pass 1: read shared facts (numbers/markings) from all of a model's sheets
+# Core per-model processing
 # ---------------------------------------------------------------------------
 
-VISION_MODEL = "gpt-4o"  # better at reading tiny digits than -mini
-VISION_UPSCALE_W = 512   # enlarge each tiny sheet before sending so text is legible
-
-FACTS_PROMPT = (
-    "These images are the low-resolution texture sheets of a single old 3D train "
-    "model — one rail vehicle (it may be a LOCOMOTIVE, a self-propelled RAILCAR, or an "
-    "unpowered passenger COACH). Different views of the SAME vehicle: side elevations, "
-    "end faces, roof, gear, and a preview thumbnail. Read them together and report "
-    "concise PLAIN-TEXT facts, LABELLED BY SHEET FILENAME where they differ. Cover:\n"
-    "- what kind of vehicle this is (locomotive / railcar / passenger coach) and "
-    "whether it has a driver's cab and a roof pantograph, or none\n"
-    "- every running/serial number and registration plate you can read, with the "
-    "EXACT digits, and which sheet shows it most clearly\n"
-    "- railway/operator lettering and any other markings\n"
-    "- the operator LOGO/EMBLEM: describe it precisely — the exact letters (with any "
-    "diacritics, e.g. 'ČD' has a caron over the C), its style/shape, colour and where "
-    "it sits. State that it must be reproduced exactly, not redrawn as a generic logo\n"
-    "- the livery colours and their arrangement, described precisely (e.g. which exact "
-    "green, which exact yellow) and confirm the SAME shades are used on every sheet\n"
-    "- the SIDE WINDOW layout of each side sheet: how many windows/openings, their "
-    "shape (rectangular, rounded-corner, square or round), how they are grouped and "
-    "roughly where they sit along the side. IMPORTANT: the two sides of this "
-    "vehicle (e.g. z_dec vs z_inc) may GENUINELY DIFFER, so describe each side "
-    "sheet separately and state which side the preview thumbnail shows.\n"
-    "- the wheels along the bottom of the side sheets: how many, confirm they are all "
-    "the SAME size and round, and that they sit right at the very bottom edge of the "
-    "sheet (there is NO rail, track or ground drawn beneath them).\n"
-    "Be precise about digits. If something is partly illegible, give your best single "
-    "reading. Keep it reasonably short."
-)
-
-
-def read_model_facts(textures: list[Path], client) -> str:
-    """Pass 1: one vision call over all of a model's sheets -> shared text facts.
-
-    Returns '' on any failure (the batch then proceeds without injected facts).
-    """
-    try:
-        content: list[dict] = [{"type": "text", "text": FACTS_PROMPT}]
-        for t in textures:
-            img = Image.open(t).convert("RGB")
-            # Upscale tiny sheets so the vision model can actually read the digits.
-            if img.width < VISION_UPSCALE_W:
-                scale = VISION_UPSCALE_W / img.width
-                img = img.resize((VISION_UPSCALE_W, max(1, round(img.height * scale))), Image.LANCZOS)
-            buf = io.BytesIO()
-            img.save(buf, "PNG")
-            b64 = base64.b64encode(buf.getvalue()).decode("ascii")
-            content.append({"type": "text", "text": f"Sheet: {t.name}"})
-            content.append({
-                "type": "image_url",
-                "image_url": {"url": f"data:image/png;base64,{b64}", "detail": "high"},
-            })
-        resp = client.chat.completions.create(
-            model=VISION_MODEL,
-            messages=[{"role": "user", "content": content}],
-            max_tokens=400,
-        )
-        return (resp.choices[0].message.content or "").strip()
-    except Exception as exc:  # noqa: BLE001 - facts are best-effort; never break the batch
-        print(f"  [facts] WARNING: vision read failed ({type(exc).__name__}: {exc})")
-        return ""
-
-
-# ---------------------------------------------------------------------------
-# Core per-texture processing
-# ---------------------------------------------------------------------------
-
-def call_openai_edit(client, primary_png: bytes, prompt: str, size: str, quality: str):
-    """Remaster a single texture via images.edit.
-
-    Only the target image is sent. gpt-image-1's images.edit *composites* every
-    image passed in the ``image[]`` array, so sending sibling textures as
-    "references" merges them into the output sheet — never do that here.
-    """
-    return client.images.edit(
-        model=MODEL,
-        image=("primary.png", io.BytesIO(primary_png), "image/png"),
-        prompt=prompt,
-        size=size,
-        quality=quality,
-    )
-
-
-def process_texture(
-    tex_path: Path, out_dir: Path, slug: str, model_rel: str, client,
-    quality: str, dry_run: bool, db_copy: bool, black_mask: bool,
-    facts: str = "", palette: str = "", kind: str = "loco", electric: bool = True,
-) -> dict:
-    """Remaster one texture. Returns its manifest entry."""
-    stem = tex_path.stem
-    thumb = is_thumbnail(stem)
-    sparse = is_sparse(stem)
-    masked = black_mask and sparse  # body sheets are never masked (avoids pixelation)
-    src_hash = file_content_hash(tex_path)
-    prompt, prompt_hash = build_prompt(stem, facts, palette, kind, electric)
-    primary_png, (w, h) = bmp_to_png_bytes(tex_path)
+def process_model(model_dir: Path, atlas_png: bytes, atlas_hash: str, out_root: Path,
+                  slug: str, client, quality: str, dry_run: bool, db_copy: bool) -> dict:
+    """Remaster one model's (already built) atlas. Returns its manifest entry."""
+    atlas = Image.open(io.BytesIO(atlas_png)).convert("RGB")
+    w, h = atlas.size
     tw, th = w * UPSCALE, h * UPSCALE
-    size = pick_size(w, h)
 
-    raw_path = out_dir / f"{stem}_ai_raw.png"
-    final_path = out_dir / f"{stem}_4x.png"
-    contact_path = out_dir / f"{stem}_contact.png"
-    # Result copy written next to the source in db/ (git-tracked deliverable).
-    db_path = tex_path.with_name(f"{stem}_4x.png")
+    out_dir = out_root / slug
+    atlas_path = out_dir / "atlas.png"
+    raw_path = out_dir / "atlas_4x_raw.png"
+    final_path = out_dir / "atlas_4x.png"
+    contact_path = out_dir / "atlas_contact.png"
+    db_path = model_dir / "atlas_4x.png"  # next to the model (git-tracked deliverable)
 
     entry = {
-        "model": model_rel,
-        "texture": tex_path.name,
-        "source_path": str(tex_path.relative_to(_repo_root())),
-        "source_size": [w, h],
-        "ai_raw_path": str(raw_path.relative_to(_repo_root())),
-        "final_path": str(final_path.relative_to(_repo_root())),
-        "db_copy_path": None,
+        "model": str(model_dir.relative_to(_repo_root())),
+        "atlas_size": [w, h],
         "final_size": [tw, th],
+        "size_requested": pick_size(tw, th),
+        "atlas_path": str(atlas_path.relative_to(_repo_root())),
+        "atlas_4x_raw_path": str(raw_path.relative_to(_repo_root())),
+        "atlas_4x_path": str(final_path.relative_to(_repo_root())),
+        "db_copy_path": None,
         "model_used": MODEL,
         "quality": quality,
-        "vehicle_kind": kind,
-        "subject": texture_subject(stem, kind, electric),
-        "is_thumbnail": thumb,
-        "masked": masked,
-        "palette": palette,
-        "prompt_hash": prompt_hash,
-        "source_hash": src_hash,
-        "size_requested": size,
+        "prompt_hash": PROMPT_HASH,
+        "atlas_hash": atlas_hash,
         "usage": {},
         "cost_usd": 0.0,
         "status": "ok",
         "error": None,
     }
 
-    original = Image.open(io.BytesIO(primary_png)).convert("RGB")
-    classical = original.resize((tw, th), Image.LANCZOS)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    atlas.save(atlas_path, "PNG")
+    raw4x = atlas.resize((tw, th), Image.LANCZOS)
+    raw4x.save(raw_path, "PNG")
 
     if dry_run:
-        # No API call: placeholder AI raw from the classical upscale so layout/
-        # contact-sheet/cost logic can be exercised for free. Never writes into
-        # db/ (placeholder data must not pollute the tracked tree).
-        ai_raw = classical.copy()
-        final = classical.copy()
-        out_dir.mkdir(parents=True, exist_ok=True)
-        ai_raw.save(raw_path, "PNG")
-        final.save(final_path, "PNG")
-        build_contact_sheet(original, classical, ai_raw, final, contact_path)
+        # No API call: the classical upscale stands in for the AI result so the
+        # layout/contact/manifest logic can be checked for free. No db/ write.
+        raw4x.save(final_path, "PNG")
+        build_contact_sheet(atlas, raw4x, raw4x, contact_path)
         entry["status"] = "dry-run"
         return entry
 
     try:
-        # Letterbox the source into the API frame WITHOUT distortion (black bars),
-        # then crop the same region back out below. This keeps the scale uniform
-        # end-to-end so circles stay circular (round wheels). Stretching the source
-        # to fill the frame instead would squish wheels into ellipses whenever the
-        # source aspect is far from the API's (e.g. wide z_* side sheets at 2.8:1
-        # vs the API's max 1.5:1). The prompt tells the model to keep the bars black.
-        api_w, api_h = (int(v) for v in size.split("x"))
-        framed, content_box = letterbox_to_size(original, api_w, api_h)
-        api_input = io.BytesIO()
-        framed.save(api_input, "PNG")
-        resp = call_openai_edit(client, api_input.getvalue(), prompt, size, quality)
-        b64 = resp.data[0].b64_json
-        raw_bytes = base64.b64decode(b64)
-        ai_raw = Image.open(io.BytesIO(raw_bytes)).convert("RGB")
-
-        out_dir.mkdir(parents=True, exist_ok=True)
-        raw_path.write_bytes(raw_bytes)
-        # Crop the content region back out (undoing the letterbox), then scale
-        # uniformly to the exact 4x target — no aspect distortion, no squished wheels.
-        final = crop_fraction_resize(ai_raw, content_box, tw, th)
-        # Safety net for genuinely-sparse sheets only (gear/pant/...): force the
-        # large empty UV regions back to black so the model can't leave invented
-        # detail there. Body sheets and the thumbnail are never masked — masking
-        # them only reintroduced blocky/pixelated edges.
-        if masked:
-            final = apply_black_mask(final, original)
+        buf = io.BytesIO()
+        raw4x.save(buf, "PNG")
+        resp = call_openai_edit(client, buf.getvalue(), entry["size_requested"], quality)
+        out_bytes = base64.b64decode(resp.data[0].b64_json)
+        # Resize the (fixed-size) model output back to the exact 4x atlas dims so
+        # the packed sub-textures stay aligned with the atlas UV map.
+        final = Image.open(io.BytesIO(out_bytes)).convert("RGB").resize((tw, th), Image.LANCZOS)
         final.save(final_path, "PNG")
-        build_contact_sheet(original, classical, ai_raw, final, contact_path)
+        build_contact_sheet(atlas, raw4x, final, contact_path)
 
-        # Git-tracked deliverable next to the source — real successful runs only.
         if db_copy:
             final.save(db_path, "PNG")
             entry["db_copy_path"] = str(db_path.relative_to(_repo_root()))
@@ -706,32 +245,20 @@ def process_texture(
 def main():
     load_dotenv(_repo_root() / ".env")
 
-    parser = argparse.ArgumentParser(description="Remaster train textures with gpt-image-1.")
+    parser = argparse.ArgumentParser(description="Remaster model texture atlases with gpt-image-2.")
     parser.add_argument("--api-key", help="OpenAI API key (overrides .env / env)")
     parser.add_argument("--input", default=INPUT_FILE, help=f"Input file (default: {INPUT_FILE})")
     parser.add_argument("--out-dir", default=OUT_DIR, help=f"Output dir (default: {OUT_DIR})")
     parser.add_argument("--quality", choices=["low", "medium", "high"], default="high")
     parser.add_argument("--no-db-copy", action="store_true",
-                        help="Do not write the _4x.png result next to the source in db/")
-    parser.add_argument("--no-black-mask", action="store_true",
-                        help="Do not force originally-black source pixels back to black in the output")
-    parser.add_argument("--no-context", action="store_true",
-                        help="Skip the Pass-1 vision read of numbers/markings from sibling sheets")
-    parser.add_argument("--refresh-facts", action="store_true",
-                        help="Force a fresh Pass-1 vision read, ignoring any cached facts")
+                        help="Do not write atlas_4x.png next to the model in db/")
     parser.add_argument("--dry-run", action="store_true",
-                        help="Skip the API call; still write source/classical/contact/manifest")
+                        help="Skip the API call; still write atlas/raw/contact/manifest")
     parser.add_argument("--limit", type=int, default=0,
-                        help="Cap number of textures processed this run (0 = no cap)")
-    parser.add_argument("--only", default="",
-                        help="Only process textures with these exact name(s)/stem(s), "
-                             "comma-separated (e.g. --only z_dec,z_inc — matches z_dec.bmp "
-                             "and z_inc.bmp but NOT gearx_both). Saves credits when debugging.")
+                        help="Cap number of models processed this run (0 = no cap)")
     args = parser.parse_args()
 
     db_copy = not args.no_db_copy
-    black_mask = not args.no_black_mask
-    use_context = not args.no_context
 
     client = None
     if not args.dry_run:
@@ -755,119 +282,60 @@ def main():
     out_root = _repo_root() / args.out_dir
     manifest_path = out_root / MANIFEST_NAME
     manifest = load_manifest(manifest_path)
+    manifest["prompt"] = PROMPT
+    manifest["prompt_hash"] = PROMPT_HASH
     entries: dict = manifest["entries"]
-    manifest.setdefault("models", {})  # per-model facts cache
-    manifest["flat_template"] = FLAT_TEMPLATE
-    manifest["thumbnail_template"] = THUMBNAIL_TEMPLATE
 
     processed = 0
     total_cost = 0.0
-    counts = {"ok": 0, "cached": 0, "dry-run": 0, "error": 0}
+    counts = {"ok": 0, "cached": 0, "dry-run": 0, "error": 0, "skip": 0}
 
     for mi, (_override, model_dir) in enumerate(model_dirs, 1):
-        model_rel = str(model_dir.relative_to(_repo_root()))
-        all_textures = collect_textures(model_dir)  # full set (always used for facts context)
-        if args.only:
-            wanted = {s.strip() for s in args.only.split(",") if s.strip()}
-            textures = [t for t in all_textures if wanted & {t.stem, t.name}]
-        else:
-            textures = all_textures
-        if not textures:
-            print(f"[{mi}/{len(model_dirs)}] {model_rel}: no textures, skipping")
-            continue
-
-        slug = model_slug(model_dir)
-        out_dir = out_root / slug
-        kind, electric = vehicle_info(model_dir)
-        print(f"[{mi}/{len(model_dirs)}] {model_rel} -> {slug} "
-              f"({len(textures)} texture(s), kind={kind}, electric={electric})")
-
-        def _needs_work(tex: Path) -> bool:
-            if args.dry_run:
-                return True
-            p = entries.get(f"{slug}/{tex.name}")
-            fp = out_dir / f"{tex.stem}_4x.png"
-            return not (p and p.get("status") in ("ok", "dry-run") and fp.exists()
-                        and p.get("source_hash") == file_content_hash(tex))
-
-        # Pass 1: read shared numbers/markings once per model (cached by source
-        # hashes), but only when there is real work and the API is in play.
-        facts = ""
-        any_work = (not args.limit or processed < args.limit) and any(_needs_work(t) for t in textures)
-        if use_context and any_work and not args.dry_run and client is not None:
-            # Facts always use the FULL sheet set (so --only x_both still gets the
-            # number read from its clearer sibling z_dec); key is stable too.
-            facts_key = hashlib.sha256(
-                "".join(sorted(file_content_hash(t) for t in all_textures)).encode()
-            ).hexdigest()
-            cached = manifest["models"].get(model_rel)
-            # Reuse only a *successful* (non-empty) cached read; an empty result
-            # was a failure and must be retried, not cached forever. --refresh-facts
-            # bypasses the cache and forces a fresh read.
-            if (not args.refresh_facts and cached
-                    and cached.get("facts_key") == facts_key and cached.get("facts")):
-                facts = cached["facts"]
-                tag = "cached"
-            else:
-                print(f"  [facts] reading numbers/markings from {len(all_textures)} sheet(s)...")
-                facts = read_model_facts(all_textures, client)
-                if facts:  # never cache a failure
-                    manifest["models"][model_rel] = {
-                        "facts": facts, "vision_model": VISION_MODEL, "facts_key": facts_key,
-                    }
-                tag = "read"
-            shown = facts.replace("\n", "\n    ") if facts else "(none)"
-            print(f"  [facts] ({tag}) {model_rel}:\n    {shown}")
-
-        # Deterministic livery palette (local, no API) shared by every sheet so
-        # colours stay consistent across them (e.g. x_both's yellow == z_dec's).
-        palette = extract_palette(all_textures) if (any_work and not args.dry_run) else ""
-        if palette:
-            print(f"  [palette] {palette}")
-
-        for tex in textures:
-            if args.limit and processed >= args.limit:
-                print(f"  --limit {args.limit} reached, stopping.")
-                break
-
-            key = f"{slug}/{tex.name}"
-            final_path = out_dir / f"{tex.stem}_4x.png"
-            prev = entries.get(key)
-            # Resume guard: a real successful result + unchanged source -> skip.
-            # Only "ok" counts; a "dry-run" placeholder must never block a real run.
-            if (not args.dry_run and prev and prev.get("status") == "ok"
-                    and final_path.exists()
-                    and prev.get("source_hash") == file_content_hash(tex)):
-                print(f"  [cached] {tex.name}")
-                counts["cached"] += 1
-                continue
-
-            entry = process_texture(
-                tex, out_dir, slug, model_rel, client,
-                args.quality, args.dry_run, db_copy, black_mask, facts, palette,
-                kind, electric,
-            )
-            entries[key] = entry
-            save_manifest(manifest_path, manifest)  # persist after each texture
-
-            status = entry["status"]
-            counts[status] = counts.get(status, 0) + 1
-            total_cost += entry.get("cost_usd", 0.0)
-            processed += 1
-            if status == "error":
-                print(f"  [error] {tex.name}: {entry['error']}")
-            else:
-                print(f"  [{status}] {tex.name} -> {tex.stem}_4x.png "
-                      f"({entry['final_size'][0]}x{entry['final_size'][1]}, "
-                      f"${entry['cost_usd']:.4f})")
-
         if args.limit and processed >= args.limit:
             break
+        slug = model_slug(model_dir)
+        model_rel = str(model_dir.relative_to(_repo_root()))
+        print(f"[{mi}/{len(model_dirs)}] {model_rel} -> {slug}")
+
+        # Build the atlas first (cheap, local) so we can key the resume guard on it.
+        model_sub = model_dir / "model"
+        model_xml = model_sub / "index.xml"
+        if not model_xml.exists():
+            print("  [skip] no model/index.xml")
+            counts["skip"] += 1
+            continue
+        atlas_png, _m, _r = build_texture_atlas(model_sub, model_xml)
+        if not atlas_png:
+            print("  [skip] no textures in atlas")
+            counts["skip"] += 1
+            continue
+        atlas_hash = hashlib.sha256(atlas_png).hexdigest()
+
+        final_path = out_root / slug / "atlas_4x.png"
+        prev = entries.get(slug)
+        if (not args.dry_run and prev and prev.get("status") == "ok"
+                and final_path.exists() and prev.get("atlas_hash") == atlas_hash):
+            print("  [cached] atlas unchanged")
+            counts["cached"] += 1
+            continue
+
+        entry = process_model(model_dir, atlas_png, atlas_hash, out_root, slug, client,
+                              args.quality, args.dry_run, db_copy)
+        entries[slug] = entry
+        save_manifest(manifest_path, manifest)
+        status = entry["status"]
+        counts[status] = counts.get(status, 0) + 1
+        total_cost += entry.get("cost_usd", 0.0)
+        processed += 1
+        if status == "error":
+            print(f"  [error] {entry['error']}")
+        else:
+            print(f"  [{status}] atlas_4x.png "
+                  f"({entry['final_size'][0]}x{entry['final_size'][1]}, ${entry['cost_usd']:.4f})")
 
     save_manifest(manifest_path, manifest)
-    print(f"\nDone. {counts['ok']} ok, {counts['cached']} cached, "
-          f"{counts['dry-run']} dry-run, {counts['error']} error. "
-          f"Total cost: ${total_cost:.4f}")
+    print(f"\nDone. {counts['ok']} ok, {counts['cached']} cached, {counts['dry-run']} dry-run, "
+          f"{counts['error']} error, {counts['skip']} skipped. Total cost: ${total_cost:.4f}")
     print(f"Manifest: {manifest_path}")
 
 

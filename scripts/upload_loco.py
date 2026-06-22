@@ -24,10 +24,9 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from atlas import build_texture_atlas, compute_atlas_source_hash
 from upload_utils import (
     _repo_root,
-    build_texture_atlas,
-    compute_atlas_source_hash,
     convert_model_xml_to_glb,
     detect_material_pbr,
     file_content_hash,
