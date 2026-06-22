@@ -72,6 +72,20 @@ ATLAS_PROMPT = (
 )
 
 
+def atlas_prompt_for(model_dir: Path) -> str:
+    """Atlas prompt plus the model's catalogue identifier as context, so the model
+    can resolve a blurry running number to the correct class (e.g. cd_163 -> 163)."""
+    rel = model_dir.relative_to(_repo_root())
+    return ATLAS_PROMPT + (
+        f" Context — this vehicle's catalogue identifier is '{model_dir.name}' "
+        f"(path '{rel}'). Use it to resolve any text that is too blurry to read for "
+        "certain: in particular, the running/serial number painted on the vehicle must "
+        "be consistent with this identifier's class/series digits (for example a name "
+        "like 'cd_163' means the number is a 163-series number, not 151). Do not invent "
+        "a different class number than the one implied by the identifier."
+    )
+
+
 # ---------------------------------------------------------------------------
 # Model resolution
 # ---------------------------------------------------------------------------
@@ -284,7 +298,8 @@ def prepare(model_dir: Path, out_root: Path, client, quality: str, pad: int,
     else:
         buf = io.BytesIO()
         raw_for_ai.save(buf, "PNG")
-        resp = call_openai_edit(client, buf.getvalue(), size, quality, prompt=ATLAS_PROMPT)
+        resp = call_openai_edit(client, buf.getvalue(), size, quality,
+                                prompt=atlas_prompt_for(model_dir))
         ai = Image.open(io.BytesIO(base64.b64decode(resp.data[0].b64_json))).convert("RGB")
         usage = extract_usage(resp)
         cost = compute_cost(usage, quality)
