@@ -1,0 +1,17 @@
+# Train models to remaster with AI texture upscaling.
+#
+# Same syntax as INPUT_LOCO:
+#   - one path (relative to repo root) per line
+#   - lines ending with /*   expand to all sub-directories
+#   - lines ending with /*/* expand two directory levels deep
+#   - SKIP:path           excludes a directory
+#   - !PREFIX:path        (path override; ignored by this pipeline)
+#   - lines starting with # are comments
+#
+# Seeded with a SMALL subset for the first validation run. Once the quality and
+# per-image cost look right, broaden this list, e.g.:
+#   db/train/loco/electric/*
+#   db/train/loco/diesel/*
+#   db/train/coach/*
+
+db/train/loco/electric/cd_163
