@@ -54,45 +54,64 @@ MODEL = "gpt-image-2"  # newest/best OpenAI image model available on this accoun
 # The thumbnail lives at the loco root; the UV sheets live in model/.
 THUMBNAIL_NAME = "image.bmp"
 
-# Per-texture-type subject descriptions, keyed by filename. The model is told
-# exactly what each UV sheet depicts so it sharpens the right thing instead of
-# inventing a whole vehicle in empty space (e.g. z_inc = side, y_dec = roof).
-# Matched in order: first key that is a prefix of the lowercased stem wins, so
-# more specific prefixes (gearx, ploughx, ...) must come before the bare axis.
-TEXTURE_SUBJECTS: list[tuple[str, str]] = [
-    ("gearx", "the running gear / underframe at one END of the vehicle (bogies, "
-              "wheels, buffers, coupler, brake pipes) sitting in a mostly-empty "
-              "black sheet — most of this sheet is unused black space with detail "
-              "only in a small band"),
-    ("ploughx", "the snow plough / pilot at the END of the vehicle, on an otherwise "
-                "mostly-black sheet"),
-    ("downx", "the underframe / underbody detail at the vehicle END, on a mostly-black sheet"),
-    ("pant", "a roof-mounted pantograph (current collector): thin metal arms, "
-             "springs and contact strip, on a black sheet"),
-    ("ins", "an insulator / roof electrical fitting, on a black sheet"),
-    ("x", "the flat END (front/rear cab) face of the locomotive viewed straight-on: "
-          "cab windows, headlights/marker lights, buffers and coupling, end door, and "
-          "at the bottom the wheels/bogie seen end-on. The locomotive RESTS ON THE "
-          "GROUND: the bottom of the wheels and the lowest part of the end must sit "
-          "EXACTLY on the bottom edge of the texture sheet (just like the side sheets) "
-          "— the train must not float, there must be no empty gap below it, and no "
-          "rail, track or ground line drawn beneath it"),
-    ("y", "the ROOF / top-down view of the locomotive (roof panels and seams, "
-          "vents, fan grilles, pantograph mounts, insulators, cable runs)"),
-    ("z", "the long SIDE elevation of the locomotive body (side windows, doors, "
-          "louvres/grilles, body panel seams, numbering and markings along the side, "
-          "and a row of wheels along the bottom). The wheels must be perfectly "
-          "CIRCULAR in outline (a round rim, not oval or elliptical) and of equal size, "
-          "evenly spaced; keep each wheel's internal structure — hub, axle, spokes/rays "
-          "and rim — as in the source, do NOT fill them in as plain solid discs. The "
-          "bottom of each wheel must sit EXACTLY on the bottom edge of the texture sheet, so the "
-          "lowest pixels of the wheels are the very bottom row of the image with no gap "
-          "beneath. Do NOT draw any rail, track, sleeper, ground, ground line, baseline, "
-          "platform, shadow or any strip below the wheels — there is nothing under the "
-          "wheels, the image simply ends at the bottom of the wheels"),
-    ("image", "a small preview thumbnail showing the whole locomotive"),
-]
-DEFAULT_SUBJECT = "a flat UV texture sheet for one part of a locomotive"
+# Subject descriptions are built per-texture AND per vehicle type (locomotive vs
+# passenger coach vs railcar, electric or not). Telling the model exactly what the
+# sheet depicts — including "this is a coach, it has NO pantograph" — stops it
+# inventing loco-only parts on a coach roof, etc.
+
+# Common reusable clauses shared by every side/end sheet.
+WHEELS_CLAUSE = (
+    " All wheels must be perfectly CIRCULAR in outline (a round rim, never oval or "
+    "elliptical), ALL THE SAME diameter and evenly spaced; keep each wheel's internal "
+    "structure — hub, axle, spokes/rays and rim — do NOT fill them in as plain solid "
+    "discs and do NOT make some wheels bigger than others."
+)
+GROUND_CLAUSE = (
+    " The vehicle RESTS ON THE GROUND: the bottom of the wheels must sit EXACTLY on the "
+    "bottom edge of the texture sheet (the lowest pixels of the wheels are the very "
+    "bottom row of the image) — the vehicle must not float, there must be no empty gap "
+    "below it, and do NOT draw any rail, track, sleeper, ground line, baseline, platform "
+    "or shadow beneath the wheels; the image simply ends at the bottom of the wheels."
+)
+
+VEHICLE_LABELS = {
+    "coach": "railway PASSENGER COACH (an unpowered carriage)",
+    "emu": "electric multiple-unit passenger railcar",
+    "dmu": "diesel multiple-unit passenger railcar",
+    "railcar": "self-propelled railcar",
+    "tram": "tram",
+    "metro": "metro / underground car",
+    "loco": "locomotive",
+    "vehicle": "rail vehicle",
+}
+
+
+def vehicle_info(model_dir: Path) -> tuple[str, bool]:
+    """Infer ``(kind, electric)`` from the model's repo path.
+
+    e.g. db/train/coach/cd_a -> ("coach", False);
+         db/train/loco/electric/cd_163 -> ("loco", True);
+         db/train/loco/diesel/... -> ("loco", False).
+    """
+    p = str(model_dir).lower()
+    if "coach" in p:
+        kind = "coach"
+    elif "emu" in p:
+        kind = "emu"
+    elif "dmu" in p:
+        kind = "dmu"
+    elif "motocar" in p:
+        kind = "railcar"
+    elif "tram" in p:
+        kind = "tram"
+    elif "metro" in p:
+        kind = "metro"
+    elif "loco" in p:
+        kind = "loco"
+    else:
+        kind = "vehicle"
+    electric = ("electric" in p) or kind in ("emu", "tram", "metro")
+    return kind, electric
 
 # Flat UV sheets (sides, ends, roof, gear): the #1 failure mode is the model
 # re-rendering them as a 3D perspective picture of a train. The prompt hammers
@@ -126,27 +145,69 @@ FLAT_TEMPLATE = (
 # The loco thumbnail (image.bmp) is genuinely a small 3D preview render, not a flat
 # texture — so here we DO allow a richer rendered look, just sharper and cleaner.
 THUMBNAIL_TEMPLATE = (
-    "This is a small low-resolution preview render of a complete locomotive. "
+    "This is a small low-resolution preview render of a complete {vehicle}. "
     "Remaster it to a crisp {scale}x high-resolution version of the SAME image: "
-    "keep the exact same locomotive, livery, colours, camera angle, pose and "
+    "keep the exact same vehicle, livery, colours, camera angle, pose and "
     "composition. Sharpen edges, clean up aliasing and JPEG/pixel artefacts, and "
     "recover fine detail (panel lines, windows, glass, metal, markings, lights). "
-    "Render the side windows, doors and body markings to match THIS locomotive's "
+    "Render the side windows, doors and body markings to match THIS vehicle's "
     "actual side texture sheets and the reference facts below (same window count and "
-    "shape for the side that is shown), not a generic locomotive. "
+    "shape for the side that is shown), not a generic vehicle. "
     "Do NOT change the design, repaint it, move the camera, add scenery or invent "
     "new text — just a faithful, higher-resolution, cleaner version of the same "
     "preview. Keep the background as in the source."
 )
 
 
-def texture_subject(stem: str) -> str:
-    """Return the subject description for a texture, matched by filename prefix."""
+def texture_subject(stem: str, kind: str = "loco", electric: bool = True) -> str:
+    """Return the subject description for a texture, tailored to the vehicle.
+
+    Matched by filename prefix; more specific prefixes (gearx, ploughx, ...) must
+    be tested before the bare axis letters. ``kind``/``electric`` adapt the text so
+    a coach is not described with a cab or pantograph, etc.
+    """
     s = stem.lower()
-    for prefix, desc in TEXTURE_SUBJECTS:
-        if s.startswith(prefix):
-            return desc
-    return DEFAULT_SUBJECT
+    vehicle = VEHICLE_LABELS.get(kind, VEHICLE_LABELS["vehicle"])
+    has_cab = kind != "coach"  # coaches have no driver's cab
+
+    if s.startswith(("gearx", "downx")):
+        return (f"the running gear / underframe at one END of the {vehicle} (bogies, "
+                "wheels, buffers, coupler, brake pipes) sitting in a mostly-empty black "
+                "sheet — most of this sheet is unused black space with detail only in a "
+                "small band")
+    if s.startswith("ploughx"):
+        return f"the snow plough / pilot at the END of the {vehicle}, on a mostly-black sheet"
+    if s.startswith("pant"):
+        return "a roof-mounted pantograph (current collector): thin metal arms, springs and contact strip, on a black sheet"
+    if s.startswith("ins"):
+        return "an insulator / roof electrical fitting, on a black sheet"
+    if s.startswith("x"):
+        face = ("driver's cab windows, headlights/marker lights, "
+                if has_cab else "an end gangway/connection door, end windows, ")
+        return (f"the flat END face of the {vehicle} viewed straight-on: {face}buffers "
+                "and coupling, and at the bottom the bogie/wheels seen end-on."
+                + WHEELS_CLAUSE + GROUND_CLAUSE)
+    if s.startswith("y"):
+        roof = f"the ROOF / top-down view of the {vehicle}: roof panels and seams, roof vents, hatches"
+        if electric:
+            roof += ", pantograph(s), insulators and high-voltage roof cables"
+        else:
+            roof += (". This vehicle is NOT electrically powered from overhead lines, so the roof has "
+                     "NO pantograph, NO insulators and NO high-voltage equipment — do not add any")
+        return roof
+    if s.startswith("z"):
+        windows = ("rows of evenly-spaced passenger windows and entrance/passenger doors"
+                   if kind == "coach"
+                   else "side windows, doors, louvres/grilles")
+        body = (f"the long SIDE elevation of the {vehicle}: {windows}, body panel seams, "
+                "numbering and markings along the side, and bogies with a row of wheels "
+                "along the bottom.")
+        if kind == "coach":
+            body += " It is a plain carriage: no driver's cab and no pantograph."
+        return body + WHEELS_CLAUSE + GROUND_CLAUSE
+    if s.startswith("image"):
+        return f"a small preview thumbnail showing the whole {vehicle}"
+    return f"a flat UV texture sheet for one part of a {vehicle}"
 
 
 # Genuinely-sparse sheets (mostly empty black UV space) where the black-mask is
@@ -165,24 +226,27 @@ def is_sparse(stem: str) -> bool:
     return stem.lower().startswith(SPARSE_PREFIXES)
 
 
-def build_prompt(stem: str, facts: str = "", palette: str = "") -> tuple[str, str]:
-    """Return (prompt, prompt_hash) tailored to one texture.
+def build_prompt(stem: str, facts: str = "", palette: str = "",
+                 kind: str = "loco", electric: bool = True) -> tuple[str, str]:
+    """Return (prompt, prompt_hash) tailored to one texture and vehicle type.
 
     ``facts`` is the per-model text read from all of its sheets (Pass 1); when
     present it is appended so the model renders numbers/markings correctly.
     ``palette`` is the model's exact livery hex colours (same for every sheet) so
-    shades stay consistent across sheets.
+    shades stay consistent across sheets. ``kind``/``electric`` adapt the wording
+    to a coach vs locomotive vs railcar (e.g. a coach has no pantograph).
     """
+    vehicle = VEHICLE_LABELS.get(kind, VEHICLE_LABELS["vehicle"])
     if is_thumbnail(stem):
-        prompt = THUMBNAIL_TEMPLATE.format(scale=UPSCALE)
+        prompt = THUMBNAIL_TEMPLATE.format(scale=UPSCALE, vehicle=vehicle)
     else:
-        prompt = FLAT_TEMPLATE.format(subject=texture_subject(stem), scale=UPSCALE)
+        prompt = FLAT_TEMPLATE.format(subject=texture_subject(stem, kind, electric), scale=UPSCALE)
     if facts:
         prompt += (
-            " Reference facts read from all texture sheets of this same locomotive "
+            " Reference facts read from all texture sheets of this same vehicle "
             f"(facts may be labelled by sheet filename):\n{facts}\nUse the facts that "
             "apply to THIS sheet to render its running number, lettering, markings AND "
-            "its window layout/shape to match. The two sides of the locomotive can "
+            "its window layout/shape to match. The two sides of the vehicle can "
             "legitimately differ, so follow the facts for THIS specific sheet rather "
             "than copying another side. Do not invent different digits, text or window "
             "shapes. Reproduce any operator logo/emblem EXACTLY as it appears in the "
@@ -192,7 +256,7 @@ def build_prompt(stem: str, facts: str = "", palette: str = "") -> tuple[str, st
     if palette:
         prompt += (
             f" Livery colour palette — use these EXACT colours and no others for the "
-            f"paintwork, identical on every sheet of this locomotive: {palette}. Match "
+            f"paintwork, identical on every sheet of this vehicle: {palette}. Match "
             "these hex values precisely (e.g. the same single yellow for the band and "
             "the same green for the body) so all sheets share one consistent livery."
         )
@@ -449,9 +513,12 @@ VISION_UPSCALE_W = 512   # enlarge each tiny sheet before sending so text is leg
 
 FACTS_PROMPT = (
     "These images are the low-resolution texture sheets of a single old 3D train "
-    "model (different views of the SAME locomotive: side elevations, end faces, roof, "
-    "gear, and a preview thumbnail). Read them together and report concise PLAIN-TEXT "
-    "facts, LABELLED BY SHEET FILENAME where they differ. Cover:\n"
+    "model — one rail vehicle (it may be a LOCOMOTIVE, a self-propelled RAILCAR, or an "
+    "unpowered passenger COACH). Different views of the SAME vehicle: side elevations, "
+    "end faces, roof, gear, and a preview thumbnail. Read them together and report "
+    "concise PLAIN-TEXT facts, LABELLED BY SHEET FILENAME where they differ. Cover:\n"
+    "- what kind of vehicle this is (locomotive / railcar / passenger coach) and "
+    "whether it has a driver's cab and a roof pantograph, or none\n"
     "- every running/serial number and registration plate you can read, with the "
     "EXACT digits, and which sheet shows it most clearly\n"
     "- railway/operator lettering and any other markings\n"
@@ -463,11 +530,11 @@ FACTS_PROMPT = (
     "- the SIDE WINDOW layout of each side sheet: how many windows/openings, their "
     "shape (rectangular, rounded-corner, square or round), how they are grouped and "
     "roughly where they sit along the side. IMPORTANT: the two sides of this "
-    "locomotive (e.g. z_dec vs z_inc) may GENUINELY DIFFER, so describe each side "
+    "vehicle (e.g. z_dec vs z_inc) may GENUINELY DIFFER, so describe each side "
     "sheet separately and state which side the preview thumbnail shows.\n"
-    "- the wheels along the bottom of the side sheets: how many, and confirm they are "
-    "round and sit right at the very bottom edge of the sheet (there is NO rail, track "
-    "or ground drawn beneath them).\n"
+    "- the wheels along the bottom of the side sheets: how many, confirm they are all "
+    "the SAME size and round, and that they sit right at the very bottom edge of the "
+    "sheet (there is NO rail, track or ground drawn beneath them).\n"
     "Be precise about digits. If something is partly illegible, give your best single "
     "reading. Keep it reasonably short."
 )
@@ -528,7 +595,7 @@ def call_openai_edit(client, primary_png: bytes, prompt: str, size: str, quality
 def process_texture(
     tex_path: Path, out_dir: Path, slug: str, model_rel: str, client,
     quality: str, dry_run: bool, db_copy: bool, black_mask: bool,
-    facts: str = "", palette: str = "",
+    facts: str = "", palette: str = "", kind: str = "loco", electric: bool = True,
 ) -> dict:
     """Remaster one texture. Returns its manifest entry."""
     stem = tex_path.stem
@@ -536,7 +603,7 @@ def process_texture(
     sparse = is_sparse(stem)
     masked = black_mask and sparse  # body sheets are never masked (avoids pixelation)
     src_hash = file_content_hash(tex_path)
-    prompt, prompt_hash = build_prompt(stem, facts, palette)
+    prompt, prompt_hash = build_prompt(stem, facts, palette, kind, electric)
     primary_png, (w, h) = bmp_to_png_bytes(tex_path)
     tw, th = w * UPSCALE, h * UPSCALE
     size = pick_size(w, h)
@@ -558,7 +625,8 @@ def process_texture(
         "final_size": [tw, th],
         "model_used": MODEL,
         "quality": quality,
-        "subject": texture_subject(stem),
+        "vehicle_kind": kind,
+        "subject": texture_subject(stem, kind, electric),
         "is_thumbnail": thumb,
         "masked": masked,
         "palette": palette,
@@ -710,7 +778,9 @@ def main():
 
         slug = model_slug(model_dir)
         out_dir = out_root / slug
-        print(f"[{mi}/{len(model_dirs)}] {model_rel} -> {slug} ({len(textures)} texture(s))")
+        kind, electric = vehicle_info(model_dir)
+        print(f"[{mi}/{len(model_dirs)}] {model_rel} -> {slug} "
+              f"({len(textures)} texture(s), kind={kind}, electric={electric})")
 
         def _needs_work(tex: Path) -> bool:
             if args.dry_run:
@@ -775,6 +845,7 @@ def main():
             entry = process_texture(
                 tex, out_dir, slug, model_rel, client,
                 args.quality, args.dry_run, db_copy, black_mask, facts, palette,
+                kind, electric,
             )
             entries[key] = entry
             save_manifest(manifest_path, manifest)  # persist after each texture
