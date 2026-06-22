@@ -220,7 +220,7 @@ local LocoDatabase = {
 		power = 3480,
 		path = "Loco/Electric",
 		length = 16.853,
-		thumbnailAssetId = "85290837236770",
+		thumbnailAssetId = "84382978410806",
 		modelAssetId = "109141747798402",
 	},
 	["CD_163.022"] = {
@@ -1351,8 +1351,8 @@ local LocoDatabase = {
 		power = 0,
 		path = "Coach",
 		length = 24.5,
-		thumbnailAssetId = "137611197839244",
-		modelAssetId = "99066621508015",
+		thumbnailAssetId = "136554409911794",
+		modelAssetId = "86952195407771",
 	},
 	["CD_A-old"] = {
 		name = "CD_A-old",
