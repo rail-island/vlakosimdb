@@ -393,16 +393,58 @@ def assemble(model_dir: Path, out_root: Path, db_copy: bool) -> dict:
         canvas.save(dst)
         db_path = str(dst.relative_to(_repo_root()))
 
+    # High-res thumbnail (image_4x.png) cropped from the AI side texture — no extra
+    # AI call. Use the first available side tile; match image.bmp's aspect if present.
+    image_4x_path = build_thumbnail(canvas, rc["tiles"], model_dir, out_dir, db_copy)
+
     rc["status"] = "assembled"
     rc["atlas_4x_path"] = str(final_path.relative_to(_repo_root()))
     rc["db_copy_path"] = db_path
+    rc["image_4x_path"] = image_4x_path
     rc_path.write_text(json.dumps(rc, indent=2) + "\n", encoding="utf-8")
 
     print(f"  assembled compact atlas_4x.png {cw4}x{ch4} (no padding)")
     print(f"  overlay (check positions): {out_dir / 'atlas_4x_overlay.png'}")
     if db_path:
         print(f"  db copy: {db_path}")
+    if image_4x_path:
+        print(f"  thumbnail: {image_4x_path}")
     return rc
+
+
+# Side textures, in preference order, used as the high-res thumbnail source.
+THUMBNAIL_SIDE_REFS = ("pack:z_both.bmp", "pack:z_dec.bmp", "pack:z_inc.bmp")
+
+
+def build_thumbnail(canvas: Image.Image, tiles: list[dict], model_dir: Path,
+                    out_dir: Path, db_copy: bool) -> str | None:
+    """Crop the loco's side texture from the assembled atlas -> image_4x.png.
+
+    Reuses the AI result already in ``canvas`` (no AI call). The crop is taken from
+    the compact atlas at the side tile's box and, when a source image.bmp exists, is
+    resized to image.bmp's size x4 so it is a drop-in higher-res thumbnail.
+    """
+    by_ref = {t["ref"]: t for t in tiles}
+    side = next((by_ref[r] for r in THUMBNAIL_SIDE_REFS if r in by_ref), None)
+    if side is None:
+        return None
+    cb = side["compact_box"]
+    thumb = canvas.crop(cb)
+
+    image_bmp = model_dir / "image.bmp"
+    if image_bmp.exists():
+        try:
+            w, h = Image.open(image_bmp).size
+            thumb = thumb.resize((w * UPSCALE, h * UPSCALE), Image.LANCZOS)
+        except Exception:  # noqa: BLE001 - aspect match is best-effort
+            pass
+
+    thumb.save(out_dir / "image_4x.png")
+    if db_copy:
+        dst = model_dir / "image_4x.png"
+        thumb.save(dst)
+        return str(dst.relative_to(_repo_root()))
+    return str((out_dir / "image_4x.png").relative_to(_repo_root()))
 
 
 def check(model_dir: Path, out_root: Path) -> dict:

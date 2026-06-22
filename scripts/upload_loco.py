@@ -175,7 +175,9 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
                  creator_id: str | None, dry_run: bool) -> dict:
     """Process a single locomotive: atlas, GLB, upload. Returns loco result dict."""
     index_xml = loco_dir / "index.xml"
-    thumbnail = loco_dir / "image.bmp"
+    # Prefer the AI-remastered thumbnail (image_4x.png) over the source image.bmp.
+    thumbnail_4x = loco_dir / "image_4x.png"
+    thumbnail = thumbnail_4x if thumbnail_4x.exists() else loco_dir / "image.bmp"
     model_dir = loco_dir / "model"
     model_xml = model_dir / "index.xml" if model_dir.is_dir() else None
     loco_rel = str(loco_dir.relative_to(_repo_root()))
@@ -226,7 +228,7 @@ def process_loco(loco_dir: Path, lockdata: dict, api_key: str | None,
         # Thumbnail
         if thumbnail.exists():
             thumb_hash = file_content_hash(thumbnail)
-            thumb_key = make_lock_key(f"{loco_rel}/image.bmp", thumb_hash)
+            thumb_key = make_lock_key(f"{loco_rel}/{thumbnail.name}", thumb_hash)
             if thumb_key in lockdata:
                 thumbnail_asset_id = lockdata[thumb_key]
                 cache_hits += 1

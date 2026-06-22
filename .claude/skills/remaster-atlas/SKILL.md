@@ -45,7 +45,9 @@ All commands run from the repo root. The model name comes from the user's reques
    python3 scripts/remaster_atlas.py assemble --model <NAME>
    ```
    Writes the compact `generated/<slug>/atlas_4x.png` (size == `atlas.png`×4, no padding), an
-   `atlas_4x_overlay.png`, and the git-tracked `db/.../atlas_4x.png`.
+   `atlas_4x_overlay.png`, the git-tracked `db/.../atlas_4x.png`, and a high-res thumbnail
+   `db/.../image_4x.png` cropped from the AI side texture (z_both/z_dec/z_inc, no extra AI call;
+   sized to `image.bmp`×4). `upload_loco.py` uses `image_4x.png` instead of `image.bmp` when present.
 
 4. **Verify positions — REQUIRED.** Run:
    ```
