@@ -77,15 +77,29 @@ ATLAS_PROMPT = (
 
 def atlas_prompt_for(model_dir: Path) -> str:
     """Atlas prompt plus the model's catalogue identifier as context, so the model
-    can resolve a blurry running number to the correct class (e.g. cd_163 -> 163)."""
+    can resolve a blurry running number to the correct class.
+
+    The identifier is 'operator_class' (e.g. 'cd_111' = operator ČD, class 111) — it is
+    NOT the running number and must never be painted on the vehicle verbatim. Czech
+    running numbers are 'CLASS SERIAL-CHECK' (e.g. '111 022-5' / '111.022'), with the
+    operator (ČD) shown only as a separate emblem, never glued to the class digits."""
     rel = model_dir.relative_to(_repo_root())
+    ident = model_dir.name
     return ATLAS_PROMPT + (
-        f" Context — this vehicle's catalogue identifier is '{model_dir.name}' "
-        f"(path '{rel}'). Use it to resolve any text that is too blurry to read for "
-        "certain: in particular, the running/serial number painted on the vehicle must "
-        "be consistent with this identifier's class/series digits (for example a name "
-        "like 'cd_163' means the number is a 163-series number, not 151). Do not invent "
-        "a different class number than the one implied by the identifier."
+        f" Context — this vehicle's catalogue identifier is '{ident}' (path '{rel}'). "
+        "This identifier is a FILENAME, not the number painted on the vehicle: NEVER "
+        "render it verbatim on the loco. Read it as 'operator_class' — the letters "
+        "before the underscore are the railway operator (here 'cd' = the Czech operator "
+        "České dráhy, written as the 'ČD' emblem) and the digits are the locomotive "
+        "CLASS (so 'cd_111' = ČD class 111). A real Czech running number is written as "
+        "'CLASS SERIAL-CHECK', e.g. '111 022-5' or '111.022' — the class digits, then a "
+        "SEPARATE serial, never fused to the operator letters. So do NOT paint 'cd_111', "
+        "'CD111', 'cd 111' or similar as the number. Keep whatever running number is "
+        "already painted on the vehicle exactly as-is; only use this identifier to "
+        "resolve the CLASS digits when the painted number is too blurry to read for "
+        "certain (e.g. an unreadable number on 'cd_111' is a '111 ...'-series number, "
+        "not 151). The 'ČD' operator emblem may still appear separately as the operator "
+        "mark. Do not invent a different class than the one implied by the identifier."
     )
 
 
@@ -222,12 +236,20 @@ def detect_tile_boxes(ai: Image.Image, padded_map: dict, threshold: int = 12) ->
         detected.sort(key=lambda b: (b[1], b[0]))
         for ref, box in zip(refs_order, detected):
             mc = mapped_cell(ref)
-            # Trust the detected cell only if its aspect matches the tile's expected
-            # aspect (mapped cell). Mis-segmented small tiles (e.g. gear/end packed
-            # together in one row) fail this -> fall back to the aspect-correct cell.
-            ok = 0.8 <= aspect(box) / max(1e-6, aspect(mc)) <= 1.25
-            cell = box if ok else mc
-            out[ref] = {"cell": cell, "content": cell, "fills_frame": ok}
+            # The detected cell is gutter-bounded, so its POSITION is accurate even when
+            # the AI re-proportioned the tile; assemble re-tightens content within it.
+            # Only a GROSS aspect mismatch means real mis-segmentation (e.g. gear/end
+            # tiles merged into one run) — there fall back to the aspect-correct mapped
+            # cell. A moderate mismatch (AI redrew one tile wider/taller, like a cab
+            # front) keeps the detected cell but is flagged for review.
+            ratio = aspect(box) / max(1e-6, aspect(mc))
+            if 0.8 <= ratio <= 1.25:
+                cell, conf = box, True
+            elif 0.5 <= ratio <= 2.0:
+                cell, conf = box, False   # single redrawn tile — trust detected position
+            else:
+                cell, conf = mc, False    # likely merged/over-split — use mapped cell
+            out[ref] = {"cell": cell, "content": cell, "fills_frame": conf}
     else:
         # Fallback: content-rect mapping (aspect-correct, fixes the global offset).
         for ref in pack_refs:
