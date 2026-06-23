@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA-style fallback (the app uses hash routing, but this keeps any path working).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

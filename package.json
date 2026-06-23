@@ -1,0 +1,28 @@
+{
+  "name": "vlakosimdb-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Web 3D browser for the VLAKosimDB train model database",
+  "scripts": {
+    "build:models": "node scripts/build-models.mjs",
+    "dev": "npm run build:models && vite",
+    "build": "npm run build:models && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.114.0",
+    "@react-three/fiber": "^8.17.10",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "bmp-js": "^0.1.0",
+    "fast-xml-parser": "^4.5.0",
+    "iconv-lite": "^0.6.3",
+    "pngjs": "^7.0.0",
+    "vite": "^5.4.11"
+  }
+}
