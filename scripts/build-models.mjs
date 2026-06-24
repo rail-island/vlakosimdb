@@ -114,9 +114,10 @@ function main() {
         skipped.push(`${id} (no polygons)`);
         continue;
       }
-      const { pngBuffer, atlasMap } = buildAtlas(textureSources, MATERIALS);
+      const { pngBuffer, atlasMap, width: atlasWidth, height: atlasHeight } = buildAtlas(textureSources, MATERIALS);
+      const glbAtlas = selectAtlasForGlb(dir, pngBuffer, atlasWidth, atlasHeight);
       const pbr = detectMaterialPBR(textureSources.keys());
-      const glb = buildGLB(polygons, atlasMap, pngBuffer, pbr);
+      const glb = buildGLB(polygons, atlasMap, glbAtlas, pbr);
       if (!glb) {
         skipped.push(`${id} (no vertices)`);
         continue;
@@ -160,6 +161,29 @@ function main() {
     if (skipped.length > 40) console.log(`  ... and ${skipped.length - 40} more`);
   }
   console.log(`Manifest: ${path.relative(ROOT, path.join(OUT, "manifest.json"))} (${models.length} models)`);
+}
+
+function selectAtlasForGlb(dir, compactAtlas, compactWidth, compactHeight) {
+  if (!compactAtlas.length) return compactAtlas;
+
+  const atlas4xPath = path.join(dir, "atlas_4x.png");
+  if (!fs.existsSync(atlas4xPath)) return compactAtlas;
+
+  try {
+    const image = loadImageRGBA(atlas4xPath);
+    const scaleX = compactWidth > 0 ? image.width / compactWidth : 0;
+    const scaleY = compactHeight > 0 ? image.height / compactHeight : 0;
+    if (scaleX === scaleY && Number.isInteger(scaleX) && scaleX > 0) {
+      return fs.readFileSync(atlas4xPath);
+    }
+    console.warn(
+      `  [WARN] Ignoring atlas_4x.png for ${path.relative(DB_TRAIN, dir)}: ` +
+      `${image.width}x${image.height} does not match compact atlas ${compactWidth}x${compactHeight}`
+    );
+  } catch (e) {
+    console.warn(`  [WARN] Could not read atlas_4x.png for ${path.relative(DB_TRAIN, dir)}: ${e.message}`);
+  }
+  return compactAtlas;
 }
 
 function clean(obj) {

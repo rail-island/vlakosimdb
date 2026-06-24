@@ -12,18 +12,18 @@ import { parseXmlSafe, asArray, attrNum, attrStr } from "./xml.mjs";
  *                  verts:[{x,y,z,s,t}, ...] }],
  *     textureSources: Map<key, {type:'pack', dir, name} | {type:'material', name}> }
  *
- * `modelDir` contains index.xml. Sub-models are nested folders referenced by
- * <inline name="..."> and are merged in with their transforms applied; their
- * pack textures are namespaced by folder so they don't collide with the parent.
+ * `modelDir` contains index.xml. By default this mirrors the Roblox upload
+ * converter and reads only root-model polygons. Pass `includeInlines: true` to
+ * merge nested <inline name="..."> sub-models with their transforms applied.
  */
-export function parseModel(modelDir) {
+export function parseModel(modelDir, options = {}) {
   const polygons = [];
   const textureSources = new Map();
-  walk(modelDir, "", [1, 1, 1], [0, 0, 0], polygons, textureSources, 0);
+  walk(modelDir, "", [1, 1, 1], [0, 0, 0], polygons, textureSources, 0, options);
   return { polygons, textureSources };
 }
 
-function walk(dir, keyPrefix, scale, translate, polygons, textureSources, depth) {
+function walk(dir, keyPrefix, scale, translate, polygons, textureSources, depth, options) {
   if (depth > 8) return; // guard against pathological recursion
   const xmlPath = path.join(dir, "index.xml");
   if (!fs.existsSync(xmlPath)) return;
@@ -71,6 +71,8 @@ function walk(dir, keyPrefix, scale, translate, polygons, textureSources, depth)
     }
   }
 
+  if (!options.includeInlines) return;
+
   // Recurse into sub-models.
   for (const inl of asArray(sm.inlines?.inline)) {
     const name = attrStr(inl, "name");
@@ -91,7 +93,8 @@ function walk(dir, keyPrefix, scale, translate, polygons, textureSources, depth)
       childTranslate,
       polygons,
       textureSources,
-      depth + 1
+      depth + 1,
+      options
     );
   }
 }

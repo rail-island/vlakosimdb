@@ -1,6 +1,7 @@
-// Shelf-pack a model's textures into one RGBA atlas (port of atlas.py).
-// Prefers AI-remastered *_4x.png over the original .bmp; falls back to a
-// materials/ file and finally a solid color (MATERIAL_COLORS).
+// Shelf-pack a model's source textures into one RGBA atlas (port of atlas.py).
+// Model-level atlas_4x.png files are handled by build-models.mjs as whole-atlas
+// replacements; individual *_4x.png files are not atlas inputs because they
+// change the compact layout the UVs are mapped against.
 import fs from "node:fs";
 import path from "node:path";
 import { loadImageRGBA, solidImage, blit, encodePNG } from "./images.mjs";
@@ -28,28 +29,18 @@ const MATERIAL_PBR = {
 
 const MAGENTA = [255, 0, 255, 255];
 
-/** Try the _4x.png remaster first, then the literal file. Returns a path or null. */
-function preferRemaster(dir, name) {
-  const remaster = path.join(dir, name.replace(/\.bmp$/i, "_4x.png"));
-  if (fs.existsSync(remaster)) return remaster;
-  const original = path.join(dir, name);
-  if (fs.existsSync(original)) return original;
-  // case-insensitive fallback for materials with upper-case filenames
-  const up = path.join(dir, name.toUpperCase());
-  if (fs.existsSync(up)) return up;
-  return null;
-}
-
 function resolveImage(src, materialsDir) {
   try {
     if (src.type === "pack") {
-      const p = preferRemaster(src.dir, src.name);
-      if (p) return loadImageRGBA(p);
+      const p = path.join(src.dir, src.name);
+      if (fs.existsSync(p)) return loadImageRGBA(p);
       return solidImage(16, 16, MAGENTA);
     }
     if (src.type === "material") {
-      const p = preferRemaster(materialsDir, src.name);
-      if (p) return loadImageRGBA(p);
+      const p = path.join(materialsDir, src.name);
+      if (fs.existsSync(p)) return loadImageRGBA(p);
+      const upper = path.join(materialsDir, src.name.toUpperCase());
+      if (fs.existsSync(upper)) return loadImageRGBA(upper);
       const matName = src.name.replace(/\.bmp$/i, "").toLowerCase();
       return solidImage(64, 64, MATERIAL_COLORS[matName] ?? [128, 128, 128, 255]);
     }
@@ -81,8 +72,14 @@ export function detectMaterialPBR(textureKeys) {
  * @returns { pngBuffer, atlasMap: Map<key,[uOff,vOff,uScale,vScale]> }
  */
 export function buildAtlas(textureSources, materialsDir) {
-  const keys = [...textureSources.keys()];
-  if (keys.length === 0) return { pngBuffer: Buffer.alloc(0), atlasMap: new Map() };
+  // Sort alphabetically to mirror atlas.py's `sorted(texture_refs_set)`. The shelf
+  // sort below is stable, so equal-height tiles break ties in this same order — this
+  // is what makes the JS packing byte-identical to the Python one, so model-level
+  // atlas_4x.png (built from the Python layout) maps onto these UVs correctly.
+  const keys = [...textureSources.keys()].sort();
+  if (keys.length === 0) {
+    return { pngBuffer: Buffer.alloc(0), atlasMap: new Map(), width: 0, height: 0 };
+  }
 
   const images = new Map();
   for (const key of keys) images.set(key, resolveImage(textureSources.get(key), materialsDir));
@@ -136,5 +133,5 @@ export function buildAtlas(textureSources, materialsDir) {
     }
   }
 
-  return { pngBuffer: encodePNG(atlas), atlasMap };
+  return { pngBuffer: encodePNG(atlas), atlasMap, width: atlasW, height: atlasH };
 }
