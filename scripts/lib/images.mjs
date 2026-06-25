@@ -51,6 +51,26 @@ export function blit(dst, src, dx, dy) {
   }
 }
 
+/** Nearest-neighbour integer upscale of an RGBA image by `factor`. */
+export function upscaleNearest(src, factor) {
+  const width = src.width * factor;
+  const height = src.height * factor;
+  const data = Buffer.allocUnsafe(width * height * 4);
+  for (let y = 0; y < height; y++) {
+    const sy = (y / factor) | 0;
+    for (let x = 0; x < width; x++) {
+      const sx = (x / factor) | 0;
+      const s = (sy * src.width + sx) * 4;
+      const d = (y * width + x) * 4;
+      data[d] = src.data[s];
+      data[d + 1] = src.data[s + 1];
+      data[d + 2] = src.data[s + 2];
+      data[d + 3] = src.data[s + 3];
+    }
+  }
+  return { width, height, data };
+}
+
 /** Encode a raw RGBA image ({width,height,data}) to PNG bytes (Buffer). */
 export function encodePNG(img) {
   const png = new PNG({ width: img.width, height: img.height });
