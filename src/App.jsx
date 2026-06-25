@@ -20,6 +20,7 @@ export default function App() {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
+  const [resolution, setResolution] = useState("all");
   const [selectedId, setSelectedId] = useState(() => window.location.hash.slice(2) || null);
 
   useEffect(() => {
@@ -53,11 +54,20 @@ export default function App() {
       .map(([key, count]) => ({ key, count, label: CATEGORY_LABELS[key] || key }));
   }, [manifest]);
 
+  const resolutionCounts = useMemo(() => {
+    if (!manifest) return { hires: 0, lores: 0 };
+    let hires = 0;
+    for (const m of manifest.models) if (m.hires) hires++;
+    return { hires, lores: manifest.models.length - hires };
+  }, [manifest]);
+
   const filtered = useMemo(() => {
     if (!manifest) return [];
     const q = search.trim().toLowerCase();
     return manifest.models.filter((m) => {
       if (category !== "all" && m.category !== category) return false;
+      if (resolution === "hires" && !m.hires) return false;
+      if (resolution === "lores" && m.hires) return false;
       if (!q) return true;
       return (
         m.title.toLowerCase().includes(q) ||
@@ -65,7 +75,7 @@ export default function App() {
         (m.author && m.author.toLowerCase().includes(q))
       );
     });
-  }, [manifest, search, category]);
+  }, [manifest, search, category, resolution]);
 
   const selected = useMemo(
     () => (manifest && selectedId ? manifest.models.find((m) => m.id === selectedId) : null),
@@ -94,6 +104,9 @@ export default function App() {
             categories={categories}
             category={category}
             onCategory={setCategory}
+            resolution={resolution}
+            onResolution={setResolution}
+            resolutionCounts={resolutionCounts}
             resultCount={filtered.length}
           />
           <Gallery

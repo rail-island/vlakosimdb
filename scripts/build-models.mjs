@@ -116,7 +116,7 @@ function main() {
         continue;
       }
       const { pngBuffer, atlasMap, width: atlasWidth, height: atlasHeight } = buildAtlas(textureSources, MATERIALS);
-      const glbAtlas = selectAtlasForGlb(dir, pngBuffer, atlasWidth, atlasHeight, atlasMap, textureSources);
+      const { atlas: glbAtlas, hires } = selectAtlasForGlb(dir, pngBuffer, atlasWidth, atlasHeight, atlasMap, textureSources);
       const pbr = detectMaterialPBR(textureSources.keys());
       const glb = buildGLB(polygons, atlasMap, glbAtlas, pbr);
       if (!glb) {
@@ -142,6 +142,7 @@ function main() {
         bbox: glb.stats.bbox,
         vertices: glb.stats.vertices,
         faces: glb.stats.faces,
+        hires,
         glb: `models/${id}.glb`,
         thumb: hasThumb ? `thumbs/${id}.png` : null,
       });
@@ -165,10 +166,10 @@ function main() {
 }
 
 function selectAtlasForGlb(dir, compactAtlas, compactWidth, compactHeight, atlasMap, textureSources) {
-  if (!compactAtlas.length) return compactAtlas;
+  if (!compactAtlas.length) return { atlas: compactAtlas, hires: false };
 
   const atlas4xPath = path.join(dir, "atlas_4x.png");
-  if (!fs.existsSync(atlas4xPath)) return compactAtlas;
+  if (!fs.existsSync(atlas4xPath)) return { atlas: compactAtlas, hires: false };
 
   try {
     const image = loadImageRGBA(atlas4xPath);
@@ -178,7 +179,7 @@ function selectAtlasForGlb(dir, compactAtlas, compactWidth, compactHeight, atlas
       // atlas_4x.png is built from the Python layout, which omits inline
       // sub-model textures (pantographs etc.). Paint those tiles in at the same
       // scale so the inline geometry is textured instead of sampling black.
-      return compositeInlineTiles(atlas4xPath, image, scaleX, atlasMap, textureSources);
+      return { atlas: compositeInlineTiles(atlas4xPath, image, scaleX, atlasMap, textureSources), hires: true };
     }
     console.warn(
       `  [WARN] Ignoring atlas_4x.png for ${path.relative(DB_TRAIN, dir)}: ` +
@@ -187,7 +188,7 @@ function selectAtlasForGlb(dir, compactAtlas, compactWidth, compactHeight, atlas
   } catch (e) {
     console.warn(`  [WARN] Could not read atlas_4x.png for ${path.relative(DB_TRAIN, dir)}: ${e.message}`);
   }
-  return compactAtlas;
+  return { atlas: compactAtlas, hires: false };
 }
 
 /** A texture ref belongs to an inline sub-model when its name carries a keyPrefix

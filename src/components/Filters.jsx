@@ -1,4 +1,14 @@
-export default function Filters({ search, onSearch, categories, category, onCategory, resultCount }) {
+export default function Filters({
+  search,
+  onSearch,
+  categories,
+  category,
+  onCategory,
+  resolution,
+  onResolution,
+  resolutionCounts,
+  resultCount,
+}) {
   return (
     <div className="filters">
       <input
@@ -24,6 +34,26 @@ export default function Filters({ search, onSearch, categories, category, onCate
             {c.label} <span className="chip-count">{c.count}</span>
           </button>
         ))}
+      </div>
+      <div className="chips">
+        <button
+          className={`chip ${resolution === "all" ? "active" : ""}`}
+          onClick={() => onResolution("all")}
+        >
+          All textures
+        </button>
+        <button
+          className={`chip ${resolution === "hires" ? "active" : ""}`}
+          onClick={() => onResolution("hires")}
+        >
+          HiRes <span className="chip-count">{resolutionCounts.hires}</span>
+        </button>
+        <button
+          className={`chip ${resolution === "lores" ? "active" : ""}`}
+          onClick={() => onResolution("lores")}
+        >
+          LoRes <span className="chip-count">{resolutionCounts.lores}</span>
+        </button>
       </div>
       <div className="result-count">{resultCount} shown</div>
     </div>

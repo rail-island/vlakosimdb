@@ -9,6 +9,7 @@ export default function ModelCard({ model, categoryLabels, onSelect }) {
           <div className="thumb-placeholder">no preview</div>
         )}
         <span className="badge">{model.subcategory || label}</span>
+        {model.hires && <span className="badge badge-hires">HiRes</span>}
       </div>
       <div className="card-body">
         <div className="card-title">{model.title}</div>

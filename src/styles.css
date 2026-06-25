@@ -120,6 +120,13 @@ body {
   border-radius: 6px;
   text-transform: capitalize;
 }
+.badge-hires {
+  left: auto; right: 8px;
+  background: var(--accent);
+  color: #1a1205;
+  font-weight: 600;
+  text-transform: none;
+}
 .card-body { padding: 10px 12px 12px; }
 .card-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
 .card-specs { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 12px; }
