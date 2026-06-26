@@ -155,8 +155,8 @@ local LocoDatabase = {
 		power = 4000,
 		path = "Loco/Electric",
 		length = 16.853,
-		thumbnailAssetId = "75287301552454",
-		modelAssetId = "75406662854807",
+		thumbnailAssetId = "90834369705767",
+		modelAssetId = "100485899163240",
 	},
 	["CD_151_CEZ"] = {
 		name = "CD_151_CEZ",
@@ -207,8 +207,8 @@ local LocoDatabase = {
 		power = 3480,
 		path = "Loco/Electric",
 		length = 16.853,
-		thumbnailAssetId = "84382978410806",
-		modelAssetId = "109141747798402",
+		thumbnailAssetId = "105419362251561",
+		modelAssetId = "132821787314426",
 	},
 	["CD_163.022"] = {
 		name = "CD_163.022",
@@ -1338,8 +1338,8 @@ local LocoDatabase = {
 		power = 0,
 		path = "Coach",
 		length = 24.5,
-		thumbnailAssetId = "136554409911794",
-		modelAssetId = "86952195407771",
+		thumbnailAssetId = "80585425442574",
+		modelAssetId = "79138663240483",
 	},
 	["CD_A-old"] = {
 		name = "CD_A-old",
@@ -2261,8 +2261,8 @@ local LocoDatabase = {
 		power = 660,
 		path = "EMU",
 		length = 24.3,
-		thumbnailAssetId = "140719008970985",
-		modelAssetId = "135016968682030",
+		thumbnailAssetId = "86654293172804",
+		modelAssetId = "100870101026012",
 	},
 	["CD_060"] = {
 		name = "CD_060",
