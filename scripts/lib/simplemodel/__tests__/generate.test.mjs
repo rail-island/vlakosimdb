@@ -106,12 +106,13 @@ function runCase(relPath) {
   const root = parseXmlSafe(path.join(repoRoot, relPath));
   const sm = root.simplemodel ?? root;
   const baked = asArray(sm.model?.polygon); // <inline> elements aren't <polygon>, naturally excluded
-  const generated = generateModel(sm);
+  // fixSideMirroring off: faithful reproduction of the original C++ baked UVs.
+  const generated = generateModel(sm, { fixSideMirroring: false });
   expect(generated, "generateModel returned null").not.toBeNull();
   assertBijection(baked, generated.polygon);
 }
 
-describe("simplemodel generator vs baked <model>", () => {
+describe("simplemodel generator vs baked <model> (faithful, fix off)", () => {
   it("cd_163 — clip CSG + colorize sides + material", () => {
     runCase("db/train/loco/electric/cd_163/model/index.xml");
   });
@@ -122,5 +123,48 @@ describe("simplemodel generator vs baked <model>", () => {
 
   it("panelak — stamps (decals)", () => {
     runCase("db/building/panelak/model/index.xml");
+  });
+});
+
+describe("side-logo mirroring fix", () => {
+  // Pick the longest-spanning rect face of a given texture and report its
+  // s as a function of world x (min-x vertex and max-x vertex).
+  function sByX(polys, texture) {
+    let best = null;
+    let span = -1;
+    for (const p of polys) {
+      if (attrStr(p, "texture") !== texture) continue;
+      const vs = asArray(p.vertex);
+      const xs = vs.map((v) => attrNum(v, "x"));
+      const s = Math.max(...xs) - Math.min(...xs);
+      if (s > span) { span = s; best = vs; }
+    }
+    if (!best) return null;
+    let lo = best[0], hi = best[0];
+    for (const v of best) {
+      if (attrNum(v, "x") < attrNum(lo, "x")) lo = v;
+      if (attrNum(v, "x") > attrNum(hi, "x")) hi = v;
+    }
+    return { sAtMinX: attrNum(lo, "s"), sAtMaxX: attrNum(hi, "s") };
+  }
+
+  it("flips s on the positive-axis side only, un-mirroring opposite faces", () => {
+    const root = parseXmlSafe(path.join(repoRoot, "db/train/loco/electric/cd_163/model/index.xml"));
+    const sm = root.simplemodel ?? root;
+    const faithful = generateModel(sm, { fixSideMirroring: false }).polygon;
+    const fixed = generateModel(sm, { fixSideMirroring: true }).polygon;
+
+    // z_dec is the z+ side (dir 4, even) → s should flip; z_inc is z- (dir 5, odd) → unchanged.
+    const zdecF = sByX(faithful, "pack:z_dec.bmp");
+    const zdecX = sByX(fixed, "pack:z_dec.bmp");
+    const zincF = sByX(faithful, "pack:z_inc.bmp");
+    const zincX = sByX(fixed, "pack:z_inc.bmp");
+
+    // Faithful: both long sides map x→s the same way (the bug).
+    expect(Math.abs(zdecF.sAtMaxX - zincF.sAtMaxX)).toBeLessThan(1e-3);
+    // Fixed: z+ side is mirrored (s := 1 - s), z- side unchanged → they now oppose.
+    expect(Math.abs(zdecX.sAtMaxX - (1 - zdecF.sAtMaxX))).toBeLessThan(1e-3);
+    expect(Math.abs(zincX.sAtMaxX - zincF.sAtMaxX)).toBeLessThan(1e-3);
+    expect(Math.abs(zdecX.sAtMaxX - zincX.sAtMaxX)).toBeGreaterThan(0.5);
   });
 });

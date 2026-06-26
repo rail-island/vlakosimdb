@@ -87,6 +87,9 @@ function setProjected(d, x, y, z) {
 export class ColorAlg {
   constructor() {
     this.items = [];
+    // When true, mirror `s` on positive-axis sides (dir 0/2/4) of rect textures so
+    // opposite faces don't render their logo reversed. See generateModel option.
+    this.fixSideMirroring = false;
   }
   addSide(dir, x1, y1, x2, y2, name, transparent, cond, rkoef, gkoef, bkoef, denylight) {
     if (dir < 0 || dir >= 6) return;
@@ -170,8 +173,12 @@ export class ColorAlg {
         if (p.y < Math.min(ci.y1, ci.y2) - EPS) return false;
         if (p.y > Math.max(ci.y1, ci.y2) + EPS) return false;
       }
+      // Mirror the horizontal coordinate on the positive-axis side of each pair so
+      // both faces read the texture the same way (un-mirror logos/lettering).
+      const mirror = this.fixSideMirroring && (ci.dir & 1) === 0;
       for (let i = 0; i < verts.length; i++) {
-        verts[i]["@_s"] = (pt2[i].x - ci.x1) / (ci.x2 - ci.x1);
+        const s = (pt2[i].x - ci.x1) / (ci.x2 - ci.x1);
+        verts[i]["@_s"] = mirror ? 1 - s : s;
         verts[i]["@_t"] = (pt2[i].y - ci.y1) / (ci.y2 - ci.y1);
       }
     }
