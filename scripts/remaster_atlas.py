@@ -74,8 +74,15 @@ ATLAS_PROMPT = (
     "reproduce every logo with its correct, original orientation and shape — NEVER mirror, "
     "flip, rotate or reverse a logo, and make sure EVERY instance of the same logo on the "
     "sheet looks identical (same direction, not a mirror image of another). Render the "
-    "vehicle's WHEELS as clean, perfectly ROUND circles (not ovals, not polygons). Only "
-    "sharpen edges and add fine, plausible detail to what is already present."
+    "vehicle's WHEELS as clean, perfectly ROUND circles (not ovals, not polygons). "
+    "DE-PIXELATE: the source is a low-resolution pixel image, so every diagonal or curved "
+    "feature — pantograph arms and frames, window and door frames, handrails, roof and body "
+    "lining stripes, gear/bogie/wheel outlines, lamps — currently looks jagged and "
+    "stair-stepped. Redraw these as SMOOTH, clean, continuous, anti-aliased lines and curves: "
+    "remove the blocky pixel staircase entirely while keeping each feature's shape, position "
+    "and colour. Straight horizontal/vertical edges stay crisp; only the jagged diagonals and "
+    "curves get smoothed. Add fine, plausible detail to what is already present; do not invent "
+    "new features."
 )
 
 
@@ -277,6 +284,107 @@ def content_bbox(img: Image.Image, box, threshold: int = 14) -> list[int] | None
     return [box[0] + bb[0], box[1] + bb[1], box[0] + bb[2], box[1] + bb[3]]
 
 
+SPARSE_FRAC = 0.20      # source with <20% bright pixels => use the bbox metric
+SPARSE_SCALE = 3.0      # rescale the bbox metric onto the profile metric's threshold
+
+
+def alignment_score(ai_tile: Image.Image, src: Image.Image, threshold: int = 24) -> float:
+    """Position-sensitive, detail-robust mismatch between an AI tile and its source.
+    Lower = better aligned; compare against ``ALIGN_FAIL`` (see ``check``).
+
+    Two regimes — the profile metric is unreliable on near-black tiles (normalising an
+    almost-flat profile amplifies noise, so an aligned sparse tile scores as high as a
+    broken one):
+
+    * DENSE source (>=20% bright px): compare the NORMALIZED row/column brightness
+      PROFILES (where the dark/bright bands sit), not raw pixels — so the AI re-drawing a
+      cab face or running number scores LOW, but a vertically squashed/shifted tile (the
+      classic x_* cab drift) scores HIGH because its bands move.
+    * SPARSE source (<20% bright px, e.g. a gear/end tile that is one small blob on black):
+      compare the normalized CONTENT BBOX corners — does the blob land where the source's
+      blob is? Rescaled (×3) so the same threshold applies as the dense metric.
+    """
+    import numpy as np
+
+    s = np.asarray(src.convert("L"), float)
+    a = np.asarray(ai_tile.resize(src.size).convert("L"), float)
+
+    if (s > threshold).mean() < SPARSE_FRAC:
+        def bbox(arr):
+            m = arr > threshold
+            ys, xs = m.nonzero()
+            if len(xs) == 0:
+                return None
+            h, w = arr.shape
+            return np.array([xs.min() / w, ys.min() / h,
+                             (xs.max() + 1) / w, (ys.max() + 1) / h])
+
+        bs, ba = bbox(s), bbox(a)
+        if bs is None or ba is None:
+            return 0.0 if bs is ba else 1.0
+        return float(np.abs(bs - ba).mean()) * SPARSE_SCALE
+
+    def prof(g):
+        col, row = g.mean(axis=0), g.mean(axis=1)
+
+        def nz(v):
+            v = v - v.min()
+            m = v.max()
+            return v / m if m > 0 else v
+
+        return nz(col), nz(row)
+
+    cs, rs = prof(s)
+    ca, ra = prof(a)
+    return float(np.abs(cs - ca).mean() + np.abs(rs - ra).mean())
+
+
+def refine_content_box(ai: Image.Image, box, src_path: Path) -> list[int]:
+    """Locally nudge a detected ``content_box`` so the cropped+resized tile best matches
+    its SOURCE texture, correcting the small per-tile drift gpt-image leaves — most often
+    the ~15-25px vertical squash on near-full cab tiles (``x_dec``/``x_inc``) that the
+    gutter detector under-sizes. Coarse-to-fine search of each edge; keeps the source as
+    the ground truth for POSITION (the AI changes detail, not the silhouette). No-op when
+    the source is missing.
+    """
+    try:
+        src = Image.open(src_path).convert("L")
+    except Exception:  # noqa: BLE001
+        return list(box)
+    import numpy as np
+
+    sarr = np.asarray(src, float)
+    iw, ih = ai.size
+
+    def score(b):
+        b = (max(0, b[0]), max(0, b[1]), min(iw, b[2]), min(ih, b[3]))
+        if b[2] - b[0] < 2 or b[3] - b[1] < 2:
+            return 1e9
+        c = np.asarray(ai.crop(b).convert("L").resize(src.size), float)
+        return float(np.abs(c - sarr).mean())
+
+    x0, y0, x1, y1 = (int(v) for v in box)
+    bw, bh = x1 - x0, y1 - y0
+    cur = [x0, y0, x1, y1]
+    # amplitude covers the observed cab drift; coarse pass then a tight refine
+    ax, ay = max(3, round(bw * 0.12)), max(3, round(bh * 0.14))
+    for amp_x, amp_y, step in [(ax, ay, max(2, ax // 3)), (3, 3, 1)]:
+        bx0, by0, bx1, by1 = cur
+        best = (score(cur), list(cur))
+        for d0 in range(-amp_x, amp_x + 1, step):
+            for e0 in range(-amp_y, amp_y + 1, step):
+                for d1 in range(-amp_x, amp_x + 1, step):
+                    for e1 in range(-amp_y, amp_y + 1, step):
+                        b = [bx0 + d0, by0 + e0, bx1 + d1, by1 + e1]
+                        if b[2] - b[0] < bw * 0.6 or b[3] - b[1] < bh * 0.6:
+                            continue
+                        sc = score(b)
+                        if sc < best[0]:
+                            best = (sc, b)
+        cur = best[1]
+    return [max(0, cur[0]), max(0, cur[1]), min(iw, cur[2]), min(ih, cur[3])]
+
+
 def safe_ref_name(ref: str) -> str:
     """Filesystem-safe name for a texture ref (pack:z_dec.bmp -> pack_z_dec.bmp)."""
     return ref.replace(":", "_").replace("/", "_")
@@ -315,16 +423,20 @@ def prepare(model_dir: Path, out_root: Path, client, quality: str, pad: int,
     compact.resize((cw4, ch4), Image.LANCZOS).save(out_dir / "atlas_4x_raw.png")
     compact_boxes = map_to_boxes(compact_map, cw4, ch4)
 
-    # ... and the padded atlas (sent to the AI). Pre-upscale it LOCALLY (LANCZOS) to
-    # the exact API output size, so the model only has to sharpen at native target
-    # resolution — it does no upscaling itself, and tiles carry more pixels for detail
-    # (rounder wheels, less pixelation). Saved as atlas_padded_4x_raw.png.
+    # ... and the padded atlas (sent to the AI). Pre-upscale it LOCALLY to the exact API
+    # output size so the model does no upscaling itself. Use NEAREST, not LANCZOS: the
+    # sources are tiny pixel images and a LANCZOS pre-upscale BLURS fine detail (a 6px
+    # 'ČD' emblem, window mullions, gear) into mush BEFORE the model ever sees it — the
+    # model then hallucinates (e.g. 'ČD' -> two round 'eyes'). NEAREST preserves the
+    # exact pixel blocks, so the model sees the true shapes and can both keep them correct
+    # AND smooth their jagged edges (see the de-pixelate clause in ATLAS_PROMPT). Saved as
+    # atlas_padded_4x_raw.png.
     padded_png, padded_map, _ = build_padded_atlas(model_sub, model_xml, pad)
     padded = Image.open(io.BytesIO(padded_png)).convert("RGB")
     pw, ph = padded.size
     size = pick_size(pw * UPSCALE, ph * UPSCALE)
     aw, ah = (int(v) for v in size.split("x"))
-    raw_for_ai = padded.resize((aw, ah), Image.LANCZOS)
+    raw_for_ai = padded.resize((aw, ah), Image.NEAREST)
     raw_for_ai.save(out_dir / "atlas_padded_4x_raw.png")
 
     usage, cost = {}, 0.0
@@ -353,6 +465,15 @@ def prepare(model_dir: Path, out_root: Path, client, quality: str, pad: int,
         content = det[ref]["content"]
         fills = det[ref]["fills_frame"]
         cbox = compact_boxes[ref]
+        # Auto-fit the content_box to the source (fixes the cab-tile vertical drift the
+        # gutter detector under-sizes), so the per-texture 4x lands in the right place
+        # without manual editing. Only for real pack textures with a source file.
+        if ref.startswith("pack:"):
+            src_path = model_sub / ref[len("pack:"):]
+            refined = refine_content_box(ai, content, src_path)
+            if refined != list(content):
+                content = refined
+                fills = False  # nudged — worth a glance in check
         ai.crop(cell).save(out_dir / "tiles" / f"{safe_ref_name(ref)}.png")
         tiles.append({"ref": ref, "padded_box": cell, "content_box": content,
                       "compact_box": cbox, "fills_frame": fills})
@@ -398,7 +519,8 @@ def assemble(model_dir: Path, out_root: Path, db_copy: bool) -> dict:
 
     # Crop each tile's content_box from the AI result and resize it to 4x the SOURCE
     # texture's own size — one independent PER-TEXTURE file (z_both.bmp -> z_both_4x.png).
-    # atlas_4x is NOT assembled here; it is derived later from these files.
+    # The render atlas_4x is derived later by the JS build from these files; we also write
+    # an inspection-only atlas_4x.png in generated/ below (build_inspection_atlas).
     written: list[str] = []
     upscaled: dict[str, Image.Image] = {}
     for t in rc["tiles"]:
@@ -424,6 +546,11 @@ def assemble(model_dir: Path, out_root: Path, db_copy: bool) -> dict:
     # High-res thumbnail (image_4x.png) from the AI side texture — no extra AI call.
     image_4x_path = build_thumbnail(upscaled, model_dir, out_dir, db_copy)
 
+    # Rebuild the combined inspection atlas (NOT used for rendering — the JS build derives
+    # the real one from the per-texture files; this is the human-analysis copy, kept fresh
+    # so it reflects THIS assemble instead of a stale earlier run).
+    build_inspection_atlas(rc, upscaled, out_dir)
+
     cost = rc.get("cost_usd", 0.0)
     rc["status"] = "assembled"
     rc["textures_4x"] = written
@@ -436,8 +563,38 @@ def assemble(model_dir: Path, out_root: Path, db_copy: bool) -> dict:
         print(f"  saved next to the sources in {model_sub.relative_to(_repo_root())}/")
     if image_4x_path:
         print(f"  thumbnail: {image_4x_path}")
+    print(f"  inspection atlas: {(out_dir / 'atlas_4x.png').relative_to(_repo_root())} (+ _overlay)")
     print(f"  AI upscaling cost for this model: ${cost:.4f}")
     return rc
+
+
+def build_inspection_atlas(rc: dict, upscaled: dict[str, Image.Image], out_dir: Path) -> None:
+    """Repack the per-texture *_4x tiles onto the compact layout at 4x -> atlas_4x.png,
+    and blend it 50/50 with the classical atlas_4x_raw.png -> atlas_4x_overlay.png.
+
+    For human inspection only (mirrors the JS `buildAtlas4x`). Tiles are placed at their
+    `compact_box` origin — the exact 4x compact positions the renderer's UVs expect — so
+    the overlay reveals any drift between the classical and AI upscales.
+    """
+    cw4, ch4 = rc["compact_size"]
+    atlas = Image.new("RGB", (cw4, ch4), (0, 0, 0))
+    for t in rc["tiles"]:
+        tile = upscaled.get(t["ref"])
+        if tile is None:
+            continue
+        x0, y0, x1, y1 = t["compact_box"]
+        if tile.size != (x1 - x0, y1 - y0):  # guard rounding: fit to the slot
+            tile = tile.resize((max(1, x1 - x0), max(1, y1 - y0)), Image.LANCZOS)
+        if x0 + tile.width <= cw4 and y0 + tile.height <= ch4:
+            atlas.paste(tile, (x0, y0))
+    atlas.save(out_dir / "atlas_4x.png")
+
+    raw_path = out_dir / "atlas_4x_raw.png"
+    if raw_path.exists():
+        raw = Image.open(raw_path).convert("RGB")
+        if raw.size != atlas.size:
+            raw = raw.resize(atlas.size, Image.LANCZOS)
+        Image.blend(raw, atlas, 0.5).save(out_dir / "atlas_4x_overlay.png")
 
 
 # Side textures, in preference order, used as the high-res thumbnail source.
@@ -451,7 +608,15 @@ def build_thumbnail(upscaled: dict[str, "Image.Image"], model_dir: Path,
     Picks the first available side tile and, when a source image.bmp exists, resizes
     it to image.bmp's size x4 so it is a drop-in higher-res thumbnail.
     """
-    side = next((upscaled[r] for r in THUMBNAIL_SIDE_REFS if r in upscaled), None)
+    # Match by SUFFIX, not exact ref: texture files are often prefixed (em475_z_both.bmp),
+    # so an exact "pack:z_both.bmp" lookup would miss them and skip the thumbnail entirely.
+    side = None
+    for suffix in THUMBNAIL_SIDE_REFS:
+        bare = suffix[len("pack:"):]
+        side = next((img for ref, img in upscaled.items()
+                     if ref.startswith("pack:") and ref[len("pack:"):].endswith(bare)), None)
+        if side is not None:
+            break
     if side is None:
         return None
     thumb = side
@@ -484,7 +649,13 @@ def check(model_dir: Path, out_root: Path) -> dict:
 
     import numpy as np
     rows, row_h, pad = [], 120, 6
-    print("  per-texture mismatch (raw vs AI, lower = better aligned; high => fix content_box):")
+    # align score above this => the tile is shifted/squashed, not merely re-detailed.
+    # Tuned so an aligned (even heavily re-drawn / de-dithered) tile passes — dense cab
+    # ~0.14-0.21, sparse blob ~0 — while a ~20px vertical drift (~0.27+) or a misplaced
+    # blob (~0.38) fails. See alignment_score for the dense/sparse regimes.
+    ALIGN_FAIL = 0.24
+    flagged: list[str] = []
+    print("  per-texture mismatch (lower=better). align catches shift/squash; review=ALIGN: re-fit content_box:")
     for t in rc["tiles"]:
         ref = t["ref"]
         if not ref.startswith("pack:"):
@@ -497,25 +668,41 @@ def check(model_dir: Path, out_root: Path) -> dict:
         src = model_sub / name
         rt = (Image.open(src).convert("RGB").resize(at.size, Image.LANCZOS)
               if src.exists() else at)
-        # alignment score: a simple downsized abs-diff of normalized tiles flags
-        # gross mispositions (the AI's extra sharpness alone scores low).
+        # mismatch: downsized abs-diff — coarse, also rises with the AI's added detail.
         small = (32, 32)
         a = np.asarray(rt.resize(small).convert("L")).astype(float)
         b = np.asarray(at.resize(small).convert("L")).astype(float)
         a -= a.mean(); b -= b.mean()
         score = round(float(np.abs(a - b).mean()), 1)
+        # align: position-sensitive but detail-robust (profile-based). This is the one
+        # that reliably catches the x_* cab tiles drifting vertically — read it FIRST.
+        align = round(alignment_score(at, Image.open(src).convert("L")), 3) if src.exists() else 0.0
+        bad = align > ALIGN_FAIL
+        if bad:
+            flagged.append(name)
         w = max(1, round(at.width * row_h / at.height))
         strip = Image.new("RGB", (w * 2 + pad * 3, row_h + 18), (32, 32, 32))
         strip.paste(rt.resize((w, row_h)), (pad, 16))
         strip.paste(at.resize((w, row_h)), (w + pad * 2, 16))
-        ImageDraw.Draw(strip).text((pad, 3), f"{name}  raw | AI   mismatch={score}",
-                                   fill=(230, 230, 230))
+        tag = "  <<< REVIEW: MISALIGNED" if bad else ""
+        ImageDraw.Draw(strip).text((pad, 3),
+                                   f"{name}  raw | AI   mismatch={score} align={align}{tag}",
+                                   fill=(255, 90, 90) if bad else (230, 230, 230))
+        if bad:  # red frame so a misaligned tile is obvious at a glance in the sheet
+            ImageDraw.Draw(strip).rectangle([0, 0, strip.width - 1, strip.height - 1],
+                                            outline=(255, 60, 60), width=3)
         rows.append(strip)
-        print(f"    {name:22} mismatch={score}")
+        print(f"    {name:22} mismatch={score}  align={align}"
+              f"{'   <<< REVIEW: MISALIGNED (re-fit content_box)' if bad else ''}")
 
     if not rows:
         print("  [warn] no *_4x.png found in generated/ — run `assemble` first")
         return rc
+    if flagged:
+        print(f"  [REVIEW] {len(flagged)} tile(s) look misaligned (align>{ALIGN_FAIL}): "
+              f"{', '.join(flagged)} — re-fit their content_box, re-assemble, re-check.")
+    else:
+        print("  [ok] all tiles within alignment tolerance.")
     width = max(r.width for r in rows)
     sheet = Image.new("RGB", (width, sum(r.height for r in rows)), (20, 20, 20))
     y = 0
