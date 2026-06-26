@@ -1,19 +1,22 @@
 ---
 name: remaster-atlas
-description: Remaster a train/building model's texture atlas to 4x with AI (gpt-image-2) while keeping every packed sub-texture at its exact UV position and producing a COMPACT result (no padding, small Roblox texture). Use when the user asks to "upscale"/"remaster"/"4x" a specific model's textures/atlas by name, e.g. "Upscale cd_163 loco", "remaster the cd_a coach atlas". Drives scripts/remaster_atlas.py (prepare/assemble) and uses your own vision to crop each AI-enhanced tile back into the compact atlas.
+description: Remaster a train/building model's textures to 4x with AI (gpt-image-2) using ONE call per model, writing one per-texture file next to each source (model/z_both_4x.png, etc.) — NOT a combined atlas. Use when the user asks to "upscale"/"remaster"/"4x" a specific model's textures by name, e.g. "Upscale cd_163 loco", "remaster the cd_a coach textures". Drives scripts/remaster_atlas.py (prepare/assemble) and uses your own vision to crop each AI-enhanced tile back into its own 4x file.
 user-invocable: true
 ---
 
 # remaster-atlas
 
-Upscale one model's texture atlas 4x with AI, keeping sub-texture positions exact and the result
-compact. The user gives a model **name** (e.g. `cd_163`); you do everything.
+Upscale one model's textures 4x with AI using a SINGLE call per model, writing one per-texture
+file next to each source (`model/z_both_4x.png`, etc.). The user gives a model **name**
+(e.g. `cd_163`); you do everything. A combined `atlas_4x.png` is NOT produced here — the JS
+build/upload step derives it later from these `*_4x.png` files.
 
-Why two phases + your vision: sending the whole atlas to the image model rearranges/rescales the
-packed tiles (breaks UVs). So we send a *padded* atlas (gutters keep tiles apart), then **you read
-the AI result and crop each tile back into the real compact atlas** at its exact position — your
-vision corrects the small per-tile drift the model introduces, especially on mostly-black gear/end
-tiles where an automatic crop is unreliable.
+Why one padded call + your vision: sending each texture separately would be many AI calls, and
+sending the whole atlas unpadded rearranges/rescales the tiles. So we pack all the model's textures
+into one *padded* atlas (gutters keep tiles apart), send it in a single call, then **you read the AI
+result and crop each tile back into its own 4x file** at its exact rectangle — your vision corrects
+the small per-tile drift the model introduces, especially on mostly-black gear/end tiles where an
+automatic crop is unreliable.
 
 All commands run from the repo root. The model name comes from the user's request.
 
@@ -40,39 +43,45 @@ All commands run from the repo root. The model name comes from the user's reques
    tiles the detector wasn't confident about (sparse gear/end) — those are the likeliest to need a
    nudge. Edit `recompact.json` and re-run `assemble`.
 
-3. **Assemble** the compact atlas:
+3. **Assemble** the per-texture 4x files:
    ```
    python3 scripts/remaster_atlas.py assemble --model <NAME>
    ```
-   Writes the compact `generated/<slug>/atlas_4x.png` (size == `atlas.png`×4, no padding), an
-   `atlas_4x_overlay.png`, the git-tracked `db/.../atlas_4x.png`, and a high-res thumbnail
-   `db/.../image_4x.png` cropped from the AI side texture (z_both/z_dec/z_inc, no extra AI call;
-   sized to `image.bmp`×4). `upload_loco.py` uses `image_4x.png` instead of `image.bmp` when present.
+   For each source texture it crops the tile's `content_box` from the AI result, resizes it to 4x
+   the source's own size, and writes **one file per texture next to the source**:
+   `db/.../model/<name>_4x.png` (e.g. `z_both_4x.png`, `x_both_4x.png`) — plus debug copies in
+   `generated/<slug>/`. It also writes a high-res thumbnail `db/.../image_4x.png` from the AI side
+   texture (z_both/z_dec/z_inc, no extra AI call; sized to `image.bmp`×4), and prints the model's AI
+   upscaling cost. **No `atlas_4x.png` is written** — the JS build/upload derives the 4x atlas from
+   these `*_4x.png` files. `upload_loco.py` uses `image_4x.png` instead of `image.bmp` when present.
 
 4. **Verify positions — REQUIRED.** Run:
    ```
    python3 scripts/remaster_atlas.py check --model <NAME>
    ```
-   This prints a per-tile mismatch score and writes `generated/<slug>/atlas_4x_check.png` — a
-   per-tile **`raw | AI`** side-by-side (`atlas_4x_raw` is the correct compact layout; `atlas_4x` is
-   your assembled result). **Read `atlas_4x_check.png`.** For every tile the two halves must show
-   the SAME part in the SAME position/shape (the AI half just sharper, and its number/markings may
-   differ — that is fine). A tile is WRONG only if its AI half shows a different part, is shifted,
-   cropped, or stretched. (Also glance at `atlas_4x_overlay.png`, the 50% blend, for gross drift.)
+   This prints a per-texture mismatch score and writes `generated/<slug>/textures_4x_check.png` — a
+   per-texture **`raw | AI`** side-by-side (`raw` is the source texture upscaled classically; `AI`
+   is the `<name>_4x.png` you produced). **Read `textures_4x_check.png`.** For every texture the two
+   halves must show the SAME part in the SAME position/shape (the AI half just sharper, and its
+   number/markings may differ — that is fine). A texture is WRONG only if its AI half shows a
+   different part, is shifted, cropped, or stretched.
    - A **high mismatch score alone is not a failure** — the AI re-renders content, so sharp tiles
      score high. Use the score only to decide which tiles to look at; judge by eye.
    - If a tile is genuinely wrong, find its real rectangle in `atlas_padded_4x.png`, fix that tile's
      `content_box` in `recompact.json` (keep the source aspect ratio), re-run `assemble`, then
      `check` again. Iterate until every tile matches.
 
-5. **Report** to the user: the compact `atlas_4x.png` (dimensions, confirms it matches the original
-   `atlas.png` layout so it's a drop-in higher-res texture), that `db/.../atlas_4x.png` was written,
-   and the AI cost.
+5. **Report** to the user: the per-texture `<name>_4x.png` files written next to the sources in
+   `db/.../model/` (list them), that `image_4x.png` was written, and — REQUIRED — **the price of
+   the upscaling** (the AI cost in USD, printed by `assemble` as "AI upscaling cost for this model";
+   it is also in `recompact.json` → `cost_usd`).
 
 ## Notes
 - One AI call per model (the `prepare` step); steps 2–4 are local/free, just your vision + crops.
-- `--dry-run` on `prepare` skips the AI call (uses the classical upscale) to test the pipeline free.
+- `--dry-run` on `prepare` skips the AI call (uses the classical upscale) to test the pipeline free
+  (cost is then $0.00).
 - `--pad N` controls the padded gutter (default 16 source px) — increase it if the AI is merging
   neighbouring tiles.
-- The compact result matches `build_texture_atlas`'s UV layout, so no upload/GLB changes are needed.
-- Originals are never modified; only new `atlas_4x.png` files are written.
+- The per-texture `*_4x.png` are 4x the source's own size; the JS build/upload derives the 4x atlas
+  from them (`scripts/lib/atlas4x.mjs`), so no manual atlas/UV step is needed here.
+- Originals are never modified; only new `<name>_4x.png` and `image_4x.png` files are written.

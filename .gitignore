@@ -5,10 +5,14 @@
 *.pyc
 .DS_Store
 
-# AI texture remaster pipeline: ignore the debug tree, but track the _4x.png
-# results written next to the sources in db/ (re-include overrides *.png above).
+# AI texture remaster pipeline: ignore the debug tree, but track the per-texture
+# _4x.png results written next to the sources in db/ (re-include overrides *.png
+# above). atlas_4x.png is a DERIVED artifact (built in-memory from the *_4x.png at
+# web-build / Roblox-upload time), so keep it untracked even though it matches
+# the _4x.png re-include.
 generated/
 !db/**/*_4x.png
+db/**/atlas_4x.png
 
 # Web app (vlakosimdb-web)
 node_modules/

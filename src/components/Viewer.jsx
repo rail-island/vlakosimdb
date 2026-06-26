@@ -1,6 +1,7 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Bounds, useGLTF, Grid, Html } from "@react-three/drei";
+import UpscalePanel from "./UpscalePanel.jsx";
 
 function Model({ url }) {
   const { scene } = useGLTF(url);
@@ -22,7 +23,9 @@ export default function Viewer({ model, onClose }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const url = model.glb;
+  // Cache-busting version so a freshly rebuilt GLB reloads after upscaling.
+  const [version, setVersion] = useState(0);
+  const url = version ? `${model.glb}?t=${version}` : model.glb;
 
   return (
     <div className="viewer-overlay" onClick={onClose}>
@@ -66,6 +69,10 @@ export default function Viewer({ model, onClose }) {
             <Spec label="Author" value={model.author} />
             <Spec label="Geometry" value={`${model.vertices} verts · ${model.faces} tris`} />
           </dl>
+
+          {import.meta.env.DEV && (
+            <UpscalePanel model={model} onDone={() => setVersion(Date.now())} />
+          )}
 
           <p className="hint">Drag to orbit · scroll to zoom · Esc to close</p>
         </aside>

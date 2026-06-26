@@ -29,7 +29,7 @@ const MATERIAL_PBR = {
 
 const MAGENTA = [255, 0, 255, 255];
 
-function resolveImage(src, materialsDir) {
+export function resolveImage(src, materialsDir) {
   try {
     if (src.type === "pack") {
       const p = path.join(src.dir, src.name);

@@ -4,11 +4,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseModel } from "./lib/geometry.mjs";
-import { buildAtlas, detectMaterialPBR } from "./lib/atlas.mjs";
-import { buildGLB } from "./lib/glb.mjs";
+import { buildModelGlb } from "./lib/model-build.mjs";
 import { parseMetadata } from "./lib/metadata.mjs";
-import { loadImageRGBA, encodePNG, upscaleNearest, blit } from "./lib/images.mjs";
+import { encodePNG, loadImageRGBA } from "./lib/images.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DB_TRAIN = path.join(ROOT, "db", "train");
@@ -108,21 +106,14 @@ function main() {
         } catch { /* keep defaults */ }
       }
 
-      // Geometry + atlas + GLB. includeInlines pulls in nested sub-models
-      // (pantographs etc.) that the Python pipeline ignores.
-      const { polygons, textureSources } = parseModel(path.join(dir, "model"), { includeInlines: true });
-      if (polygons.length === 0) {
-        skipped.push(`${id} (no polygons)`);
+      // Geometry + atlas + GLB (shared builder). The 4x atlas is built in-memory
+      // from the per-texture model/*_4x.png files; falls back to the compact atlas.
+      const result = buildModelGlb(dir, MATERIALS);
+      if (!result) {
+        skipped.push(`${id} (no polygons/vertices)`);
         continue;
       }
-      const { pngBuffer, atlasMap, width: atlasWidth, height: atlasHeight } = buildAtlas(textureSources, MATERIALS);
-      const { atlas: glbAtlas, hires } = selectAtlasForGlb(dir, pngBuffer, atlasWidth, atlasHeight, atlasMap, textureSources);
-      const pbr = detectMaterialPBR(textureSources.keys());
-      const glb = buildGLB(polygons, atlasMap, glbAtlas, pbr);
-      if (!glb) {
-        skipped.push(`${id} (no vertices)`);
-        continue;
-      }
+      const { glb, hires } = result;
 
       fs.writeFileSync(path.join(MODELS_OUT, `${id}.glb`), glb.buffer);
       const hasThumb = makeThumbnail(dir, path.join(THUMBS_OUT, `${id}.png`));
@@ -143,6 +134,7 @@ function main() {
         vertices: glb.stats.vertices,
         faces: glb.stats.faces,
         hires,
+        dir: path.relative(ROOT, dir),
         glb: `models/${id}.glb`,
         thumb: hasThumb ? `thumbs/${id}.png` : null,
       });
@@ -163,65 +155,6 @@ function main() {
     if (skipped.length > 40) console.log(`  ... and ${skipped.length - 40} more`);
   }
   console.log(`Manifest: ${path.relative(ROOT, path.join(OUT, "manifest.json"))} (${models.length} models)`);
-}
-
-function selectAtlasForGlb(dir, compactAtlas, compactWidth, compactHeight, atlasMap, textureSources) {
-  if (!compactAtlas.length) return { atlas: compactAtlas, hires: false };
-
-  const atlas4xPath = path.join(dir, "atlas_4x.png");
-  if (!fs.existsSync(atlas4xPath)) return { atlas: compactAtlas, hires: false };
-
-  try {
-    const image = loadImageRGBA(atlas4xPath);
-    const scaleX = compactWidth > 0 ? image.width / compactWidth : 0;
-    const scaleY = compactHeight > 0 ? image.height / compactHeight : 0;
-    if (scaleX === scaleY && Number.isInteger(scaleX) && scaleX > 0) {
-      // atlas_4x.png is built from the Python layout, which omits inline
-      // sub-model textures (pantographs etc.). Paint those tiles in at the same
-      // scale so the inline geometry is textured instead of sampling black.
-      return { atlas: compositeInlineTiles(atlas4xPath, image, scaleX, atlasMap, textureSources), hires: true };
-    }
-    console.warn(
-      `  [WARN] Ignoring atlas_4x.png for ${path.relative(DB_TRAIN, dir)}: ` +
-      `${image.width}x${image.height} does not match compact atlas ${compactWidth}x${compactHeight}`
-    );
-  } catch (e) {
-    console.warn(`  [WARN] Could not read atlas_4x.png for ${path.relative(DB_TRAIN, dir)}: ${e.message}`);
-  }
-  return { atlas: compactAtlas, hires: false };
-}
-
-/** A texture ref belongs to an inline sub-model when its name carries a keyPrefix
- *  (e.g. "pack:pant/x_both.bmp") — those tiles are absent from atlas_4x.png. */
-function isInlineRef(key) {
-  const sep = key.indexOf(":");
-  return sep >= 0 && key.slice(sep + 1).includes("/");
-}
-
-/** Composite the 4x-upscaled inline source textures into atlas_4x at their UV
- *  positions. Returns PNG bytes (the original file bytes if nothing to add). */
-function compositeInlineTiles(atlas4xPath, image, scale, atlasMap, textureSources) {
-  const inlineKeys = atlasMap ? [...atlasMap.keys()].filter(isInlineRef) : [];
-  if (inlineKeys.length === 0) return fs.readFileSync(atlas4xPath);
-
-  for (const key of inlineKeys) {
-    const src = textureSources.get(key);
-    if (!src || src.type !== "pack") continue; // materials are solid; bg already matches
-    let tile;
-    try {
-      tile = loadImageRGBA(path.join(src.dir, src.name));
-    } catch {
-      continue;
-    }
-    const [u, v] = atlasMap.get(key);
-    const dx = Math.round(u * image.width);
-    const dy = Math.round(v * image.height);
-    const up = upscaleNearest(tile, scale);
-    if (dx + up.width <= image.width && dy + up.height <= image.height) {
-      blit(image, up, dx, dy);
-    }
-  }
-  return encodePNG(image);
 }
 
 function clean(obj) {

@@ -15,9 +15,13 @@ Then Claude reads atlas_padded_4x.png and corrects each tile's `content_box` in
 recompact.json where the AI drifted (esp. mostly-black gear/end tiles).
 
 Phase `assemble`:
-  - crop each tile's content_box from atlas_padded_4x, resize to its compact box,
-    paste into a black canvas of the compact size -> compact atlas_4x.png,
-  - write the git-tracked db copy and an overlay for position checking.
+  - crop each tile's content_box from atlas_padded_4x and resize it to 4x the
+    SOURCE texture's size, writing one PER-TEXTURE file next to the source
+    (model/<name>_4x.png, e.g. z_both_4x.png),
+  - write a high-res thumbnail (image_4x.png) and report the model's AI cost.
+
+atlas_4x is NOT produced here — it is derived later from the *_4x.png files by
+the JS build/upload step (scripts/lib/atlas4x.mjs). Originals are never modified.
 
 Usage:
   python remaster_atlas.py prepare  --model cd_163
@@ -278,6 +282,12 @@ def safe_ref_name(ref: str) -> str:
     return ref.replace(":", "_").replace("/", "_")
 
 
+def fourx_name(name: str) -> str:
+    """Per-texture 4x output name (z_both.bmp -> z_both_4x.png)."""
+    stem = name.rsplit(".", 1)[0] if "." in name else name
+    return f"{stem}_4x.png"
+
+
 # ---------------------------------------------------------------------------
 # Phase: prepare
 # ---------------------------------------------------------------------------
@@ -384,53 +394,49 @@ def assemble(model_dir: Path, out_root: Path, db_copy: bool) -> dict:
     rc = json.loads(rc_path.read_text(encoding="utf-8"))
 
     ai = Image.open(out_dir / "atlas_padded_4x.png").convert("RGB")
-    raw_ref = Image.open(out_dir / "atlas_4x_raw.png").convert("RGB")  # correct layout
-    cw4, ch4 = rc["compact_size"]
-    canvas = Image.new("RGB", (cw4, ch4), (0, 0, 0))
+    model_sub = model_dir / "model"
+
+    # Crop each tile's content_box from the AI result and resize it to 4x the SOURCE
+    # texture's own size — one independent PER-TEXTURE file (z_both.bmp -> z_both_4x.png).
+    # atlas_4x is NOT assembled here; it is derived later from these files.
+    written: list[str] = []
+    upscaled: dict[str, Image.Image] = {}
     for t in rc["tiles"]:
-        cb = t["compact_box"]
-        # Anchor to the RAW reference: place the AI tile's content into the exact
-        # sub-rectangle the original texture occupies inside this cell. This matches
-        # both the content's position (e.g. x_both's cab sits at the bottom with a
-        # black top) AND its aspect — no centring, no stretch mismatch.
-        raw_sub = content_bbox(raw_ref, cb)
-        ai_sub = content_bbox(ai, t["content_box"])
-        if raw_sub and ai_sub:
-            tw, th = raw_sub[2] - raw_sub[0], raw_sub[3] - raw_sub[1]
-            canvas.paste(ai.crop(ai_sub).resize((tw, th), Image.LANCZOS), (raw_sub[0], raw_sub[1]))
-        else:  # solid/empty tile (e.g. material:black) — just fill the cell
-            tile = ai.crop(t["content_box"]).resize((cb[2] - cb[0], cb[3] - cb[1]), Image.LANCZOS)
-            canvas.paste(tile, (cb[0], cb[1]))
+        ref = t["ref"]
+        if not ref.startswith("pack:"):
+            continue
+        name = ref[len("pack:"):]
+        src_path = model_sub / name
+        try:
+            ow, oh = Image.open(src_path).size
+        except Exception:  # noqa: BLE001 - fall back to the compact box dims
+            cb = t["compact_box"]
+            ow = max(1, (cb[2] - cb[0]) // UPSCALE)
+            oh = max(1, (cb[3] - cb[1]) // UPSCALE)
+        tile = ai.crop(t["content_box"]).resize((ow * UPSCALE, oh * UPSCALE), Image.LANCZOS)
+        out_name = fourx_name(name)
+        tile.save(out_dir / out_name)            # debug copy in generated/
+        if db_copy:
+            tile.save(model_sub / out_name)       # deliverable next to the source
+        upscaled[ref] = tile
+        written.append(out_name)
 
-    final_path = out_dir / "atlas_4x.png"
-    canvas.save(final_path)
+    # High-res thumbnail (image_4x.png) from the AI side texture — no extra AI call.
+    image_4x_path = build_thumbnail(upscaled, model_dir, out_dir, db_copy)
 
-    # Overlay vs the raw (classical) upscale for a position sanity-check.
-    raw = Image.open(out_dir / "atlas_4x_raw.png").convert("RGB")
-    Image.blend(raw, canvas, 0.5).save(out_dir / "atlas_4x_overlay.png")
-
-    db_path = None
-    if db_copy:
-        dst = model_dir / "atlas_4x.png"
-        canvas.save(dst)
-        db_path = str(dst.relative_to(_repo_root()))
-
-    # High-res thumbnail (image_4x.png) cropped from the AI side texture — no extra
-    # AI call. Use the first available side tile; match image.bmp's aspect if present.
-    image_4x_path = build_thumbnail(canvas, rc["tiles"], model_dir, out_dir, db_copy)
-
+    cost = rc.get("cost_usd", 0.0)
     rc["status"] = "assembled"
-    rc["atlas_4x_path"] = str(final_path.relative_to(_repo_root()))
-    rc["db_copy_path"] = db_path
+    rc["textures_4x"] = written
+    rc["db_copy"] = db_copy
     rc["image_4x_path"] = image_4x_path
     rc_path.write_text(json.dumps(rc, indent=2) + "\n", encoding="utf-8")
 
-    print(f"  assembled compact atlas_4x.png {cw4}x{ch4} (no padding)")
-    print(f"  overlay (check positions): {out_dir / 'atlas_4x_overlay.png'}")
-    if db_path:
-        print(f"  db copy: {db_path}")
+    print(f"  wrote {len(written)} per-texture 4x file(s): {', '.join(written)}")
+    if db_copy:
+        print(f"  saved next to the sources in {model_sub.relative_to(_repo_root())}/")
     if image_4x_path:
         print(f"  thumbnail: {image_4x_path}")
+    print(f"  AI upscaling cost for this model: ${cost:.4f}")
     return rc
 
 
@@ -438,26 +444,22 @@ def assemble(model_dir: Path, out_root: Path, db_copy: bool) -> dict:
 THUMBNAIL_SIDE_REFS = ("pack:z_both.bmp", "pack:z_dec.bmp", "pack:z_inc.bmp")
 
 
-def build_thumbnail(canvas: Image.Image, tiles: list[dict], model_dir: Path,
+def build_thumbnail(upscaled: dict[str, "Image.Image"], model_dir: Path,
                     out_dir: Path, db_copy: bool) -> str | None:
-    """Crop the loco's side texture from the assembled atlas -> image_4x.png.
+    """Build image_4x.png from an already-upscaled side texture (no extra AI call).
 
-    Reuses the AI result already in ``canvas`` (no AI call). The crop is taken from
-    the compact atlas at the side tile's box and, when a source image.bmp exists, is
-    resized to image.bmp's size x4 so it is a drop-in higher-res thumbnail.
+    Picks the first available side tile and, when a source image.bmp exists, resizes
+    it to image.bmp's size x4 so it is a drop-in higher-res thumbnail.
     """
-    by_ref = {t["ref"]: t for t in tiles}
-    side = next((by_ref[r] for r in THUMBNAIL_SIDE_REFS if r in by_ref), None)
+    side = next((upscaled[r] for r in THUMBNAIL_SIDE_REFS if r in upscaled), None)
     if side is None:
         return None
-    cb = side["compact_box"]
-    thumb = canvas.crop(cb)
-
+    thumb = side
     image_bmp = model_dir / "image.bmp"
     if image_bmp.exists():
         try:
             w, h = Image.open(image_bmp).size
-            thumb = thumb.resize((w * UPSCALE, h * UPSCALE), Image.LANCZOS)
+            thumb = side.resize((w * UPSCALE, h * UPSCALE), Image.LANCZOS)
         except Exception:  # noqa: BLE001 - aspect match is best-effort
             pass
 
@@ -470,51 +472,59 @@ def build_thumbnail(canvas: Image.Image, tiles: list[dict], model_dir: Path,
 
 
 def check(model_dir: Path, out_root: Path) -> dict:
-    """Build a per-tile comparison of atlas_4x_raw (reference layout) vs atlas_4x
-    (the AI result) so each tile can be verified to show the SAME content in the
-    SAME place. Writes atlas_4x_check.png and prints a per-tile mismatch score."""
+    """Build a per-texture comparison of each source texture's classical 4x upscale
+    vs the AI <name>_4x.png so each can be verified to show the SAME content in the
+    SAME place. Writes textures_4x_check.png and prints a per-texture mismatch score."""
     from PIL import ImageDraw
 
     slug = model_slug(model_dir)
     out_dir = out_root / slug
     rc = json.loads((out_dir / RECOMPACT_NAME).read_text(encoding="utf-8"))
-    raw = Image.open(out_dir / "atlas_4x_raw.png").convert("RGB")
-    ai = Image.open(out_dir / "atlas_4x.png").convert("RGB")
+    model_sub = model_dir / "model"
 
     import numpy as np
     rows, row_h, pad = [], 120, 6
-    print("  per-tile mismatch (raw vs AI, lower = better aligned; high => fix content_box):")
+    print("  per-texture mismatch (raw vs AI, lower = better aligned; high => fix content_box):")
     for t in rc["tiles"]:
-        if not t["ref"].startswith("pack:"):
+        ref = t["ref"]
+        if not ref.startswith("pack:"):
             continue
-        cb = t["compact_box"]
-        rt = raw.crop(cb)
-        at = ai.crop(cb)
-        # alignment score: edge-map correlation is robust to the AI's extra sharpness;
-        # here a simple downsized abs-diff of normalized tiles flags gross mispositions.
+        name = ref[len("pack:"):]
+        fourx = out_dir / fourx_name(name)
+        if not fourx.exists():
+            continue
+        at = Image.open(fourx).convert("RGB")
+        src = model_sub / name
+        rt = (Image.open(src).convert("RGB").resize(at.size, Image.LANCZOS)
+              if src.exists() else at)
+        # alignment score: a simple downsized abs-diff of normalized tiles flags
+        # gross mispositions (the AI's extra sharpness alone scores low).
         small = (32, 32)
         a = np.asarray(rt.resize(small).convert("L")).astype(float)
         b = np.asarray(at.resize(small).convert("L")).astype(float)
         a -= a.mean(); b -= b.mean()
         score = round(float(np.abs(a - b).mean()), 1)
-        w = max(1, round((cb[2] - cb[0]) * row_h / (cb[3] - cb[1])))
+        w = max(1, round(at.width * row_h / at.height))
         strip = Image.new("RGB", (w * 2 + pad * 3, row_h + 18), (32, 32, 32))
         strip.paste(rt.resize((w, row_h)), (pad, 16))
         strip.paste(at.resize((w, row_h)), (w + pad * 2, 16))
-        ImageDraw.Draw(strip).text((pad, 3), f"{t['ref']}  raw | AI   mismatch={score}",
+        ImageDraw.Draw(strip).text((pad, 3), f"{name}  raw | AI   mismatch={score}",
                                    fill=(230, 230, 230))
         rows.append(strip)
-        print(f"    {t['ref']:22} mismatch={score}")
+        print(f"    {name:22} mismatch={score}")
 
+    if not rows:
+        print("  [warn] no *_4x.png found in generated/ — run `assemble` first")
+        return rc
     width = max(r.width for r in rows)
     sheet = Image.new("RGB", (width, sum(r.height for r in rows)), (20, 20, 20))
     y = 0
     for r in rows:
         sheet.paste(r, (0, y))
         y += r.height
-    sheet.save(out_dir / "atlas_4x_check.png")
-    print(f"  wrote {out_dir / 'atlas_4x_check.png'} — read it: each tile's raw and AI "
-          "halves must show the SAME thing; a high mismatch means fix that content_box.")
+    sheet.save(out_dir / "textures_4x_check.png")
+    print(f"  wrote {out_dir / 'textures_4x_check.png'} — read it: each texture's raw and "
+          "AI halves must show the SAME thing; a high mismatch means fix that content_box.")
     return rc
 
 

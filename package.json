@@ -6,6 +6,8 @@
   "description": "Web 3D browser for the VLAKosimDB train model database",
   "scripts": {
     "build:models": "node scripts/build-models.mjs",
+    "remaster": "node scripts/remaster.mjs",
+    "upload:roblox": "node scripts/upload-roblox.mjs",
     "dev": "npm run build:models && vite",
     "build": "npm run build:models && vite build",
     "preview": "vite preview"
@@ -15,6 +17,7 @@
     "@react-three/fiber": "^8.17.10",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "sharp": "^0.35.2",
     "three": "^0.169.0"
   },
   "devDependencies": {
