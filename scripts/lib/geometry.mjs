@@ -5,6 +5,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parseXmlSafe, asArray, attrNum, attrStr } from "./xml.mjs";
+import { generateModel } from "./simplemodel/generate.mjs";
 
 /**
  * Parse a model directory into:
@@ -35,7 +36,9 @@ function walk(dir, keyPrefix, scale, translate, polygons, textureSources, depth,
     return;
   }
   const sm = root.simplemodel ?? root;
-  const modelEl = sm.model;
+  // Regenerate <model> from the source description (clips/shapes/colorizes) when
+  // present; fall back to the pre-baked <model> for baked-only models.
+  const modelEl = generateModel(sm) ?? sm.model;
 
   const [sx, sy, sz] = scale;
   const flip = sx * sy * sz < 0; // negative determinant flips winding
