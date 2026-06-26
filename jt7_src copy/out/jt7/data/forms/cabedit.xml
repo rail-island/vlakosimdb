@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<data>
+
+<window rep.name="form.cabeditor" layout="vlist" state="max" closeonesc="1" text="Cab Editor" menu="menu.cabeditor">
+  <panel ll.vsize="25" layout="hflow">
+    <trackbar min="0" max="200" name="speed" onchange="repaint()"/>
+    <panel w="100"><label name="coords"/></panel>
+    <panel w="60"><label name="speedlabel"/></panel>
+  </panel>
+  <panel layout="hlist">
+    <panel ll.hsize="20%">
+    </panel>
+    <place name="glv" onresize="onsize()">
+      <glview name="glview" onmousedown="mdown(x,y,button)" onmousemove="mmove(x,y)" onmouseup="mup(button)" onpaintgl="paint()"/>
+    </place>
+  </panel>
+</window>
+
+<menubar rep.name="menu.cabeditor">
+  <popup text="$Cab">
+    <do text="$Quit" onclick="quit()"/>
+  </popup>
+</menubar>
+
+</data>

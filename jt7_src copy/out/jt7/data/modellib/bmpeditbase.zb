@@ -1,0 +1,272 @@
+includable module bitmapEditBaseModule;
+
+var picture,bakpicture;
+
+var penpt0;//bod, odkud se kreslilo tuzkou
+var rectpt0;//bod, odkud se kreslil obdelnik
+var selpt0,selpt1,selecting;//bod, odkud (resp. kam) se kresli obdelnik vyberu
+var selpic;//Picture, !=null:obsahuje vybrany picture
+var blitpic;//obrazek, ktery se kresli na picture
+var blitx,blity,blitw,blith;
+var blitpt0;//pri posunu nebo zmene velikosti vkladaneho obrazku
+var blitsizing;
+var picmodified=false;
+
+function selpichflip() {if (selpic) selpic.hflip();}
+function selpicvflip() {if (selpic) selpic.vflip();}
+function selresize() {
+  if (selpic) {
+    var data=new XMLNode();
+    data->x=100;data->y=100;
+    if (Application.runXMLDialog(Application.findResource("model.selresizefrm"),data)) {
+      var p2=new Picture();
+      directly p2.W=selpic.W*data->x/100;
+      directly p2.H=selpic.H*data->y/100;
+      selpic.stretch(0,0,p2.W,p2.H,p2.canvas);
+      selpic=p2;
+    }
+  }
+}
+
+function fillcolors(table) {
+  var colors=["black","maroon","green","olive","navy","purple","teal","gray","silver","red","lime","yellow","blue","fuchsia","aqua","white","brown","pond"];
+  for(var i=0;i<colors.count;i++) table[0,i]=colors[i];
+}
+
+function selectcolor(x,y,button) {
+  if (button=="left") form->color.color=form->colortable[y,x];
+  else form->colortable[y,x]=form->color.color;
+}
+
+function choosecolor() {
+  if (var newcolor=ColorDialog.run(form->color.color)) form->color.color=newcolor;
+}
+
+function setdrawmode() {
+  undrawselect();
+  if (form->drawmode.cur==4) {
+    if (selpic) {
+      blitpic=selpic;
+      blitx=0;blity=0;blitw=selpic.W;blith=selpic.H;
+      if (selpic.W>picture.W || selpic.H>picture.H) {
+        if (Window.msgwin("POEdit","$Placed-picture-is-bigger-resize","$Yes;$No")==0) {
+          if (blitw>picture.W) blitw=picture.W;
+          if (blith>picture.H) blith=picture.H;
+        }
+      }
+      bakpicture=picture.clone();
+      blitpic.stretch(blitx,blity,blitw,blith,picture.canvas);
+      blitpt0=null;
+    } else {
+      Window.alert("$In-clipboard-is-not-picture");
+      form->drawmode.cur=3;
+    }
+  } else blitpic=null;
+  drawmodeset();
+}
+
+function undrawselect() {
+  if (selpt0) {
+    var p=bakpicture;bakpicture=picture;picture=p;
+    selpt0=null;selpt1=null;
+  }
+  if (blitpic) {
+    var p=bakpicture;bakpicture=picture;picture=p;
+    blitpic=null;
+  }
+}
+
+function okblit() {
+  if (blitpic) {
+    bakpicture=picture.clone();
+    blitpic.stretch(blitx,blity,blitw,blith,picture.canvas);
+    bakpicture=picture.clone();
+    blitpic=null;blitpt0=null;
+    form->drawmode.cur=-1;
+  } else Window.alert("$Picture-is-not-placed");
+}
+
+function undoimage() {
+  var p=bakpicture;bakpicture=picture;picture=p;
+  changeview();
+}
+
+function floodfill(x,y) {
+  picture.canvas.bg(form->color.color);
+  picture.canvas.floodFill(x,y,"surface",picture.canvas[x,y]);
+  changeview();
+}
+
+function putpixel(x,y) {
+  if (form->penwidth.cur==0) picture.canvas[x,y]=form->color.color;
+  else {
+    var wi=form->penwidth.cur;
+    picture.canvas.fg("none").bg(form->color.color).ellipse(x-wi,y-wi,x+wi,y+wi);
+  }
+  changeview();
+}
+
+function picmdown(x,y,button,shift) {
+  if (picture) {
+    if (!blitpic) {
+      undrawselect();
+      bakpicture=picture.clone();
+    }
+    picmodified=true;
+    var pt0=new (x=ptolbmpx(x),y=ptolbmpy(y));
+    select (form->drawmode.cur) {
+      0:if (Application.shiftState.ctrl) form->color.color=picture.canvas[pt0->x,pt0->y];else {penpt0=pt0;putpixel(pt0->x,pt0->y);}
+      1:form->color.color=picture.canvas[pt0->x,pt0->y];
+      2:if (Application.shiftState.ctrl) form->color.color=picture.canvas[pt0->x,pt0->y];else rectpt0=pt0;
+      3:{selpt0=pt0;selecting=true;}//fillrectangle
+      5:rectpt0=pt0;//line
+      6:rectpt0=pt0;//line
+      7:rectpt0=pt0;//ellipse
+      8:if (Application.shiftState.ctrl) form->color.color=picture.canvas[pt0->x,pt0->y];else floodfill(pt0->x,pt0->y);//floodfill
+      9:rectpt0=pt0;//draw rectangle
+      10:rectpt0=pt0;//draw ellipse
+    }
+    if (blitpic) {
+      blitpt0=pt0;
+      blitsizing=shift.ctrl;
+    }
+  }
+}
+
+function picmmove(x,y) {
+  if (penpt0) {
+    var pt=new (x=ptolbmpx(x),y=ptolbmpy(y));
+    var cnv=picture.canvas;
+    if (picture && (pt->x!=penpt0->x || pt->y!=penpt0->y)) {
+      cnv.fg(form->color.color);
+      cnv.penwi(form->penwidth.cur);
+      cnv.line(penpt0->x,penpt0->y,pt->x,pt->y);
+      cnv.penwi(0);
+      penpt0=pt;
+      changeview();
+    }
+    cnv[pt->x,pt->y]=form->color.color;
+    return true;
+  } 
+  if (rectpt0) {
+    var pt=new (x=ptolbmpx(x),y=ptolbmpy(y));
+    if (picture) {
+      picture=bakpicture.clone();
+      var cnv=picture.canvas;
+      select (form->drawmode.cur) {
+        2:{
+          cnv.bg(form->color.color).fg("none");
+          var x1=Math.min(rectpt0->x,pt->x),x2=Math.max(rectpt0->x,pt->x);
+          var y1=Math.min(rectpt0->y,pt->y),y2=Math.max(rectpt0->y,pt->y);
+          cnv.rectangle(x1,y1,x2+1,y2+1);
+        }
+        6:{
+          cnv.fg(form->color.color);
+          cnv.penwi(form->penwidth.cur);
+          cnv.line(rectpt0->x,rectpt0->y,pt->x,pt->y);
+          cnv.penwi(0);
+        }
+        7:{
+          var x1=Math.min(rectpt0->x,pt->x),x2=Math.max(rectpt0->x,pt->x);
+          var y1=Math.min(rectpt0->y,pt->y),y2=Math.max(rectpt0->y,pt->y);
+          cnv.bg(form->color.color).fg("none");
+          cnv.ellipse(x1,y1,x2,y2);
+        }
+        9:{
+          cnv.penwi(form->penwidth.cur);
+          cnv.fg(form->color.color).bg("none");
+          var x1=Math.min(rectpt0->x,pt->x),x2=Math.max(rectpt0->x,pt->x);
+          var y1=Math.min(rectpt0->y,pt->y),y2=Math.max(rectpt0->y,pt->y);
+          cnv.rectangle(x1,y1,x2+1,y2+1);
+          cnv.penwi(0);
+        }
+        10:{
+          cnv.penwi(form->penwidth.cur);
+          var x1=Math.min(rectpt0->x,pt->x),x2=Math.max(rectpt0->x,pt->x);
+          var y1=Math.min(rectpt0->y,pt->y),y2=Math.max(rectpt0->y,pt->y);
+          cnv.fg(form->color.color).bg("none");
+          cnv.ellipse(x1,y1,x2,y2);
+          cnv.penwi(0);
+        }
+        else {
+          if (selpic) cnv.drawSelection(rectpt0->x,rectpt0->y,pt->x,pt->y);
+        }      
+      }
+      changeview();
+    }
+    return true;
+  } 
+  if (selecting) {
+    var pt=new (x=ptolbmpx(x),y=ptolbmpy(y));
+    selpt1=pt;
+    if (picture) {
+      picture=bakpicture.clone();
+      var cnv=picture.canvas;
+      cnv.drawSelection(selpt0->x,selpt0->y,selpt1->x,selpt1->y);
+      changeview();
+    }
+    return true;
+  } 
+  if (blitpic && blitpt0) {
+    var pt=new (x=ptolbmpx(x),y=ptolbmpy(y));
+    if (blitsizing) {
+      blitw+=(pt->x-blitpt0->x);
+      blith+=(pt->y-blitpt0->y);
+    } else {
+      blitx+=(pt->x-blitpt0->x);
+      blity+=(pt->y-blitpt0->y);
+    }
+    if (blitw<1) blitw=1;
+    if (blith<1) blith=1;
+    picture=bakpicture.clone();
+    blitpic.stretch(blitx,blity,blitw,blith,picture.canvas);
+    blitpt0=pt;
+    changeview();
+    return true;
+  }
+  return false;
+}
+
+function picmup(x,y,button) {
+  select (button) {
+    "left":{
+      if (form->drawmode.cur==5) {
+        picture=bakpicture.clone();
+        var cnv=picture.canvas;
+        var pt=new (x=ptolbmpx(x),y=ptolbmpy(y));
+        if (selpic) ModelProcs.fillPattern(cnv,rectpt0->x,rectpt0->y,pt->x,pt->y,selpic);
+      }
+      penpt0=null;
+      rectpt0=null;
+      selecting=false;
+      blitpt0=null;
+      blitsizing=false;
+    }
+  }
+}
+
+function copybmp() {
+  var a=selpt0,b=selpt1;
+  if (selpt0 && selpt1 && b->x>=a->x && b->y>=a->y) {
+    undrawselect();
+    selpic=new Picture();
+    selpic.W=b->x-a->x+1;
+    selpic.H=b->y-a->y+1;
+    picture.stretchRectangle(0,0,selpic.W,selpic.H,a->x,a->y,selpic.W,selpic.H,selpic.canvas);
+    changeview();
+  } else Window.alert("$Nothing-is-selected");
+}
+
+function loadbmp() {
+  var o=new OpenDialog();
+  o.initialDir=File.root/"data"/"materials";
+  o.filter="$Bitmaps|*.bmp";
+  if (o.execute()) {
+    selpic=new Picture();
+    selpic.load(o.file);
+  }
+}
+
+
+function drawmodeset() {}
+function changeview() {}

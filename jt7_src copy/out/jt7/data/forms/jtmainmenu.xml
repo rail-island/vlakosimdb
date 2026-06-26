@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<menubar rep.name="jtycon.mainmenu" sdp.buttonbar="1" sdp.barx0="20" sdp.bary0="20">
+  <popup text="$File">
+    <do text="$Quit" onclick="exitgame()" shortcut="alt+q"/>
+    <do text="$Save" onclick="savegame()" shortcut="alt+s"/>
+    <do text="$Quit-to-os" onclick="quit()"/>
+  </popup>
+  <popup text="$Railroad" onclick="rrbuild()"/>
+  <popup text="$Lines" onclick="showlines()"/>
+  <popup text="$Terrain">
+    <do text="$Edit" onclick="teredit()" shortcut="alt+t"/>
+    <do text="$Water" onclick="water()" shortcut="alt+w"/>
+    <do text="$Generate" onclick="tergen()" shortcut="alt+g"/>
+    <do text="$Create" onclick="tercreat()"/>
+    <do text="$Trees" onclick="planttrees()" shortcut="alt+r"/>
+    <do text="$Building" onclick="buildbuildings()" shortcut="alt+b"/>
+    <do text="$Terrain-type" onclick="terraintype()" shortcut="alt+y"/>
+    <do text="$Rail-type" onclick="railtype()" shortcut="alt+m"/>
+    <do text="$Airport" onclick="buildairport()" shortcut="alt+a"/>
+    <do text="$Road" onclick="buildroad()" shortcut="alt+d"/>
+    <do text="$Road-type" onclick="roadtype()"/>
+  </popup>
+  <popup text="$Buldozere" onclick="buldozere()"/>
+  <popup text="$Unwatch" onclick="unwatch()"/>
+  <popup text="$Commands">
+    <do text="$Cancel" shortcut="esc" onclick="cancel()"/>
+    <do text="$Delete-trains" onclick="erasetrains()"/>
+    <do text="$Dry-all" onclick="dryall()"/>
+    <do text="$OpenGL-options" onclick="oglopt()"/>
+    <do text="$Show-trains" onclick="showtrains()"/>
+    <do text="$Railroad-template" onclick="rrtemplates()"/>
+  </popup>
+  <popup text="$View">
+    <do text="$Map-view-type" shortcut="f2" onclick="viewtype('map')"/>
+    <do text="$Cart-view-type" shortcut="f3" onclick="viewtype('cart')"/>
+  </popup>
+</menubar>

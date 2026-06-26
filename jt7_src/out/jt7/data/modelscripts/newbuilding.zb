@@ -1,0 +1,54 @@
+module newBuildingScript;
+
+requires module modelScripts;
+
+readonly text="$Building";
+readonly name="building";
+
+function create(parobj) {
+  option directly;
+
+  var xml=new XMLNode();
+  xml->name="building1";
+  xml->hi=10;
+  xml->len=2;
+  xml->wi=1;
+  if (Application.runXMLDialog(Application.findResource("poed.newbuildingfrm"),xml)) {
+    if (parobj.hasChild(xml->name&".zip")) {
+      Window.alert("$Object "&xml->name&".zip $object-exists-msg");
+      return null;
+    }
+    var obj=parobj.openChild(xml->name&".zip");
+    var index=new XMLNode();
+    index.name="building";
+    index->name=xml->name;
+    index->w=xml->len;
+    index->h=xml->wi;
+    
+    var mod=index.forceSub("models").add("model");
+    mod->model="model.zip";
+    
+    obj.saveXML("index.xml",index);
+    
+    var model=obj.openChild("model.zip");
+    var modxml=new XMLNode();
+    
+    var sdata=new Store();
+    sdata->xsize=xml->len*10;sdata->ysize=xml->hi;sdata->zsize=xml->wi*10;sdata->name="model";
+    sdata->x0="0";sdata->y0="0";sdata->z0="0";
+    sdata->texx=3;sdata->texy=1;sdata->texz=3;
+    if (xml->eqsides=="1") {
+      sdata->texx=2;sdata->texz=2;
+    }
+    sdata->texdetail=10;sdata->treemodel="0";
+    if (xml->halfdetail=="1") sdata->texdetail=5;
+    
+    simpleObjectModule.createSimpleObject(sdata,modxml,model);
+    model.saveXML("index.xml",modxml);
+    
+    return obj;
+  }
+}
+
+modelScripts.addNewObjectScript(this);
+

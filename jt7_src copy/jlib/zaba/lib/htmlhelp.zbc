@@ -1,0 +1,1202 @@
+;=========================
+interface HTMLHelp.module
+initproc=@init,32
+initproc=@registermodule,1
+initproc=@createclasses,2
+initproc=@makeislist,3
+autocreate=1
+begin
+;------------------------
+sub @init 0 0
+code
+pushsys
+pushthis
+join
+polypop 2
+pushthis
+pushlocals
+join
+polypop 2
+pushnull
+pushthis
+initprop xml
+polypop 2
+pushnull
+pushthis
+initprop dir
+polypop 2
+pushnull
+pushthis
+initprop form
+polypop 2
+pushnull
+pushthis
+initprop window
+polypop 2
+pushsys
+cm createArray 0
+pushthis
+initprop list
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub @createclasses 0 0
+code
+co HHSource.class
+pushsys
+setprop HHSource
+pop
+pushthis
+xchg 1 2
+setprop @module
+xchg 1 2
+pop
+cm @createclasses 0
+pop
+pushstr "HHSource"
+pushsys
+getprop HHSource
+setprop @classname
+polypop 2
+pushstr "TreeSource"
+pushsys
+getprop HHSource
+setprop @supername
+polypop 2
+co ListItem.class
+pushsys
+setprop ListItem
+pop
+pushthis
+xchg 1 2
+setprop @module
+xchg 1 2
+pop
+cm @createclasses 0
+pop
+pushstr "ListItem"
+pushsys
+getprop ListItem
+setprop @classname
+polypop 2
+pushstr "Object"
+pushsys
+getprop ListItem
+setprop @supername
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub @makeislist 0 0
+code
+pushsys
+getprop HHSource
+pushsys
+cm createIsList 1
+pop
+pushsys
+getprop ListItem
+pushsys
+cm createIsList 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub @registermodule 0 0
+code
+pushthis
+pushsys
+setprop HTMLHelp
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub makelist 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 StringBuffer
+getprop StringBuffer
+cm op:new 0
+pushlocals
+initprop res
+polypop 2
+pushlocals
+find 011 list
+getprop list
+cm getIterator 0
+@3:
+dup 1
+cm getValue 0
+dup 1
+condnotjmp 4
+pushlocals
+initprop l
+polypop 2
+pushlocals
+find 011 l
+getprop l
+cm get:name 0
+pushlocals
+find 011 res
+getprop res
+cm add 1
+pop
+pushstr "\n"
+pushlocals
+find 011 res
+getprop res
+cm add 1
+pop
+@2:
+dup 1
+cm moveNext 0
+pop
+pushlocals
+deleteprops 1
+pop
+jmp 3
+@4:
+polypop 2
+pushlocals
+find 011 res
+getprop res
+pushlocals
+find 011 String
+getprop String
+cm op:new 1
+doret 1
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub addxml 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop xml
+polypop 2
+pushstr "text"
+pushlocals
+find 011 xml
+getprop xml
+cm op:get:prop 1
+pushlocals
+find 011 xml
+getprop xml
+pushlocals
+find 011 ListItem
+getprop ListItem
+cm op:new 2
+pushlocals
+find 011 list
+getprop list
+cm push 1
+pop
+pushlocals
+find 011 xml
+getprop xml
+cm getIterator 0
+@6:
+dup 1
+cm getValue 0
+dup 1
+condnotjmp 7
+pushlocals
+initprop c
+polypop 2
+pushlocals
+find 011 c
+getprop c
+pushthis
+xcm addxml 1
+jnx 8
+pop
+pushlocals
+find 011 addxml
+getprop addxml
+cm op:call 1
+@8:
+pop
+@5:
+dup 1
+cm moveNext 0
+pop
+pushlocals
+deleteprops 1
+pop
+jmp 6
+@7:
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub wantwin 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 window
+getprop window
+condjmp 9
+pushsys
+jmp 10
+@9:
+pushnull
+@10:
+condnotjmp 11
+pushlocals
+find 011 Form
+getprop Form
+cm op:new 0
+pushlocals
+find 011 form
+assignprop form
+pop
+pop
+pushthis
+pushlocals
+find 011 form
+getprop form
+cm set:handler 1
+pop
+pushstr "hh.window"
+pushlocals
+find 011 form
+getprop form
+cm loadWindow 1
+pushlocals
+find 011 window
+assignprop window
+pop
+pop
+@11:
+pushnull
+doret 1
+end
+;------------------------
+sub run 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop file
+polypop 2
+pushthis
+xcm wantwin 0
+jnx 12
+pop
+pushlocals
+find 011 wantwin
+getprop wantwin
+cm op:call 0
+@12:
+pop
+pushlocals
+find 011 file
+getprop file
+pushthis
+xcm showfile 1
+jnx 13
+pop
+pushlocals
+find 011 showfile
+getprop showfile
+cm op:call 1
+@13:
+pop
+pushlocals
+find 011 window
+getprop window
+cm show 0
+pop
+pushthis
+xcm treeclick 0
+jnx 14
+pop
+pushlocals
+find 011 treeclick
+getprop treeclick
+cm op:call 0
+@14:
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub showfile 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop file
+polypop 2
+pushlocals
+find 011 file
+getprop file
+pushlocals
+find 011 File
+getprop File
+cm op:new 1
+cm getDirectory 0
+pushlocals
+find 011 dir
+assignprop dir
+pop
+pop
+pushsys
+cm createArray 0
+pushlocals
+find 011 list
+assignprop list
+pop
+pop
+pushlocals
+find 011 XMLNode
+getprop XMLNode
+cm op:new 0
+pushlocals
+find 011 xml
+assignprop xml
+pop
+pop
+pushlocals
+find 011 file
+getprop file
+pushlocals
+find 011 xml
+getprop xml
+cm load 1
+pop
+pushlocals
+find 011 xml
+getprop xml
+pushthis
+xcm addxml 1
+jnx 15
+pop
+pushlocals
+find 011 addxml
+getprop addxml
+cm op:call 1
+@15:
+pop
+pushlocals
+pushthis
+pushstr "@inline1"
+pushsys
+cm createInlineMethod 3
+pushlocals
+find 011 list
+getprop list
+cm sort 1
+pop
+pushlocals
+find 011 xml
+getprop xml
+pushlocals
+find 011 HHSource
+getprop HHSource
+cm op:new 1
+pushstr "tree"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:source 1
+pop
+pushthis
+xcm makelist 0
+jnx 16
+pop
+pushlocals
+find 011 makelist
+getprop makelist
+cm op:call 0
+@16:
+pushstr "list"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:items 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub gotopic 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop path
+polypop 2
+pushlocals
+find 011 MultiIndex
+getprop MultiIndex
+cm op:new 0
+pushlocals
+initprop active
+polypop 2
+pushlocals
+find 011 xml
+getprop xml
+pushlocals
+initprop parent
+polypop 2
+pushstr "/"
+pushlocals
+find 011 path
+getprop path
+cm split 1
+cm getIterator 0
+@18:
+dup 1
+cm getValue 0
+dup 1
+condnotjmp 19
+pushlocals
+initprop item
+polypop 2
+pushnum 0
+pushlocals
+initprop i
+pop
+pop
+@21:
+pushlocals
+find 011 parent
+getprop parent
+cm get:count 0
+pushlocals
+find 011 i
+getprop i
+cm op:lt 1
+condnotjmp 22
+pushlocals
+find 011 item
+getprop item
+pushlocals
+find 011 i
+getprop i
+pushlocals
+find 011 parent
+getprop parent
+cm op:get:index 1
+cm get:name 0
+cm op:eq 1
+condnotjmp 23
+pushlocals
+find 011 i
+getprop i
+pushlocals
+find 011 active
+getprop active
+cm add 1
+pop
+pushlocals
+find 011 i
+getprop i
+pushlocals
+find 011 parent
+getprop parent
+cm op:get:index 1
+pushlocals
+find 011 parent
+assignprop parent
+pop
+pop
+pushlocals
+deleteprops 1
+pop
+jmp 24
+@23:
+@20:
+pushlocals
+find 011 i
+dup 1
+getprop i
+dup 1
+cm op:inc 0
+xchg 2 3
+xchg 1 2
+assignprop i
+polypop 2
+pop
+jmp 21
+@22:
+pushlocals
+deleteprops 1
+pop
+@24:
+@17:
+dup 1
+cm moveNext 0
+pop
+pushlocals
+deleteprops 1
+pop
+jmp 18
+@19:
+polypop 2
+pushlocals
+find 011 active
+getprop active
+pushstr "tree"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:active 1
+pop
+pushthis
+xcm treeclick 0
+jnx 25
+pop
+pushlocals
+find 011 treeclick
+getprop treeclick
+cm op:call 0
+@25:
+pop
+pushlocals
+deleteprops 2
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub run 2 2
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop file
+polypop 2
+pushparam 1
+pushlocals
+initprop path
+polypop 2
+pushthis
+xcm wantwin 0
+jnx 26
+pop
+pushlocals
+find 011 wantwin
+getprop wantwin
+cm op:call 0
+@26:
+pop
+pushlocals
+find 011 file
+getprop file
+pushthis
+xcm showfile 1
+jnx 27
+pop
+pushlocals
+find 011 showfile
+getprop showfile
+cm op:call 1
+@27:
+pop
+pushlocals
+find 011 path
+getprop path
+pushthis
+xcm gotopic 1
+jnx 28
+pop
+pushlocals
+find 011 gotopic
+getprop gotopic
+cm op:call 1
+@28:
+pop
+pushlocals
+find 011 window
+getprop window
+cm show 0
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub loadtopic 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop href
+polypop 2
+pushlocals
+find 011 href
+getprop href
+pushlocals
+find 011 dir
+getprop dir
+cm op:div 1
+cm load 0
+pushstr "html"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:text 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub golink 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop href
+polypop 2
+pushstr "topic:"
+pushlocals
+find 011 href
+getprop href
+cm beginsWith 1
+condnotjmp 29
+pushnum 6
+pushnum 6
+pushlocals
+find 011 href
+getprop href
+cm get:length 0
+cm op:sub 1
+pushlocals
+find 011 href
+getprop href
+cm substr 2
+pushthis
+xcm gotopic 1
+jnx 30
+pop
+pushlocals
+find 011 gotopic
+getprop gotopic
+cm op:call 1
+@30:
+pop
+jmp 31
+@29:
+pushstr "main:"
+pushlocals
+find 011 href
+getprop href
+cm beginsWith 1
+condnotjmp 32
+pushnum 5
+pushnum 5
+pushlocals
+find 011 href
+getprop href
+cm get:length 0
+cm op:sub 1
+pushlocals
+find 011 href
+getprop href
+cm substr 2
+pushlocals
+find 011 dir
+getprop dir
+cm op:div 1
+pushthis
+xcm showfile 1
+jnx 33
+pop
+pushlocals
+find 011 showfile
+getprop showfile
+cm op:call 1
+@33:
+pop
+pushthis
+xcm treeclick 0
+jnx 34
+pop
+pushlocals
+find 011 treeclick
+getprop treeclick
+cm op:call 0
+@34:
+pop
+jmp 35
+@32:
+pushlocals
+find 011 href
+getprop href
+pushthis
+xcm loadtopic 1
+jnx 36
+pop
+pushlocals
+find 011 loadtopic
+getprop loadtopic
+cm op:call 1
+@36:
+pop
+@35:
+@31:
+pushnull
+doret 1
+end
+;------------------------
+sub findpic 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop src
+polypop 2
+pushlocals
+find 011 Picture
+getprop Picture
+cm op:new 0
+pushlocals
+initprop pic
+polypop 2
+pushlocals
+find 011 src
+getprop src
+pushlocals
+find 011 dir
+getprop dir
+cm op:div 1
+pushlocals
+find 011 pic
+getprop pic
+cm load 1
+pop
+pushlocals
+find 011 src
+getprop src
+pushlocals
+find 011 pic
+getprop pic
+pushstr "html"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm searchedPicture 2
+pop
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub treeclick 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushstr "tree"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm get:active 0
+pushlocals
+initprop a
+polypop 2
+pushlocals
+find 011 a
+getprop a
+pushlocals
+find 011 xml
+getprop xml
+cm op:get:index 1
+pushlocals
+initprop elem
+polypop 2
+pushstr ""
+pushstr "topic"
+pushlocals
+find 011 elem
+getprop elem
+cm op:get:prop 1
+cm op:neq 1
+condnotjmp 37
+pushstr "topic"
+pushlocals
+find 011 elem
+getprop elem
+cm op:get:prop 1
+pushthis
+xcm loadtopic 1
+jnx 38
+pop
+pushlocals
+find 011 loadtopic
+getprop loadtopic
+cm op:call 1
+@38:
+pop
+@37:
+pushlocals
+deleteprops 2
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub listclick 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushstr "list"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm get:cur 0
+pushlocals
+find 011 list
+getprop list
+cm op:get:index 1
+pushlocals
+initprop l
+polypop 2
+pushlocals
+find 011 l
+getprop l
+cm get:xml 0
+pushlocals
+initprop elem
+polypop 2
+pushstr ""
+pushstr "topic"
+pushlocals
+find 011 elem
+getprop elem
+cm op:get:prop 1
+cm op:neq 1
+condnotjmp 39
+pushstr "topic"
+pushlocals
+find 011 elem
+getprop elem
+cm op:get:prop 1
+pushthis
+xcm loadtopic 1
+jnx 40
+pop
+pushlocals
+find 011 loadtopic
+getprop loadtopic
+cm op:call 1
+@40:
+pop
+@39:
+pushlocals
+deleteprops 2
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub @inline1 2 2
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+join
+polypop 2
+pushparam 1
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 left
+getprop left
+cm get:name 0
+pushlocals
+find 011 right
+getprop right
+cm get:name 0
+pushlocals
+find 011 String
+getprop String
+cm compare 2
+doret 1
+pushnull
+doret 1
+end
+end
+;=========================
+interface HHSource.instance
+include=TreeSource.instance
+creatoras=TreeSource.instance
+begin
+;------------------------
+sub getClass 0 0
+code
+pushsys
+getprop HHSource
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub getCount 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 xml
+getprop xml
+cm get:count 0
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub getText 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushstr "text"
+pushlocals
+find 011 xml
+getprop xml
+cm op:get:prop 1
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub getNodeAt 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop index
+polypop 2
+pushlocals
+find 011 index
+getprop index
+pushlocals
+find 011 xml
+getprop xml
+cm op:get:index 1
+pushlocals
+find 011 HHSource
+getprop HHSource
+cm op:new 1
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub @constructor 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushnull
+pushthis
+initprop xml
+polypop 2
+pushparam 0
+pushlocals
+initprop xml
+polypop 2
+pushlocals
+find 011 xml
+getprop xml
+pushthis
+setprop xml
+pop
+pop
+pushthis
+doret 1
+pushnull
+doret 1
+end
+end
+;=========================
+interface HHSource.class
+begin
+;------------------------
+sub @createclasses 0 0
+code
+pushnull
+doret 1
+end
+;------------------------
+sub op:new 1 1
+code
+co HHSource.instance
+dup 2
+getprop @module
+xchg 1 2
+join
+xchg 1 3
+polypop 2
+cm @constructor 1
+doret 1
+pushnull
+doret 1
+end
+end
+;=========================
+interface ListItem.instance
+include=Object.instance
+creatoras=Object.instance
+begin
+;------------------------
+sub getClass 0 0
+code
+pushsys
+getprop ListItem
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub get:name 0 0
+code
+pushthis
+getprop name
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub get:xml 0 0
+code
+pushthis
+getprop xml
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub @constructor 2 2
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushnull
+pushthis
+initprop name
+polypop 2
+pushnull
+pushthis
+initprop xml
+polypop 2
+pushparam 0
+pushlocals
+initprop name
+polypop 2
+pushparam 1
+pushlocals
+initprop xml
+polypop 2
+pushlocals
+find 011 name
+getprop name
+pushthis
+setprop name
+pop
+pop
+pushlocals
+find 011 xml
+getprop xml
+pushthis
+setprop xml
+pop
+pop
+pushthis
+doret 1
+pushnull
+doret 1
+end
+end
+;=========================
+interface ListItem.class
+begin
+;------------------------
+sub @createclasses 0 0
+code
+pushnull
+doret 1
+end
+;------------------------
+sub op:new 2 2
+code
+co ListItem.instance
+dup 2
+getprop @module
+xchg 1 2
+join
+xchg 1 3
+polypop 2
+cm @constructor 2
+doret 1
+pushnull
+doret 1
+end
+end

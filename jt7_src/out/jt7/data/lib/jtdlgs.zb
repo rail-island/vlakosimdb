@@ -1,0 +1,72 @@
+module JTDialogs;
+
+readonly form,win;
+var ok;
+
+function run(name) {
+  form=new Form();
+  form.handler=this;
+  win=form.loadWindow(name);
+  win.showModal();
+  form.destroy();
+  win=null;
+  form=null;
+}
+
+function runopen() {
+  ok=false;
+  form=new Form();
+  form.handler=this;
+  win=form.loadWindow("jtycon.openfile");
+  var files=(File.root/"data"/"terrains").listFiles("*.zip");
+  form->files.items=files.join("\n");
+  win.showModal();
+  var res=null;
+  if (ok && form->files.cur>=0) res=File.root/"data"/"terrains"/files[form->files.cur];
+  form.destroy();
+  win=null;
+  form=null;
+  return res;
+}
+
+var savefiles;
+
+function savefilechange() {
+  form->filename.text=savefiles[form->files.cur];
+}
+
+function runsave() {
+  ok=false;
+  form=new Form();
+  form.handler=this;
+  win=form.loadWindow("jtycon.savefile");
+  savefiles=(File.root/"data"/"terrains").listFiles("*.zip");
+  form->files.items=savefiles.join("\n");
+  win.showModal();
+  var res=null;
+  if (ok) res=(File.root/"data"/"terrains"/form->filename.text)%"zip";
+  form.destroy();
+  win=null;
+  form=null;
+  savefiles=null;
+  return res;
+}
+
+function doclose() {
+  win.close();
+  ok=false;
+}
+
+function dook() {
+  win.close();
+  ok=true;
+}
+
+function oglopt() {
+  Application.runXMLDialog(Application.findResource("jtycon.oglfrm"),Application.options-/opengl);
+}
+
+function beop() {
+  Application.runXMLDialog(Application.findResource("jtycon.beopfrm"),Application.options-/behavior);
+}
+

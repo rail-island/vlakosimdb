@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<data>
+<window rep.name="form.bmpedit" layout="vlist" state="max" closeonesc="1" text="Bitmap Editor" menu="menu.bmpedit">
+  <scrpaint name="pp" onpaint="paint(canvas)" onmousedown="mdown(x,y,button,shift)" onmousemove="mmove(x,y)" onmouseup="mup(x,y,button)" doublebuffer="1" onresize="changeview()"/>
+  <rep.include name="ctrl.bmpdrawtoolbar"/>
+</window>
+
+<place ll.vsize="50" layout="hlist" rep.name="ctrl.bmpdrawtoolbar">
+  <speedbutton name="color" onclick="choosecolor()" ll.hsize="50"/>
+  <place layout="vlist" ll.vsize="50">
+    <place layout="hflow" ll.vsize="28">
+      <speedgroup name="drawmode" cur="-1" onchange="setdrawmode()">
+        <speedbutton image="pen.bmp" hint="$Pen" h="25" w="25"/>
+        <speedbutton image="dropper.bmp" hint="$Dropper" h="25" w="25"/>
+        <speedbutton image="frectangle.bmp" hint="$Draw-rectangle" h="25" w="25"/>
+        <speedbutton image="select.bmp" hint="$Select" h="25" w="25"/>
+        <speedbutton image="moveselect.bmp" hint="$Move-selection" h="25" w="25"/>
+        <speedbutton image="fillrectangle.bmp" hint="$Fill-rectangle-width-pattern-from-clipboard" h="25" w="25"/>
+        <speedbutton image="drawline.bmp" hint="$Draw-line" h="25" w="25"/>
+        <speedbutton image="fellipse.bmp" hint="$Draw-ellipse" h="25" w="25"/>
+        <speedbutton image="floodfill.bmp" hint="$Flood-fill" h="25" w="25"/>
+        <speedbutton image="drawrectangle.bmp" hint="$Draw-rectangle" h="25" w="25"/>
+        <speedbutton image="drawelipse.bmp" hint="$Draw-ellipse" h="25" w="25"/>
+      </speedgroup>
+      <speedbutton image="copy.bmp" hint="$Copy" h="25" w="25" onclick="copybmp()"/>
+      <speedbutton image="open.bmp" hint="$File-to-clipboard" h="25" w="25" onclick="loadbmp()"/>
+      <speedbutton image="ok.bmp" hint="$Place-OK" h="25" w="25" onclick="okblit()"/>
+      <trackbar name="bmpscale" onchange="changeview()" min="0" max="80" cur="60" h="25" w="100" hint="$Scale"/>
+      <trackbar name="penwidth" min="0" max="10" cur="0" h="25" w="100" hint="$Pen-width"/>
+    </place>
+    <colortable root="colortable" rows="1" cols="32" name="colortable" onselect="selectcolor(x,y,button)"/>
+  </place>
+</place>
+
+<menubar rep.name="menu.bmpedit">
+  <popup text="$File">
+    <do text="$Clear" shortcut="ctrl+n" onclick="newfile()"/>
+    <do text="$Save" shortcut="ctrl+s" onclick="savefile()"/>
+    <do text="$Load" shortcut="ctrl+o" onclick="loadfile()"/>
+    <do text="$Quit" onclick="quit()"/>
+  </popup>
+  <popup text="$Bitmap">
+    <do text="$Undo" shortcut="ctrl+z" onclick="undoimage()"/>
+    <do text="$Flip-clipboard-horizontally" onclick="selpichflip()"/>
+    <do text="$Flip-clipboard-vertically" onclick="selpicvflip()"/>
+    <do text="$Resize-clipboard" onclick="selresize()"/>
+  </popup>
+</menubar>
+
+</data>

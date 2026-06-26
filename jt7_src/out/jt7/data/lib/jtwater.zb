@@ -1,0 +1,82 @@
+module waterModule;
+
+var form,win;
+var game;
+var pt0;
+var mode="water";
+
+function show() {
+  game=JTycon.game;
+  if (form) return;
+  form=new Form();
+  form.handler=this;
+  JTycon.state=this;
+  win=form.loadWindow("jtycon.waterfrm");
+  win.show();
+  JTWinManager.place(win);
+}
+
+function onclose() {
+  JTWinManager.closed(win);
+  if (JTycon.state===this) JTycon.state=null;
+  form.destroy();
+  form=null;
+  win=null;
+}
+
+function makerect() {
+  var x1=pt0->x,y1=pt0->y,x2=game.vertexX,y2=game.vertexY;
+  if (x1>x2) {var p=x1;x1=x2;x2=p;}
+  if (y1>y2) {var p=y1;y1=y2;y2=p;}
+  return new (x1=x1,y1=y1,x2=x2,y2=y2);
+}
+
+function setmode(value) {
+  JTycon.state=this;
+  mode=value;
+}
+
+function onpaint() {
+  var color=new ("water"="blue","unwater"="red")[mode];
+  if (pt0) {
+    var r=makerect();
+//    for(var x=r->x1;x<=r->x2;x++) for(var y=r->y1;y<=r->y2;y++) 
+    game.drawPointCursors(r->x1,r->y1,r->x2,r->y2,color);
+  } else {
+    game.drawPointCursor(game.vertexX,game.vertexY,color);
+  }
+}
+
+function mdown(button) {
+  pt0=new (x=game.vertexX,y=game.vertexY);
+}
+
+
+function setwater() {
+  mode="water";
+  JTycon.state=this;
+} 
+function setunwater() {
+  mode="unwater";
+  JTycon.state=this;
+}
+
+function mup(button) {
+  if (pt0) {
+    var r=makerect();
+    if (mode=="water") {
+      var sum=0;
+      for(var x=r->x1;x<=r->x2;x++) for(var y=r->y1;y<=r->y2;y++) sum+=game.getHi(x,y);
+      var waterhi=sum/((r->x2-r->x1+1)*(r->y2-r->y1+1));
+      game.fillWater(pt0->x,pt0->y,waterhi);
+    }
+    if (mode=="unwater") {
+      for(var x=r->x1;x<=r->x2;x++) for(var y=r->y1;y<=r->y2;y++) game.dryWater(pt0->x,pt0->y);
+    }
+  }
+  pt0=null;
+}
+
+function mmove() {
+}
+

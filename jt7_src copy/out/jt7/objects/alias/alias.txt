@@ -1,0 +1,102 @@
+?loc
+071==CD_071
+124==CD_123
+123==CD_123
+363==CD_363
+130==CD_130
+131==CSD_131
+140==CD_140
+CD 151 CEZ==CD_151_CEZ
+162==CD_162
+CD 163==CD_163
+CD 230==CD_230
+CD 242==CD_242
+CD 263==CD_263
+350001==ZSR_350_001
+350002==ZSR_350_002
+350==ZSR_350
+362==CD_362
+363009==CD_363_009
+363037==CD_363_007
+363==CD_363
+742==CD_742
+751==CD_751
+754013==CD_754_013
+754==CD_754
+781462==CD_781_462
+781==CD_781
+152==CD_810#1
+810#1==CD_810#1
+810#2==CD_810#2
+810#3==CD_810#3
+810#4==CD_810#4
+843==CD_843
+854==CD_854
+971==CD_971
+471==CD_451
+cargo1==N-Lp
+cargo2==N-Z
+cargo3==N-Ra
+cargo5==N-Raj
+csd458==CD_110
+DB AG 180==DB_180
+475==CD_451
+475v==CD_051
+CSD296==CSD_853
+750==CD_750
+753==CD_753
+steam1==CSD_477_0
+tgv==TGV_loco
+tgv1==TGV_vag#1
+tgv2==TGV_vag#2
+tramT6==RTRAM_T6
+A==CD_A
+AB==CD_AB
+Aee==CD_Aee
+Aeel==CD_Aeel
+Ampz==CD_Ampz
+A-old==CD_A-old
+B==CD_B
+CD Baafx#1==CD_Baafx#1
+CD Baafx#3==CD_Baafx#3
+CD Baafx#4==CD_Baafx#4
+cdbcc=CD_Bcc
+vagonZSRBDmeer==ZSR_BDmeer
+vagonBDmeer==CD_BDmeer
+Bdmtee==CD_Bdmtee
+BDs==CD_BDs
+Bee==CD_Bee
+Beel==CD_Beel
+beeer==CD_Beer
+vagonBifx021==CD_Bifx
+vagonBix==CD_Bix
+Bmz==CD_Bmz
+CDBnb(056)==CD_Bpb
+B-old==CD_B-old
+vagoncd056==CD_Bpb
+cdbcc==CD_Bcc
+vagoncdbmo==CD_Bmo#1
+vagoncdbmo2==CD_Bmo#2
+vagoncdbmo3==CD_Bmo#3
+cdpost==CD_Post
+cdwrwm==CD_WRRm
+Ds==CD_Ds
+vagonN-Nas==N-Nas
+vagonN-Pao==N-Pao
+vagonN-Ua1==N-Ua#1
+vagonN-Ua2==N-Ua#2
+vagonN-Vte==N-Vte
+vagonN-Wap==N-Wap
+vagonN-Zaz==N-Zaz
+Wlab==CD_Wlab
+vagonWLABmee==CD_WLABmee
+WRRmz==CD_WRRmz
+cdzsrnh==ZSR_Bh
+TRAM_T6==RTRAM_T6
+CSD_477.0==CSD_477_0
+N-Ra==N-Ra#0
+?bus
+bus1==BUS_1
+karosab731==BUS_Kar_B731
+karosab741==BUS_Kar_B741
+

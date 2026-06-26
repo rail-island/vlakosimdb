@@ -1,0 +1,38 @@
+module modelScripts;
+
+using library "../modelscripts";
+
+readonly scripts=[];
+readonly newObjectScripts=[];
+
+readwrite selected;
+
+function addScript(script) {
+  scripts.push(script);
+}
+
+function addNewObjectScript(script) {
+  newObjectScripts.push(script);
+}
+
+
+function editscript(xml) {
+  var s=scripts.searchIf({value.name==xml->scriptname});
+  this.selected=xml;
+  if (s) s.run();
+  this.selected=null;
+}
+
+function runscriptdialog(selected) {
+  var xml=new XMLNode();
+  xml->scripts=scripts.join({value.text},"\n");
+  if (Application.runXMLDialog(Application.findResource("model.runscript"),xml)) {
+    var s=scripts[xml->cur];
+    this.selected=selected;
+    s.run();
+    if (selected) selected->scriptname=s.name;
+    this.selected=null;
+  }
+}
+
+

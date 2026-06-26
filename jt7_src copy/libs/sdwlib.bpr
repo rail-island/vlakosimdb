@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="sdwlib.lib"/>
+    <OBJFILES value="out\sdwwindow.obj out\sdwcontainer.obj out\sdwcontrol.obj out\sdwedit.obj 
+      out\sdwlabel.obj out\sdwmenu.obj out\sdwopts.obj out\sdwpaint.obj 
+      out\sdwplace.obj out\sdwradiogroup.obj out\sdwscroll.obj out\sdwsysext.obj 
+      out\sdwsystem.obj out\sdwcanvas.obj out\awswintool.obj out\awscontrol.obj 
+      out\awsdefs.obj out\awsextctrls.obj out\awsform.obj out\awsgr.obj 
+      out\awshtmlview.obj out\awschecklist.obj out\awslayout.obj out\awsmenu.obj 
+      out\awsmodels.obj out\awsnullctrl.obj out\awspaint.obj out\awsprint.obj 
+      out\awsproplist.obj out\awsreal.obj out\awsstddlgs.obj out\awssystem.obj 
+      out\awstable.obj out\awstextcnv.obj out\awstree.obj out\awswindow.obj 
+      out\awscomponent.obj out\sdw_win32.obj out\sdwtrackbar.obj 
+      out\awscolortable.obj out\awspager.obj out\bfont.obj out\sdwfont.obj 
+      out\SDL_rotozoom.obj"/>
+    <RESFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <LINKER value="TLib"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="sdwlib.bpf"/>
+    <INCLUDEPATH value="..\jlib\sdl\rotozoom;..\jlib\sdl\bfont;..\jlib\sdl\gfx;..;..\jlib\win;..\jlib\aws;..\jlib\sdw;..\jlib\sdl;..\jlib;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\jlib\sdl\rotozoom;..\jlib\sdl\bfont;..\jlib\sdl\gfx;..;..\jlib\win;..\jlib\aws;..\jlib\sdw;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
+    <LISTFILE value="sdwlib.lst"/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b -k -y -v -vi- -c 
+      -tW -tWM"/>
+    <PFLAGS value="-N2out -N0out -$YD -$W -$O- -v -JPHNE -M"/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="/P256 /E"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="$(OBJFILES)"/>
+    <ALLLIB value=""/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1029
+CodePage=1250
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=8
+Item0=..\jlib\sdl\gfx;..\;..\jlib\win;..\jlib\aws;..\jlib\sdw;..\jlib\sdl;..\jlib;$(BCB)\include;$(BCB)\include\vcl
+Item1=..\jlib\win;..\jlib\aws;..\jlib\sdw;..\jlib\sdl;..\jlib;$(BCB)\include;$(BCB)\include\vcl
+Item2=..\jlib\aws;..\jlib\sdw;..\jlib\sdl;..\jlib;$(BCB)\include;$(BCB)\include\vcl
+Item3=..\jlib\sdw;..\jlib\sdl;..\jlib;$(BCB)\include;$(BCB)\include\vcl
+Item4=..\jlib\sdl;..\jlib;$(BCB)\include;$(BCB)\include\vcl
+Item5=..\jlib\sdw;..\jlib;$(BCB)\include;$(BCB)\include\vcl
+Item6=..\jlib;$(BCB)\include;$(BCB)\include\vcl
+Item7=..\jlib\sdw;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=4
+Item0=..\jlib\sdl\gfx;..\;..\jlib\win;..\jlib\aws;..\jlib\sdw;$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\jlib\win;..\jlib\aws;..\jlib\sdw;$(BCB)\lib\obj;$(BCB)\lib
+Item2=..\jlib\aws;..\jlib\sdw;$(BCB)\lib\obj;$(BCB)\lib
+Item3=..\jlib\sdw;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=out
+
+[HistoryLists\hlTlibPageSize]
+Count=4
+Item0=0x0100
+Item1=0x0080
+Item2=0x0040
+Item3=0x0010
+
+[HistoryLists\hlTlibListFile]
+Count=1
+Item0=sdwlib.lst
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+  </IDEOPTIONS>
+</PROJECT>

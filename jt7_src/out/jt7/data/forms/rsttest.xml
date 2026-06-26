@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<data>
+
+<window rep.name="form.rsttester" layout="vlist" state="max" closeonesc="1" text="RST Tester" menu="menu.rsttester">
+  <panel ll.vsize="25" layout="hflow">
+    <trackbar min="1" max="20" name="trc" onchange="remake()"/>
+    <trackbar min="1" max="20" name="trl" onchange="remake()"/>
+  </panel>
+  <panel layout="hlist">
+    <panel ll.hsize="20%">
+    </panel>
+    <place name="glv" layout="1"/>
+  </panel>
+</window>
+
+<menubar rep.name="menu.rsttester">
+  <popup text="$File">
+    <do text="$Quit" onclick="quit()"/>
+  </popup>
+</menubar>
+
+</data>

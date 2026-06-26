@@ -1,0 +1,26 @@
+#id=en
+max-hi=maximal
+min-hi=minimal
+fixed-hi=fixed
+cannot-generate-terrain-not-empty=cannot generate terrain, because terrain is not empty
+track-blocked=railroad is not emty, cannot buldozere
+cannot-destroy-depo=cannot buldozere depot, train is inside
+cannot-destroy-rstation=cannot buldozere railway station, train is inside
+cannot-build-rstation=cannot build railway station
+cannot-destroy-tubus=cannot buldozere bridge/tunnel, trains is here
+quit-to-os=quit to OS
+begin-none-1-2=begin (neno=one half of size)
+image-size-percents=Image size in percents of old size
+max-speed=maximal speed
+width-1-is-sqsize=Width (1=square size)
+min-dist-from-edge=minimal distance from edge
+max-dist-from-edge=maximal distance from edge
+hor-hole-space=space on left of hole
+ver-hole-space=space on top of hole
+edit-jump=jump in direction
+authors-email=author's e-mail
+export-done-msg=export done\nrun file
+edit-export-msg=editing : edit file
+cannot-create-font-msg=font cannot be created, set smaller font size
+object-exists-msg=exists, you must remove it at first or create another object
+overwrite-prompt=file exists, overwrite?

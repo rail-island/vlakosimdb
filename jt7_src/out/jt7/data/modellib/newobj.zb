@@ -1,0 +1,138 @@
+module newObjectModule;
+
+var form,win;
+//var result;
+var tpldirs;
+var tpls;
+var curtpldir;
+var parobj;
+var result;
+var tplfile;
+
+var skeleton_names=["loco","simplemodel","shape3d","semaphore","building","tunnel","rstation","bridge","trees"];
+var skeleton_titles=["$Railroad-vehicle","$Simple-model","$Shape3d","$Semaphore","$Building","$Tunnel","$Railway-station","$Bridge","$Trees"];
+
+/*
+function run() {
+  if (form) return;
+  form=new Form();
+  form.handler=this;
+  win=form.loadWindow("poed.newobject");
+  result=null;
+  form->types.items=modelScripts.newObjectScripts.join({value.text.translate()},"\n");
+  win.showModal();
+  form.destroy();
+  win=null;
+  form=null;
+  var res=result;
+  result=null;
+  return res;
+}
+*/
+
+function newobject(type) {
+  var xml=Application.findResource("emptyobj."&type).clone();
+  if (poedTypes.creating(type,xml)) {
+    if (parobj.hasChild(xml->name&".zip")) {
+      Window.alert("$Object "&xml->name&".zip $object-exists-msg");
+      return;
+    }
+    var newobj=parobj.openChild(xml->name&".zip");
+    poedTypes.created(type,xml,newobj);
+    newobj.saveXML("index.xml",xml);
+    return newobj;
+  }
+}
+
+function dirclick() {
+  form->tplcomment.text="";
+  tpls=[];tplfile=null;
+  if (var actdir=tpldirs[form->tpldirs.cur]) {
+    curtpldir=File.root/"data"/"templates"/actdir;
+    for (file in curtpldir.listFiles("*")) if ((curtpldir/file).hasExt("zip")) tpls.push(file);
+  }
+  form->tpls.items=tpls.join("\n");
+}
+
+function tplclick() {
+  form->tplcomment.text="";
+  if (curtpldir) {
+    if (var file=tpls[form->tpls.cur]) {
+      var ar=new Archive();
+      ar.ropen(curtpldir/file);
+      var files=ar.list();
+      var comment="";
+      if (files.searchString("tcomment."&Application.options->langid)>=0) comment=ar.loadText("tcomment."&Application.options->langid);
+      if (comment=="") if (files.searchString("tcomment.en")>=0) comment=ar.loadText("tcomment.en");
+      form->tplcomment.text=comment;
+      ar.close();
+      tplfile=curtpldir/file;
+    }
+  }
+}
+
+function run(parobj) {
+  this.parobj=parobj;
+  if (form) return;
+  form=new Form();
+  form.handler=this;
+  win=form.loadWindow("poed.newobjectfrm");
+  result=null;
+  form->scripts.items=modelScripts.newObjectScripts.join({value.text.translate()},"\n");
+  tpldirs=[];curtpldir=null;
+  for (dir in (File.root/"data"/"templates").listFiles("*")) if ((File.root/"data"/"templates"/dir).isDirectory()) tpldirs.push(dir);
+  form->tpldirs.items=tpldirs.join("\n");
+  form->skeletons.items=skeleton_titles.join("\n").translate();
+  dirclick();
+  win.showModal();
+  form.destroy();
+  win=null;
+  form=null;
+  parobj=null;
+  
+  var res=result;
+  result=null;
+  return res;
+}
+
+function okstd() {
+  var type=modelScripts.newObjectScripts[form->scripts.cur];
+  win.close();
+  result=type.create(parobj);
+}
+
+function okskel() {
+  if (var type=skeleton_names[form->skeletons.cur]) {
+    result=newobject(type);
+    if (result) win.close();
+  }
+}
+
+function oktpl() {
+  if (tplfile) {
+    var ar=new Archive();
+    var xml=new XMLNode();
+    ar.ropen(tplfile);
+    ar.loadXML("index.xml",xml);
+    ar.close();
+    if (var name=Window.inputBox("$Question","$Name",tplfile.getFile()%"")) {
+      var src=tplfile;
+      if (parobj.hasChild(name&".zip")) {
+        Window.alert("$Object "&xml->name&".zip $object-exists-msg");
+        return null;
+      }
+      var dest=parobj.setFile(name&".zip");
+      tplfile.copyTo(dest);
+      parobj.closedSetFile(dest,name&".zip");
+      xml->name=name;
+      result=parobj.openChild(name&".zip");
+      result.saveXML("index.xml",xml);
+      win.close();
+      return;
+    }
+  }
+}
+
+function cancel() {
+  win.close();
+}

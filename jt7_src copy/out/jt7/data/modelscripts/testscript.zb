@@ -1,0 +1,13 @@
+module testScript;
+
+requires module modelScripts;
+
+readonly text="Test";
+readonly name="test";
+
+function run() {
+  Window.alert("Experiment:script");
+}
+
+modelScripts.addScript(this);
+

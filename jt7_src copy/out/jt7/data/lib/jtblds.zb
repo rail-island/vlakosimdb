@@ -1,0 +1,59 @@
+module buildingsModule;
+
+var form,win;
+var game;
+var dir=0;
+
+function show() {
+  game=JTycon.game;
+  if (form) return;
+  form=new Form();
+  form.handler=this;
+  JTycon.state=this;
+  dir=0;
+  win=form.loadWindow("jtycon.bldfrm");
+  form->types.items=game.buildingTypes.join({value.title},"\n");
+  form->types.cur=0;
+  win.show();
+  JTWinManager.place(win);
+}
+
+function onclose() {
+  JTWinManager.closed(win);
+  if (JTycon.state===this) JTycon.state=null;
+  form.destroy();
+  form=null;
+  win=null;
+}
+
+function changetype() {
+  JTycon.state=this;
+}
+
+function onpaint() {
+  var x=game.mapX,y=game.mapY;
+  if (var type=game.buildingTypes[form->types.cur]) {
+    var w=type.W,h=type.H;
+    if (dir==1 || dir==3) {
+      w=type.H;
+      h=type.W;
+    }
+//    for(var i=0;i<w;i++) for(var j=0;j<h;j++) game.drawCursor(x+i,y+j,["red","green","blue","yellow"][dir]);
+    for(var i=0;i<w;i++) for(var j=0;j<h;j++) game.drawCustomCursor(x+i,y+j,Cursors.building,dir);
+  }
+}
+
+function mdown(button) {
+  if (button=="right") {
+    dir++;dir%=4;
+  } else {
+    if (var type=game.buildingTypes[form->types.cur]) game.buildBuilding(game.mapX,game.mapY,dir,type);
+  }
+}
+
+function mup(button) {
+}
+
+function mmove() {
+}
+

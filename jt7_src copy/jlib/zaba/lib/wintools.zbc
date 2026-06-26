@@ -1,0 +1,1269 @@
+;=========================
+interface winTools.module
+initproc=@init,32
+initproc=@registermodule,1
+initproc=@makeislist,3
+initproc=@createclasses,2
+autocreate=1
+begin
+;------------------------
+sub @registermodule 0 0
+code
+pushthis
+pushsys
+setprop winTools
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub @init 0 0
+code
+pushsys
+pushthis
+join
+polypop 2
+pushthis
+pushlocals
+join
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub @makeislist 0 0
+code
+pushsys
+getprop SDIFile
+pushsys
+cm createIsList 1
+pop
+pushsys
+getprop PrintDialog
+pushsys
+cm createIsList 1
+pop
+pushsys
+getprop EditTextWindow
+pushsys
+cm createIsList 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub @createclasses 0 0
+code
+co SDIFile.class
+pushsys
+setprop SDIFile
+pop
+pushthis
+xchg 1 2
+setprop @module
+xchg 1 2
+pop
+cm @createclasses 0
+pop
+pushstr "SDIFile"
+pushsys
+getprop SDIFile
+setprop @classname
+polypop 2
+pushstr "Object"
+pushsys
+getprop SDIFile
+setprop @supername
+polypop 2
+co PrintDialog.class
+pushsys
+setprop PrintDialog
+pop
+pushthis
+xchg 1 2
+setprop @module
+xchg 1 2
+pop
+cm @createclasses 0
+pop
+pushstr "PrintDialog"
+pushsys
+getprop PrintDialog
+setprop @classname
+polypop 2
+pushstr "Object"
+pushsys
+getprop PrintDialog
+setprop @supername
+polypop 2
+co EditTextWindow.class
+pushsys
+setprop EditTextWindow
+pop
+pushthis
+xchg 1 2
+setprop @module
+xchg 1 2
+pop
+cm @createclasses 0
+pop
+pushstr "EditTextWindow"
+pushsys
+getprop EditTextWindow
+setprop @classname
+polypop 2
+pushstr "Object"
+pushsys
+getprop EditTextWindow
+setprop @supername
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub editText 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop text
+polypop 2
+pushlocals
+find 011 EditTextWindow
+getprop EditTextWindow
+cm op:new 0
+pushlocals
+initprop win
+polypop 2
+pushlocals
+find 011 text
+getprop text
+pushlocals
+find 011 win
+getprop win
+cm run 1
+doret 1
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+end
+;=========================
+interface SDIFile.instance
+include=Object.instance
+creatoras=Object.instance
+begin
+;------------------------
+sub getClass 0 0
+code
+pushsys
+getprop SDIFile
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub @init_instance:SDIFile 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushnull
+pushthis
+initprop intf
+polypop 2
+pushnull
+pushthis
+initprop file
+polypop 2
+pushnull
+pushthis
+initprop modified
+polypop 2
+pushnull
+pushthis
+initprop filetype
+polypop 2
+pushnull
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub save 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 file
+getprop file
+condnotjmp 1
+pushlocals
+find 011 file
+getprop file
+pushlocals
+find 011 intf
+getprop intf
+cm save 1
+pop
+pushnull
+pushlocals
+find 011 modified
+assignprop modified
+pop
+pop
+pushsys
+doret 1
+jmp 2
+@1:
+pushthis
+xcm saveAs 0
+jnx 3
+pop
+pushlocals
+find 011 saveAs
+getprop saveAs
+cm op:call 0
+@3:
+doret 1
+@2:
+pushnull
+doret 1
+end
+;------------------------
+sub saveAs 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 filetype
+getprop filetype
+pushstr "*."
+cm op:add 1
+pushlocals
+find 011 SaveDialog
+getprop SaveDialog
+cm run 1
+pushlocals
+initprop res
+pop
+condnotjmp 4
+pushlocals
+find 011 res
+getprop res
+pushlocals
+find 011 file
+assignprop file
+pop
+pop
+pushlocals
+find 011 file
+getprop file
+pushlocals
+find 011 intf
+getprop intf
+cm save 1
+pop
+pushnull
+pushlocals
+find 011 modified
+assignprop modified
+pop
+pop
+pushsys
+doret 1
+@4:
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub canNew 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm canClose 0
+jnx 5
+pop
+pushlocals
+find 011 canClose
+getprop canClose
+cm op:call 0
+@5:
+condnotjmp 6
+pushnull
+pushlocals
+find 011 file
+assignprop file
+pop
+pop
+pushnull
+pushlocals
+find 011 modified
+assignprop modified
+pop
+pop
+pushsys
+doret 1
+@6:
+pushnull
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub openFile 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop filename
+polypop 2
+pushlocals
+find 011 filename
+getprop filename
+pushlocals
+find 011 file
+assignprop file
+pop
+pop
+pushlocals
+find 011 file
+getprop file
+pushlocals
+find 011 intf
+getprop intf
+cm load 1
+pop
+pushnull
+pushlocals
+find 011 modified
+assignprop modified
+pop
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub open 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm canClose 0
+jnx 7
+pop
+pushlocals
+find 011 canClose
+getprop canClose
+cm op:call 0
+@7:
+condnotjmp 8
+pushlocals
+find 011 filetype
+getprop filetype
+pushstr "*."
+cm op:add 1
+pushlocals
+find 011 OpenDialog
+getprop OpenDialog
+cm run 1
+pushlocals
+initprop res
+pop
+condnotjmp 9
+pushlocals
+find 011 res
+getprop res
+pushlocals
+find 011 file
+assignprop file
+pop
+pop
+pushlocals
+find 011 file
+getprop file
+pushlocals
+find 011 intf
+getprop intf
+cm load 1
+pop
+pushnull
+pushlocals
+find 011 modified
+assignprop modified
+pop
+pop
+@9:
+pushlocals
+deleteprops 1
+pop
+@8:
+pushnull
+doret 1
+end
+;------------------------
+sub canClose 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 modified
+getprop modified
+condjmp 10
+pushlocals
+find 011 intf
+getprop intf
+cm modified 0
+condjmp 10
+pushnull
+jmp 11
+@10:
+pushsys
+@11:
+condnotjmp 12
+pushstr " zmenen, ulozit?"
+pushlocals
+find 011 file
+getprop file
+condnotjmp 13
+pushlocals
+find 011 file
+getprop file
+jmp 14
+@13:
+pushstr "[Beze jmena]"
+@14:
+pushstr "Soubor "
+cm op:add 1
+cm op:add 1
+pushstr "ync"
+pushlocals
+find 011 Window
+getprop Window
+cm msgbox 2
+pushstr "y"
+dup 2
+cm op:eq 1
+condnotjmp 16
+pushthis
+xcm save 0
+jnx 17
+pop
+pushlocals
+find 011 save
+getprop save
+cm op:call 0
+@17:
+doret 1
+jmp 15
+@16:
+pushstr "n"
+dup 2
+cm op:eq 1
+condnotjmp 18
+pushsys
+doret 1
+jmp 15
+@18:
+pushstr "c"
+dup 2
+cm op:eq 1
+condnotjmp 19
+pushnull
+doret 1
+jmp 15
+@19:
+@15:
+pop
+@12:
+pushsys
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub modify 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushsys
+pushlocals
+find 011 modified
+assignprop modified
+pop
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub get:file 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 file
+getprop file
+condnotjmp 20
+pushlocals
+find 011 file
+getprop file
+jmp 21
+@20:
+pushstr "[Beze jmena]"
+@21:
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub @constructor 2 2
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm @init_instance:SDIFile 0
+jnx 22
+@22:
+pop
+pushparam 0
+pushlocals
+initprop intf
+polypop 2
+pushparam 1
+pushlocals
+initprop filetype
+polypop 2
+pushlocals
+find 011 intf
+getprop intf
+pushthis
+setprop intf
+pop
+pop
+pushlocals
+find 011 filetype
+getprop filetype
+pushthis
+setprop filetype
+pop
+pop
+pushthis
+doret 1
+pushnull
+doret 1
+end
+end
+;=========================
+interface SDIFile.class
+begin
+;------------------------
+sub @createclasses 0 0
+code
+pushnull
+doret 1
+end
+;------------------------
+sub op:new 2 2
+code
+co SDIFile.instance
+dup 2
+getprop @module
+xchg 1 2
+join
+xchg 1 3
+polypop 2
+cm @constructor 2
+doret 1
+pushnull
+doret 1
+end
+end
+;=========================
+interface PrintDialog.instance
+include=Object.instance
+creatoras=Object.instance
+begin
+;------------------------
+sub getClass 0 0
+code
+pushsys
+getprop PrintDialog
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub @init_instance:PrintDialog 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushsys
+cm createArray 0
+pushthis
+initprop pages
+polypop 2
+pushnull
+pushthis
+initprop file
+polypop 2
+pushnull
+pushthis
+initprop form
+polypop 2
+pushnull
+pushthis
+initprop win
+polypop 2
+pushnull
+pushthis
+initprop pagecnt
+polypop 2
+pushnull
+pushthis
+initprop ok
+polypop 2
+pushnull
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub get:pages 0 0
+code
+pushthis
+getprop pages
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub get:file 0 0
+code
+pushthis
+getprop file
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub fileprintchng 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushstr "printtofile"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm get:checked 0
+pushstr "file"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:enabled 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub paritysel 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop parity
+polypop 2
+pushstr ";"
+pushstr "pages"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm get:selected 0
+cm split 1
+pushlocals
+initprop pgs
+polypop 2
+pushlocals
+find 011 pgs
+getprop pgs
+cm makeInts 0
+pop
+pushsys
+cm createArray 0
+pushlocals
+initprop res
+polypop 2
+pushlocals
+find 011 pgs
+getprop pgs
+cm getIterator 0
+@24:
+dup 1
+cm getValue 0
+dup 1
+condnotjmp 25
+pushlocals
+initprop i
+polypop 2
+pushlocals
+find 011 parity
+getprop parity
+pushlocals
+find 011 Number
+getprop Number
+cm op:new 1
+pushnum 2
+pushlocals
+find 011 i
+getprop i
+cm op:mod 1
+cm op:eq 1
+condnotjmp 26
+pushlocals
+find 011 i
+getprop i
+pushlocals
+find 011 res
+getprop res
+cm push 1
+pop
+@26:
+@23:
+dup 1
+cm moveNext 0
+pop
+pushlocals
+deleteprops 1
+pop
+jmp 24
+@25:
+polypop 2
+pushstr ";"
+pushlocals
+find 011 res
+getprop res
+cm join 1
+pushstr "pages"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:selected 1
+pop
+pushlocals
+deleteprops 2
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub print 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushsys
+pushlocals
+find 011 ok
+assignprop ok
+pop
+pop
+pushlocals
+find 011 win
+getprop win
+cm close 0
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub cancel 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushnull
+pushlocals
+find 011 ok
+assignprop ok
+pop
+pop
+pushlocals
+find 011 win
+getprop win
+cm close 0
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub browse 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 SaveDialog
+getprop SaveDialog
+cm op:new 0
+pushlocals
+initprop dlg
+polypop 2
+pushstr "file"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm get:text 0
+pushlocals
+find 011 dlg
+getprop dlg
+cm set:file 1
+pop
+pushlocals
+find 011 dlg
+getprop dlg
+cm execute 0
+condnotjmp 27
+pushlocals
+find 011 dlg
+getprop dlg
+cm get:file 0
+pushstr "file"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:text 1
+pop
+@27:
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub run 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop pageCount
+polypop 2
+pushlocals
+find 011 pageCount
+getprop pageCount
+pushlocals
+find 011 pagecnt
+assignprop pagecnt
+pop
+pop
+pushlocals
+find 011 Form
+getprop Form
+cm op:new 0
+pushlocals
+find 011 form
+assignprop form
+pop
+pop
+pushstr "form.printdialog"
+pushlocals
+find 011 form
+getprop form
+cm loadWindow 1
+pushlocals
+find 011 win
+assignprop win
+pop
+pop
+pushthis
+pushlocals
+find 011 form
+getprop form
+cm set:handler 1
+pop
+pushnull
+pushstr "file"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:enabled 1
+pop
+pushstr "\n"
+pushnum 1
+pushlocals
+find 011 pagecnt
+getprop pagecnt
+pushnum 1
+pushlocals
+find 011 Array
+getprop Array
+cm sequence 3
+cm join 1
+pushstr "pages"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:items 1
+pop
+pushstr ";"
+pushnum 0
+pushnum 1
+pushlocals
+find 011 pagecnt
+getprop pagecnt
+cm op:sub 1
+pushnum 1
+pushlocals
+find 011 Array
+getprop Array
+cm sequence 3
+cm join 1
+pushstr "pages"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:selected 1
+pop
+pushlocals
+find 011 win
+getprop win
+cm showModal 0
+pop
+pushstr ";"
+pushstr "pages"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm get:selected 0
+cm split 1
+pushlocals
+find 011 pages
+assignprop pages
+pop
+pop
+pushlocals
+find 011 pages
+getprop pages
+cm makeInts 0
+pop
+pushstr "reverse"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm get:checked 0
+condnotjmp 28
+pushlocals
+find 011 pages
+getprop pages
+cm reverse 0
+pop
+@28:
+pushstr "printtofile"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm get:checked 0
+condnotjmp 29
+pushstr "file"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm get:text 0
+pushlocals
+find 011 file
+assignprop file
+pop
+pop
+@29:
+pushlocals
+find 011 form
+getprop form
+cm destroy 0
+pop
+pushlocals
+find 011 ok
+getprop ok
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub @constructor 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm @init_instance:PrintDialog 0
+jnx 30
+@30:
+pop
+pushthis
+doret 1
+pushnull
+doret 1
+end
+end
+;=========================
+interface PrintDialog.class
+begin
+;------------------------
+sub @createclasses 0 0
+code
+pushnull
+doret 1
+end
+;------------------------
+sub op:new 0 0
+code
+co PrintDialog.instance
+dup 2
+getprop @module
+xchg 1 2
+join
+xchg 1 3
+polypop 2
+cm @constructor 0
+doret 1
+pushnull
+doret 1
+end
+end
+;=========================
+interface EditTextWindow.instance
+include=Object.instance
+creatoras=Object.instance
+begin
+;------------------------
+sub getClass 0 0
+code
+pushsys
+getprop EditTextWindow
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub @init_instance:EditTextWindow 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushnull
+pushthis
+initprop form
+polypop 2
+pushnull
+pushthis
+initprop win
+polypop 2
+pushnull
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub run 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop text
+polypop 2
+pushlocals
+find 011 Form
+getprop Form
+cm op:new 0
+pushlocals
+find 011 form
+assignprop form
+pop
+pop
+pushstr "form.editwin"
+pushlocals
+find 011 form
+getprop form
+cm loadWindow 1
+pushlocals
+find 011 win
+assignprop win
+pop
+pop
+pushthis
+pushlocals
+find 011 form
+getprop form
+cm set:handler 1
+pop
+pushlocals
+find 011 Font
+getprop Font
+cm op:new 0
+pushlocals
+initprop fnt
+polypop 2
+pushstr "Courier New"
+pushlocals
+find 011 fnt
+getprop fnt
+cm set:name 1
+pop
+pushstr "12"
+pushlocals
+find 011 fnt
+getprop fnt
+cm set:size 1
+pop
+pushlocals
+find 011 fnt
+getprop fnt
+pushstr "memo"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:font 1
+pop
+pushlocals
+find 011 text
+getprop text
+pushstr "memo"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:text 1
+pop
+pushlocals
+find 011 win
+getprop win
+cm showModal 0
+pop
+pushstr "memo"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm get:text 0
+pushlocals
+initprop res
+polypop 2
+pushlocals
+find 011 form
+getprop form
+cm destroy 0
+pop
+pushlocals
+find 011 res
+getprop res
+doret 1
+pushlocals
+deleteprops 2
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub @constructor 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm @init_instance:EditTextWindow 0
+jnx 31
+@31:
+pop
+pushthis
+doret 1
+pushnull
+doret 1
+end
+end
+;=========================
+interface EditTextWindow.class
+begin
+;------------------------
+sub @createclasses 0 0
+code
+pushnull
+doret 1
+end
+;------------------------
+sub op:new 0 0
+code
+co EditTextWindow.instance
+dup 2
+getprop @module
+xchg 1 2
+join
+xchg 1 3
+polypop 2
+cm @constructor 0
+doret 1
+pushnull
+doret 1
+end
+end

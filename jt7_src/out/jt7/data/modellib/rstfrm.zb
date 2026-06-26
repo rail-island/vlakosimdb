@@ -1,0 +1,131 @@
+module rstEditModule;
+
+requires module poedTypes;
+
+include module completableModule;
+
+//var actperon,acttrack;
+var actperon;
+var zipobj;
+var xml;
+var type="rstation";
+var form;
+var place;
+
+function creating(xml) {return poedTypes.nameDialog(type,xml);}
+function created(xml,obj) {}
+function edit(xml,obj) {
+  rstTestModule.run(xml,obj);
+}
+function loaded(xml,obj,panel,form) {
+  form.handler=this;
+  this.zipobj=obj;this.xml=xml;
+  this.form=form;
+  updateperons();
+  updateitems();
+  place=form->rstplace;
+}
+function unload(index,obj) {
+}
+
+readonly resname="poed.rstfrm";
+readonly hasdata=true;
+
+poedTypes.addType("rstation",this);
+
+
+function updateperons() {
+  form->perons.items=xml-/perons.childs.join({value->item},"\n");
+  actperon=null;
+}
+function saveactperon() {
+  if (actperon) form->rstplace.saveData(actperon);
+}
+function loadactperon() {
+  if (actperon) form->rstplace.loadData(actperon);
+}
+function peronchange() {
+  saveactperon();
+  actperon=xml-/perons.childs[form->perons.cur];
+  loadactperon();
+}
+function addperon() {
+  saveactperon();
+  var a=xml-/perons.add("peron");
+  a->item="none";
+  updateperons();
+}
+function eraseperon() {
+  if (actperon) {
+    actperon.remove();
+    actperon=null;
+    updateperons();
+  }
+}
+function movedperon(d) {
+  var cur=form->perons.cur;
+  if (xml-/perons.exchange(cur,cur+d)) {
+    updateperons();
+    form->perons.cur=cur+d;
+  }
+}
+function moveupperon() {movedperon(-1);}
+function movedownperon() {movedperon(1);}
+
+
+/*
+function updatetracks() {
+  form->tracks.items=xml-/tracks.childs.join({value->model},"\n");
+  acttrack=null;
+}
+function saveacttrack() {
+  if (acttrack) form->rstplace.saveData(acttrack);
+}
+function loadacttrack() {
+  if (acttrack) form->rstplace.loadData(acttrack);
+}
+function trackchange() {
+  saveacttrack();
+  acttrack=xml-/tracks.childs[form->tracks.cur];
+  loadacttrack();
+}
+function addtrack() {
+  saveacttrack();
+  var a=xml-/tracks.add("track");
+  a->model="none";
+  updatetracks();
+}
+function erasetrack() {
+  if (acttrack) {
+    acttrack.remove();
+    acttrack=null;
+    updatetracks();
+  }
+}
+function movedtrack(d) {
+  var cur=form->tracks.cur;
+  if (xml-/tracks.exchange(cur,cur+d)) {
+    updatetracks();
+    form->tracks.cur=cur+d;
+  }
+}
+function moveuptrack() {movedtrack(-1);}
+function movedowntrack() {movedtrack(1);}
+
+function browsemodel() {
+  if (acttrack) {
+    saveacttrack();
+    if (var newmodel=includeDialogModule.run(zipobj,acttrack->model)) acttrack->model=newmodel;
+    loadacttrack();
+  }
+}
+*/
+
+function saveall() {
+  saveactitem();
+  saveactperon();
+} 
+function savedata(index,obj) {
+  saveall();
+}
+

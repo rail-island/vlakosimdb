@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="..\out\jt7\jt7.exe"/>
+    <OBJFILES value="..\out\jt7\tmp\mainu.obj ..\out\jt7\tmp\zbstd.obj ..\out\jt7\tmp\zbaws.obj 
+      ..\out\jt7\tmp\ssint.obj ..\out\jt7\tmp\jtobjs.obj 
+      ..\out\jt7\tmp\game0.obj ..\out\jt7\tmp\gameu.obj ..\out\jt7\tmp\gmess.obj 
+      ..\out\jt7\tmp\gview.obj ..\out\jt7\tmp\ghimap.obj 
+      ..\out\jt7\tmp\grrmap.obj ..\out\jt7\tmp\grrcom.obj 
+      ..\out\jt7\tmp\gsemaphore.obj ..\out\jt7\tmp\grrbuild.obj 
+      ..\out\jt7\tmp\gsurmap.obj ..\out\jt7\tmp\gvolatile.obj 
+      ..\out\jt7\tmp\grrstat.obj ..\out\jt7\tmp\gstatic.obj 
+      ..\out\jt7\tmp\gtrain.obj ..\out\jt7\tmp\gmobile.obj 
+      ..\out\jt7\tmp\grdijmap.obj ..\out\jt7\tmp\rdijskr.obj 
+      ..\out\jt7\tmp\grtubus.obj ..\out\jt7\tmp\gimages.obj 
+      ..\out\jt7\tmp\glotextures.obj ..\out\jt7\tmp\gloobject.obj 
+      ..\out\jt7\tmp\jbmpfile.obj ..\out\jt7\tmp\jarchive.obj 
+      ..\out\jt7\tmp\glofont.obj ..\out\jt7\tmp\zbext.obj 
+      ..\out\jt7\tmp\glovars.obj ..\out\jt7\tmp\persistentobject.obj 
+      ..\out\jt7\tmp\jtmobjs.obj ..\out\jt7\tmp\glovrml.obj 
+      ..\out\jt7\tmp\zl_write.obj ..\out\jt7\tmp\zl_ctdir.obj 
+      ..\out\jt7\tmp\zl_flush.obj ..\out\jt7\tmp\zl_hdr.obj 
+      ..\out\jt7\tmp\zl_read.obj ..\out\jt7\tmp\zl_types.obj 
+      ..\out\jt7\tmp\ziplib.obj ..\out\jt7\tmp\SDL_gfxPrimitives.obj 
+      ..\out\jt7\tmp\gparticle.obj ..\out\jt7\tmp\gairport.obj 
+      ..\out\jt7\tmp\gaircraft.obj ..\out\jt7\tmp\gloocttree.obj 
+      ..\out\jt7\tmp\ghiview.obj ..\out\jt7\tmp\gviewtype.obj 
+      ..\out\jt7\tmp\groad.obj ..\out\jt7\tmp\gtrack.obj 
+      ..\out\jt7\tmp\gmotocar.obj ..\out\jt7\tmp\mdijskr.obj 
+      ..\out\jt7\tmp\gmtcom.obj ..\out\jt7\tmp\gbusstop.obj 
+      ..\out\jt7\tmp\imotocar.obj ..\out\jt7\tmp\galias.obj 
+      ..\out\jt7\tmp\gcity.obj ..\out\jt7\tmp\icab.obj 
+      ..\out\jt7\tmp\iobject.obj ..\out\jt7\tmp\imachine.obj 
+      ..\out\jt7\tmp\istatic.obj ..\out\jt7\tmp\atrajectory.obj 
+      ..\out\jt7\tmp\gltools.obj ..\out\jt7\tmp\ismoke.obj 
+      ..\out\jt7\tmp\gshapesmoke.obj ..\out\jt7\tmp\zutil.obj 
+      ..\out\jt7\tmp\adler32.obj ..\out\jt7\tmp\compress.obj 
+      ..\out\jt7\tmp\crc32.obj ..\out\jt7\tmp\deflate.obj 
+      ..\out\jt7\tmp\gzio.obj ..\out\jt7\tmp\infblock.obj 
+      ..\out\jt7\tmp\infcodes.obj ..\out\jt7\tmp\inffast.obj 
+      ..\out\jt7\tmp\inflate.obj ..\out\jt7\tmp\inftrees.obj 
+      ..\out\jt7\tmp\infutil.obj ..\out\jt7\tmp\trees.obj 
+      ..\out\jt7\tmp\uncompr.obj"/>
+    <RESFILES value="jt7.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value="..\libs\sdwlib.lib ..\libs\SDLmain.lib ..\libs\zblib.lib 
+      ..\libs\jsmall.lib ..\libs\sdldll.lib"/>
+    <LIBRARIES value="VCL50.lib"/>
+    <SPARELIBS value="VCL50.lib"/>
+    <PACKAGES value="VCL50.bpi VCLX50.bpi bcbsmp50.bpi dclocx50.bpi bcb2kaxserver50.bpi"/>
+    <PATHCPP value=".;..\jlib\zaba;..\jlib\gram;..\jlib\glo;..\jlib\ext;..\model;..\jlib\ziplib;..\jlib\sdl\gfx;C:\jtdist\jlib\zlib\"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="tlink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT;_NO_VCL"/>
+    <MAINSOURCE value="jt7.bpf"/>
+    <INCLUDEPATH value="C:\jtdist\jlib\zlib;..\jlib\sdl\bfont;..;..\jlib\sdl\gfx;..\jlib\ziplib\zlib;..\jlib\ziplib;..\model;..\jlib\aws;..\jlib\ext;..\jlib\glo;..\jlib\gram;..\jlib\zaba;..\jlib\sdw;C:\;$(BCB)\include;$(BCB)\include\vcl;..\jlib;..\jlib\sdl"/>
+    <LIBPATH value="C:\jtdist\jlib\zlib;..\jlib\sdl\bfont;..;..\jlib\sdl\gfx;..\jlib\ziplib\zlib;..\jlib\ziplib;..\model;..\jlib\aws;..\jlib\ext;..\jlib\glo;..\jlib\gram;..\jlib\zaba;..\jlib\sdw;C:\;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par -w-8030 -w-8029"/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-Od -H=headers.csm -Hc -Q -Vx -Ve -X- -r- -a8 -b -k -y -v -vi- -tW -tWM- -c"/>
+    <PFLAGS value="-N2..\out\jt7\tmp -N0..\out\jt7\tmp -$YD -$W -$O- -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-I..\out\jt7\tmp -D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cw32.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1029
+CodePage=1250
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[Excluded Packages]
+$(BCB)\Projects\Bpl\wxWizard.bpl=wxWizard- Project Wizard for wxWindows
+
+[HistoryLists\hlIncludePath]
+Count=23
+Item0=..\jlib\sdl\bfont;..\;..\jlib\sdl\gfx;..\jlib\ziplib\zlib;..\jlib\ziplib;..\model;..\jlib\aws;..;..\jlib\ext;..\jlib\glo;..\jlib\gram;..\jlib\zaba;..\jlib\sdw;C:\;$(BCB)\include;$(BCB)\include\vcl;..\jlib;..\jlib\sdl
+Item1=..\jlib\sdl\gfx;..\jlib\ziplib\zlib;..\jlib\ziplib;..\model;..\jlib\aws;..\;..\jlib\ext;..\jlib\glo;..;..\jlib\gram;..\jlib\zaba;..\jlib\sdw;C:\;$(BCB)\include;$(BCB)\include\vcl;..\jlib;..\jlib\sdl
+Item2=..\;..\jlib\gram;..\jlib\zaba;..\jlib\sdw;C:\;$(BCB)\include;$(BCB)\include\vcl;..\jlib;..\jlib\sdl
+Item3=..\jlib\sdw;C:\;$(BCB)\include;$(BCB)\include\vcl;..\jlib;..\jlib\sdl
+Item4=..\jlib\sdw;C:\;$(BCB)\include;$(BCB)\include\vcl;..\jlib
+Item5=C:\;$(BCB)\include;$(BCB)\include\vcl;..\jlib
+Item6=C:\;$(BCB)\include;$(BCB)\include\vcl;..\..\jlib
+Item7=..\..;$(BCB)\include;$(BCB)\include\vcl;..\jlib
+Item8=..\..;$(BCB)\include;$(BCB)\include\vcl
+Item9=..;$(BCB)\include;$(BCB)\include\vcl
+Item10=..;..\jlib\aws;$(BCB)\include;$(BCB)\include\vcl;..\jlib
+Item11=..\;..\jlib\aws;..;$(BCB)\include;$(BCB)\include\vcl;..\jlib
+Item12=..;$(BCB)\include;$(BCB)\include\vcl;..\jlib
+Item13=..\;$(BCB)\include;$(BCB)\include\vcl;..\jlib
+Item14=$(BCB)\include;$(BCB)\include\vcl;..\jlib
+Item15=$(BCB)\include;$(BCB)\include\vcl;..\..\jlib
+Item16=$(BCB)\include;$(BCB)\include\vcl;../jlib
+Item17=$(BCB)\include;$(BCB)\include\vcl;C:\d\jlib\
+Item18=$(BCB)\include;$(BCB)\include\vcl;C:\jena\d\jlib\
+Item19=..\..\cblib;$(BCB)\include;$(BCB)\include\vcl;C:\d\jlib\
+Item20=$(BCB)\include;$(BCB)\include\vcl;..\..\..\..\d\jlib
+Item21=$(BCB)\include;$(BCB)\include\vcl;c:\jena\d\jlib
+Item22=$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=14
+Item0=..\jlib\sdl\bfont;..\;..\jlib\sdl\gfx;..\jlib\ziplib\zlib;..\jlib\ziplib;..\model;..\jlib\aws;..;..\jlib\ext;..\jlib\glo;..\jlib\gram;..\jlib\zaba;..\jlib\sdw;C:\;$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\jlib\sdl\gfx;..\jlib\ziplib\zlib;..\jlib\ziplib;..\model;..\jlib\aws;..\;..\jlib\ext;..\jlib\glo;..;..\jlib\gram;..\jlib\zaba;..\jlib\sdw;C:\;$(BCB)\lib\obj;$(BCB)\lib
+Item2=..\;..\jlib\gram;..\jlib\zaba;..\jlib\sdw;C:\;$(BCB)\lib\obj;$(BCB)\lib
+Item3=..\jlib\sdw;C:\;$(BCB)\lib\obj;$(BCB)\lib
+Item4=C:\;$(BCB)\lib\obj;$(BCB)\lib
+Item5=..\..;$(BCB)\lib\obj;$(BCB)\lib
+Item6=..;$(BCB)\lib\obj;$(BCB)\lib
+Item7=..;..\jlib\aws;C:\cblib\;$(BCB)\lib\obj;$(BCB)\lib
+Item8=..\;..\jlib\aws;..;C:\cblib\;$(BCB)\lib\obj;$(BCB)\lib
+Item9=..;C:\cblib\;$(BCB)\lib\obj;$(BCB)\lib
+Item10=..\;C:\cblib\;$(BCB)\lib\obj;$(BCB)\lib
+Item11=C:\cblib\;$(BCB)\lib\obj;$(BCB)\lib
+Item12=..\..\cblib;$(BCB)\lib\obj;$(BCB)\lib
+Item13=$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=9
+Item0=..\out\jt7\tmp
+Item1=..\out\jt7
+Item2=out
+Item3=..\out\notedit\tmp
+Item4=../out/notedit/tmp
+Item5=..\
+Item6=..\out
+Item7=..\..\out
+Item8=../out
+
+[HistoryLists\hlFinalOutputDir]
+Count=8
+Item0=..\out\jt7\
+Item1=..\out\jt7
+Item2=out\
+Item3=out
+Item4=../out/notedit\
+Item5=../out/notedit
+Item6=../out\
+Item7=../out
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=-w -language:cz
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+  </IDEOPTIONS>
+</PROJECT>

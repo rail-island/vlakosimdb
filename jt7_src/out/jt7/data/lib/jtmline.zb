@@ -1,0 +1,31 @@
+module MLineModule;
+
+requires module linesModule;
+
+class JTMLine extends JTLine {
+  formname="jtycon.mlinefrm";
+  stationtype=BusStop;
+ 
+  constructor () {
+    proxy.name="L 1";
+    proxy->vehicle="";
+    proxy->waittime=2;
+  }
+  function changetype() {
+    proxy->vehicle=game.motocars[form->types.cur].name;
+  }
+  
+  function initform() {
+    form->types.items=game.motocars.join({value.title},"\n");
+    form->types.cur=game.motocars.searchIfIndex({value.name==proxy->vehicle});
+  }
+  function savespec(xml) {
+    xml.name="mline";
+    xml->vehicle=proxy->vehicle;
+  }
+  function loadspec(xml) {
+    proxy->vehicle=xml->vehicle;
+  }
+}
+linesModule.lineTypes->mline=JTMLine;
+

@@ -1,0 +1,102 @@
+includable module editBitmapsModuleBase;
+
+var bitmappicture;
+
+var bitmapfiles=[];
+var visibletexture;
+var bitmappicfile;
+
+function matchange() {
+  bitmappicture=new Picture();
+  if (var file=form->matfiles.items.split("\n")[form->matfiles.cur]) {
+    bitmappicture.load(File.root/"data"/"materials"/file);
+    visibletexture="material:"&file;
+    form->bitmappainter.W=bitmappicture.W;
+    form->bitmappainter.H=bitmappicture.H;
+    form->bitmappainter.repaint();
+  }
+}
+  
+function updatebitmapfiles() {
+  bitmapfiles=[];
+  for (f in zipobj.listFiles().split("\n")) {
+    var file=new File(f);
+    if (file.hasExt("bmp")) bitmapfiles.push(f);
+  }  
+  form->bitmapfiles.items=bitmapfiles.join("\n");
+}
+
+function bitmapchange() {
+  bitmappicture=new Picture();
+  if (var file=form->bitmapfiles.items.split("\n")[form->bitmapfiles.cur]) {
+    var path=zipobj.getFile(file);
+    bitmappicture.load(path);
+    zipobj.closedGetFile(path,file);
+    visibletexture="pack:"&file;
+    bitmappicfile=file;
+    form->bitmappainter.W=bitmappicture.W;
+    form->bitmappainter.H=bitmappicture.H;
+    form->bitmappainter.repaint();
+  }
+}
+
+function paintbitmap(cnv) {
+  if (bitmappicture) bitmappicture.draw(0,0,cnv);
+}
+
+/*
+function setbitmap() {
+  if (var file=form->bitmapfiles.items.split("\n")[form->bitmapfiles.cur]) 
+    form->bitmaptexture.text="pack:"&file;
+}
+*/
+
+function addbitmappicture() {
+  var xml=new XMLNode();
+  xml->w=32;xml->h=32;xml->name="new_bitmap";
+  if (Application.runXMLDialog(Application.findResource("poed.newbitmap"),xml)) {
+    bitmappicture=new Picture();
+    bitmappicture.W=xml->w;
+    bitmappicture.H=xml->h;
+    var file=new File(xml->name)%"bmp";
+    visibletexture="material:"&file;
+    bitmappicfile=new String(file);
+    
+    var path=zipobj.setFile(file);
+    bitmappicture.save(path);
+    zipobj.closedSetFile(path,file);
+    
+    updatebitmapfiles();
+    form->bitmapfiles.items=bitmapfiles.join("\n");
+    form->bitmapfiles.cur=bitmapfiles.count-1;
+  }
+}
+
+function erasebitmappicture() {
+  if (bitmappicture) {
+    zipobj.removeFile(bitmappicfile);
+    bitmappicture=null;
+    bitmappicfile=null;
+    form->bitmappainter.W=0;
+    form->bitmappainter.H=0;
+    
+    updatebitmapfiles();
+    form->bitmapfiles.items=bitmapfiles.join("\n");
+  }
+}
+
+function editbitmappicture() {
+  if (bitmappicture) {
+    if (var newpic=bitmapEditModule.run(bitmappicture)) {
+      bitmappicture=newpic;
+      var path=zipobj.setFile(bitmappicfile);
+      bitmappicture.save(path);
+      zipobj.closedSetFile(path,bitmappicfile);
+    }
+  }
+}
+
+function setcolorize() {
+  if (visibletexture) form->colorizetexture.text=visibletexture;
+}
+

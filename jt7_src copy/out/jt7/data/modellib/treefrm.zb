@@ -1,0 +1,111 @@
+module treeEditModule;
+
+requires module poedTypes;
+
+var actitem;
+var zipobj;
+var xml;
+var type="trees";
+var form;
+var picture;
+
+function creating(xml) {return poedTypes.nameDialog(type,xml);}
+function created(xml,obj) {}
+function edit(xml,obj) {}
+function loaded(xml,obj,panel,form) {
+  form.handler=this;
+  this.zipobj=obj;this.xml=xml;
+  this.form=form;
+  updateitems();
+}
+function unload(index,obj) {}
+
+readonly resname="poed.treesfrm";
+readonly hasdata=true;
+
+function updateitems() {
+  form->items.items=xml.childs.join({value->name},"\n");
+  var array=zipobj.listFiles().split("\n");
+  var idx=array.searchString("index.xml");
+  if (idx>=0) array.erase(idx);
+  form->files.items=array.join("\n");
+  actitem=null;
+}
+function saveact() {
+  if (actitem) form->treesplace.saveData(actitem);
+}
+function loadact() {
+  if (actitem) form->treesplace.loadData(actitem);
+}
+function loadpic(file) {
+  picture=new Picture();
+  try {
+    var path=zipobj.getFile(file);
+    picture.load(path);
+    zipobj.closedGetFile(path,file);
+    form->paintbox.W=picture.W;
+    form->paintbox.H=picture.H;
+  } catch(e) {
+    picture=null;
+  }
+  form->paintbox.repaint();
+}
+function showpic() {
+  if (actitem) loadpic(actitem->file);
+}
+function filechange() {
+  loadpic(form->files.items.split("\n")[form->files.cur]);
+}
+function listchange() {
+  saveact();
+  actitem=xml.childs[form->items.cur];
+  loadact();
+  showpic();
+}
+function additem() {
+  saveact();
+  var o=new OpenDialog();
+  o.initialDir=File.root/"data";
+  o.multiSelect=true;
+  if (o.execute()) {
+    for (f in o.files.split("\n")) {
+      f=new File(f);
+      var x=xml.add("tree");
+      var name=f.getFile();
+      x->name=name%"";
+      x->file=name;
+      x->w=1;
+      var path=zipobj.setFile(name);
+      f.copyTo(path);
+      zipobj.closedSetFile(path,name);
+    }
+  }
+//  var a=xml-/items.add("item");
+//  a->model="none";
+  updateitems();
+}
+function eraseitem() {
+  if (actitem) {
+    actitem.remove();
+    actitem=null;
+    updateitems();
+  }
+}
+function savedata(index,obj) {
+  saveact();
+}
+function setfile() {
+  form->fileedit.text=form->files.items.split("\n")[form->files.cur];
+}
+function painttree(cnv) {
+  if (picture) picture.draw(0,0,cnv);
+}
+function erasefile() {
+  if (var file=form->files.items.split("\n")[form->files.cur]) {
+    zipobj.removeFile(file);
+    updateitems();
+  }
+}
+
+poedTypes.addType("trees",this);
+

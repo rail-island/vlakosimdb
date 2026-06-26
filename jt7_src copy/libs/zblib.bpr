@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="zblib.lib"/>
+    <OBJFILES value="zbtmp\zbcode.obj zbtmp\zbdefs.obj zbtmp\zbint.obj zbtmp\zbintf.obj 
+      zbtmp\zbobj.obj zbtmp\zbrt.obj zbtmp\zbss.obj zbtmp\gmexpr.obj 
+      zbtmp\gmlang.obj zbtmp\sscm.obj zbtmp\ssdefs.obj zbtmp\ssmain.obj 
+      zbtmp\cmstrdata.obj zbtmp\abazparse.obj zbtmp\regexintf.obj zbtmp\REGEX.obj"/>
+    <RESFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;..\jlib\ext"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <LINKER value="TLib"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="zblib.bpf"/>
+    <INCLUDEPATH value="..\jlib\ext;..\jlib\gram;..\jlib\zaba;$(BCB)\include;$(BCB)\include\vcl;..\jlib"/>
+    <LIBPATH value="..\jlib\ext;..\jlib\gram;..\jlib\zaba;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
+    <LISTFILE value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b -k -y -v -vi- -c 
+      -tW -tWM"/>
+    <PFLAGS value="-N2zbtmp -N0zbtmp -$YD -$W -$O- -v -JPHNE -M"/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="/P128"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="$(OBJFILES)"/>
+    <ALLLIB value=""/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1029
+CodePage=1250
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=4
+Item0=..\jlib\ext;..\jlib\gram;..\jlib\zaba;$(BCB)\include;$(BCB)\include\vcl;..\jlib
+Item1=..\jlib\zaba;$(BCB)\include;$(BCB)\include\vcl;..\jlib
+Item2=$(BCB)\include;$(BCB)\include\vcl;..\jlib
+Item3=$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=3
+Item0=..\jlib\ext;..\jlib\gram;..\jlib\zaba;$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\jlib\zaba;$(BCB)\lib\obj;$(BCB)\lib
+Item2=$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=zbtmp
+
+[HistoryLists\hlTlibPageSize]
+Count=4
+Item0=0x0080
+Item1=0x0040
+Item2=0x0020
+Item3=0x0010
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+  </IDEOPTIONS>
+</PROJECT>

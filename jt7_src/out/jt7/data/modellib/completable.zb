@@ -1,0 +1,97 @@
+includable module completableModule;
+
+var actitem;
+var actmodel;
+
+function updateitems() {
+  form->items.items=xml-/items.childs.join({value->model},"\n");
+  actitem=null;
+}
+function saveactitem() {
+  if (actitem) place.saveData(actitem);
+  saveactmodel();
+}
+function loadactitem() {
+  if (actitem) {
+    place.loadData(actitem);
+    actitem.forceSub("models");
+    updatemodels();
+    actmodel=null;
+  }
+}
+function itemchange() {
+  saveactitem();
+  actitem=xml-/items.childs[form->items.cur];
+  loadactitem();
+}
+function additem() {
+  saveactitem();
+  var a=xml-/items.add("item");
+  a->model="none";
+  updateitems();
+}
+function eraseitem() {
+  if (actitem) {
+    actitem.remove();
+    actitem=null;
+    actmodel=null;
+    form->models.items="";
+    updateitems();
+  }
+}
+function moveditem(d) {
+  var cur=form->items.cur;
+  if (xml-/items.exchange(cur,cur+d)) {
+    updateitems();
+    form->items.cur=cur+d;
+  }
+}
+function moveupitem() {moveditem(-1);}
+function movedownitem() {moveditem(1);}
+
+function updatemodels() {
+  form->models.items=actitem-/models.childs.join({value->model},"\n");
+}
+function modelchange() {
+  saveactmodel();
+  actmodel=actitem-/models.childs[form->models.cur];
+  loadactmodel();
+}
+function erasemodel() {
+  if (actmodel) {
+    actmodel.remove();
+    actmodel=null;
+    updatemodels();
+  }
+}
+function addmodel() {
+  if (actitem) {
+    var x=actitem.forceSub("models").add("model");
+    x->model="none";
+    updatemodels();
+  }
+}
+function saveactmodel() {
+  if (actmodel) {
+    place.saveData(actmodel);
+  }
+}
+function loadactmodel() {
+  if (actmodel) {
+    place.loadData(actmodel);
+  }
+}
+
+function browsemodel1() {
+  if (actitem) {
+    if (var newmodel=includeDialogModule.run(zipobj,form->modeledit1.text)) form->modeledit1.text=newmodel;
+  }
+}
+function browsemodel() {
+  if (actitem) {
+    if (var newmodel=includeDialogModule.run(zipobj,form->modeledit.text)) form->modeledit.text=newmodel;
+  }
+}
+
+
+

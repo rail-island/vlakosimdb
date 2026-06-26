@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<data>
+
+<place layout="hlist" rep.name="ctrl.xmleditor">
+  <tree name="tree" onnodeclick="treeclick()" ll.hsize="50%"/>
+  <proplist name="props" onchange="savevars();changedcontent()"/>
+</place>
+
+<!--
+<window rep.name="form.xmleditor" layout="1" clientw="400" clienth="300" closeonesc="1" text="XML Editor">
+  <tree name="tree" onnodeclick="treeclick()" ll.vsize="60%"/>
+ <proplist name="props" onchange="savevars();changedcontent()"/>
+</window>
+-->
+
+<window rep.name="form.xmleditor" layout="1" clientw="400" clienth="300" closeonesc="1" text="XML Editor" menu="menu.xmleditor">
+  <rep.include name="ctrl.xmleditor"/>
+</window>
+
+<menubar rep.name="menu.xmleditor">
+  <popup text="XML">
+    <do text="$Clear-all" shortcut="ctrl+n" onclick="newfile()"/>
+    <do text="$Save" shortcut="ctrl+s" onclick="savefile()"/>
+    <do text="$Load" shortcut="ctrl+o" onclick="loadfile()"/>
+    <separator/>
+    <do text="$Make-subdirectory" shortcut="f7" onclick="mkdir()"/>
+    <do text="$Delete" shortcut="f8" onclick="erase()"/>
+    <do text="$Rename" shortcut="f6" onclick="rename()"/>
+    <do text="$Clear-current" shortcut="f9" onclick="clearchilds()"/>
+    <separator/>
+    <do text="$Quit" onclick="quit()"/>
+  </popup>
+  <popup text="$Data">
+    <do text="$Add-attribute" shortcut="ctrl+i" onclick="insattr()"/>
+    <do text="$Remove-attribute" shortcut="ctrl+u" onclick="eraseattr()"/>
+  </popup>
+  <popup text="$Edit">
+    <do text="$Copy" shortcut="ctrl+c" onclick="copytoclipboard()"/>
+    <do text="$Insert" shortcut="ctrl+v" onclick="pastefromclipboard()"/>
+    <popup text="$Other-keys">
+      <do text="$Copy" shortcut="ctrl+insert" onclick="copytoclipboard()"/>
+      <do text="$Insert" shortcut="shift+insert" onclick="pastefromclipboard()"/>
+    </popup>
+  </popup>
+</menubar>
+
+</data>

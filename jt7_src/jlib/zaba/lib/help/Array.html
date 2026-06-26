@@ -1,0 +1,594 @@
+
+<head><link href="detail.css" type="text/css" rel="stylesheet"></head>
+<h1>Class Array</h1>
+
+
+
+
+
+
+
+<h3><code><a name="[]">
+Object 
+operator []
+
+
+</a></code></h3>
+
+<u>Access:</u>read write<br>
+
+
+
+returns indexth element, if index is out of bounds, returns null
+
+
+
+<h3><code><a name="addArray">
+void 
+function addArray(Array array)
+
+
+</a></code></h3>
+
+
+
+adds items from array
+
+
+
+<h3><code><a name="assign">
+void 
+function assign(Array array)
+
+
+</a></code></h3>
+
+
+
+shallow copy
+
+
+
+<h3><code><a name="clear">
+void 
+function clear()
+
+
+</a></code></h3>
+
+
+
+removes all items
+
+
+
+<h3><code><a name="clone">
+Object 
+function clone()
+
+
+</a></code></h3>
+
+
+
+shallow copy
+
+
+
+<h3><code><a name="collect">
+Array 
+function collect(InlineMethod condition)
+
+
+</a></code></h3>
+
+
+
+returns array of all items with true condition
+
+
+
+<h3><code><a name="convert">
+Array 
+function convert(InlineMethod convertion)
+
+
+</a></code></h3>
+
+
+
+returns converted array (eg. [1,2].convert({value*2}) returns [2,4])
+
+
+
+<h3><code><a name="count">
+Number 
+property count
+
+
+</a></code></h3>
+
+<u>Access:</u>read <br>
+
+
+
+
+
+
+
+<h3><code><a name="erase">
+void 
+function erase(int index)
+
+
+</a></code></h3>
+
+
+
+erases elements index
+
+
+
+<h3><code><a name="erase">
+void 
+function erase(int index,int count)
+
+
+</a></code></h3>
+
+
+
+erases elements index,index+1,...,index+count-1
+
+
+
+<h3><code><a name="exchange">
+void 
+function exchange(int idnex1,int index2)
+
+
+</a></code></h3>
+
+
+
+exchanges items index1 and index2
+
+
+
+<h3><code><a name="getIterator">
+Object 
+function getIterator()
+
+
+</a></code></h3>
+
+
+
+
+
+
+
+<h3><code><a name="insert">
+void 
+function insert(int index, what)
+
+
+</a></code></h3>
+
+
+
+inserts element what at position index
+
+
+
+<h3><code><a name="join">
+Object 
+function join(InlineMethod func,String separator)
+
+
+</a></code></h3>
+
+
+
+returns string elem1 separator elem2 ...
+
+
+
+<h3><code><a name="join">
+Object 
+function join(String separator)
+
+
+</a></code></h3>
+
+
+
+returns string elem1 separator elem2 ...
+
+
+
+<h3><code><a name="last">
+Object 
+property last
+
+
+</a></code></h3>
+
+<u>Access:</u>read <br>
+
+
+
+
+
+
+
+<h3><code><a name="length">
+Number 
+property length
+
+
+</a></code></h3>
+
+<u>Access:</u>read <br>
+
+
+
+
+
+
+
+<h3><code><a name="makeBools">
+void 
+function makeBools()
+
+
+</a></code></h3>
+
+
+
+converts all members to bool
+
+
+
+<h3><code><a name="makeFloats">
+void 
+function makeFloats()
+
+
+</a></code></h3>
+
+
+
+converts all members to float
+
+
+
+<h3><code><a name="makeInts">
+void 
+function makeInts()
+
+
+</a></code></h3>
+
+
+
+converts all members to integer
+
+
+
+<h3><code><a name="makeStrings">
+void 
+function makeStrings()
+
+
+</a></code></h3>
+
+
+
+converts all members to string
+
+
+
+<h3><code><a name="moveDown">
+bool 
+function moveDown(int index)
+
+
+</a></code></h3>
+
+
+
+if cannot do this, does nothing
+
+
+
+<h3><code><a name="moveUp">
+bool 
+function moveUp(int index)
+
+
+</a></code></h3>
+
+
+
+if cannot do this, does nothing
+
+
+
+<h3><code><a name="op:new">
+ 
+constructor ()
+
+
+</a></code></h3>
+
+
+
+creates array from arguments
+
+
+
+<h3><code><a name="pop">
+Object 
+function pop()
+
+
+</a></code></h3>
+
+
+
+removes and returns the last element
+
+
+
+<h3><code><a name="push">
+void 
+function push()
+
+
+</a></code></h3>
+
+
+
+adds arguments to the end of the array
+
+
+
+<h3><code><a name="remove">
+void 
+function remove( what)
+
+
+</a></code></h3>
+
+
+
+removes first object equal to what
+
+
+
+<h3><code><a name="removeRef">
+void 
+function removeRef( what)
+
+
+</a></code></h3>
+
+
+
+removes first object what
+
+
+
+<h3><code><a name="reOrder">
+void 
+function reOrder(MultiIndex newOrder)
+
+
+</a></code></h3>
+
+
+
+changes order of items, newOrder must be permutation of count members
+
+
+
+<h3><code><a name="reverse">
+void 
+function reverse()
+
+
+</a></code></h3>
+
+
+
+reverses all elements
+
+
+
+<h3><code><a name="search">
+int 
+function search( what)
+
+
+</a></code></h3>
+
+
+
+searches what, return inedx or -1, tests for what==items[i]
+
+
+
+<h3><code><a name="searchExtrem">
+Object 
+function searchExtrem(InlineMethod extrem,InlineMethod forall)
+
+
+</a></code></h3>
+
+
+
+searchs extram, eg. searchExtrem({value},{extrem&lt;=value}) returns minimum
+
+
+
+<h3><code><a name="searchFloat">
+int 
+function searchFloat(float num)
+
+
+</a></code></h3>
+
+
+
+rearches array for num
+
+
+
+<h3><code><a name="searchIf">
+Object 
+function searchIf( condition)
+
+
+</a></code></h3>
+
+
+
+condition is inline function, which returns null, if item is not ok,
+  or any value, if item is ok. Value is value of element, index is its index
+  Example: [1,2,3].searchIf({if (value==2) return index;return null;}) returns 1
+  
+
+
+
+<h3><code><a name="searchIfIndex">
+Object 
+function searchIfIndex( condition)
+
+
+</a></code></h3>
+
+
+
+returns searched item index or -1
+
+
+
+<h3><code><a name="searchIfValue">
+Object 
+function searchIfValue( condition)
+
+
+</a></code></h3>
+
+
+
+returns returned expression or null
+
+
+
+<h3><code><a name="searchInt">
+int 
+function searchInt(int num)
+
+
+</a></code></h3>
+
+
+
+rearches array for num
+
+
+
+<h3><code><a name="searchRef">
+int 
+function searchRef( ref)
+
+
+</a></code></h3>
+
+
+
+rearches array for ref using operator ===(very fast)
+
+
+
+<h3><code><a name="searchString">
+int 
+function searchString(string str)
+
+
+</a></code></h3>
+
+
+
+rearches array for str
+
+
+
+<h3><code><a name="sequence">
+static Array 
+function sequence(float low,float high,float step)
+
+
+</a></code></h3>
+
+
+
+returns arithmetic sequence &lt;low,high&gt;
+
+
+
+<h3><code><a name="shift">
+Object 
+function shift()
+
+
+</a></code></h3>
+
+
+
+removes and returns the first element
+
+
+
+<h3><code><a name="sort">
+void 
+function sort()
+
+
+</a></code></h3>
+
+
+
+alphabetic sort
+
+
+
+<h3><code><a name="sort">
+void 
+function sort(Object comparator)
+
+
+</a></code></h3>
+
+
+
+heap sort
+
+
+
+<h3><code><a name="sort">
+void 
+function sort(InlineMethod comparator)
+
+
+</a></code></h3>
+
+
+
+heap sort
+
+
+
+

@@ -1,0 +1,20 @@
+module editBitmapsModule;
+
+include module editBitmapsModuleBase;
+
+var form,win;
+var zipobj;
+
+function run(zipobj) {
+  if (form) return;
+  form=new Form();
+  form.handler=this;
+  this.zipobj=zipobj;
+  win=form.loadWindow("poed.editbmpsfrm");
+  updatebitmapfiles();
+  win.showModal();
+  form.destroy();
+  win=null;
+  form=null;
+}
+

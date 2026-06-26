@@ -1,0 +1,76 @@
+includable module simpleEditInlinesModule;
+
+var actinl;
+
+function saveinline() {
+  if (actinl) {
+    form->inlinepage.saveData(actinl);
+    var v=new VarList();
+    form->inlineargs.save(v);
+    actinl.forceSub("args").loadVars(v);
+  }
+}
+
+function initinlinepage() {
+  actinl=null;
+}
+
+function loadinline() {
+  if (actinl) {
+    form->inlinepage.loadData(actinl);
+    var v=new VarList();
+    actinl.forceSub("args").saveVars(v);
+    form->inlineargs.load(v);
+  }
+}
+
+function doneinlinepage() {
+  saveinline();
+  actinl=null;
+}
+
+function changedinlinelist() {
+  saveinline();
+  actinl=smodel-/inlines[form->inlinelist.cur];
+  loadinline();
+}
+
+function addinline() {
+  if (var name=includeDialogModule.run(zipobj,"")) {
+    var xml=smodel-/inlines.add();
+    xml.name="inline";
+    xml->name=name;
+    xml->comment="new inline";
+    xml->sx=1;xml->sy=1;xml->sz=1;
+    xml->tx=0;xml->ty=0;xml->tz=0;
+    updateinlines();
+  }
+}
+
+function editinline() {
+  if (actinl) {
+    if (var newname=includeDialogModule.run(zipobj,actinl->name)) {
+      actinl->name=newname;
+      updateinlines();
+    }
+  }
+}
+
+function eraseinline() {
+  if (actinl) {
+    actinl.remove();
+    updateinlines();
+  }
+}
+
+function addinlinearg() {
+  if (var name=Window.inputBox("$Question","$Parameter-name","arg")) {
+    saveinline();
+    if (actinl) actinl.forceSub("args").setVar(name,"");
+    loadinline();
+  }
+}
+
+function eraseinlinearg() {
+  form->inlineargs.eraseVar();
+}

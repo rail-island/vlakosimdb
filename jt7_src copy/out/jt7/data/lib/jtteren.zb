@@ -1,0 +1,83 @@
+module terrainModule;
+
+var form,win;
+var game;
+var pt0;
+var mode="up";
+var savedhi=0;
+
+function show() {
+  game=JTycon.game;
+  if (form) return;
+  form=new Form();
+  form.handler=this;
+  JTycon.state=this;
+  win=form.loadWindow("jtycon.terfrm");
+  win.show();
+  JTWinManager.place(win);
+}
+
+function onclose() {
+  JTWinManager.closed(win);
+  if (JTycon.state===this) JTycon.state=null;
+  form.destroy();
+  form=null;
+  win=null;
+}
+
+function makerect() {
+  var x1=pt0->x,y1=pt0->y,x2=game.vertexX,y2=game.vertexY;
+  if (x1>x2) {var p=x1;x1=x2;x2=p;}
+  if (y1>y2) {var p=y1;y1=y2;y2=p;}
+  return new (x1=x1,y1=y1,x2=x2,y2=y2);
+}
+
+function setmode(value) {
+  JTycon.state=this;
+  mode=value;
+}
+
+function onpaint() {
+  var colors=new ("get"="blue","set"="lime","up"="yellow","down"="white");
+  if (pt0) {
+    var r=makerect();
+//    for(var x=r->x1;x<=r->x2;x++) for(var y=r->y1;y<=r->y2;y++) game.drawPointCursor(x,y,colors[mode]);
+    game.drawPointCursors(r->x1,r->y1,r->x2,r->y2,colors[mode]);
+  } else {
+    game.drawPointCursor(game.vertexX,game.vertexY,colors[mode]);
+  }
+}
+
+function mdown(button) {
+  pt0=new (x=game.vertexX,y=game.vertexY);
+}
+
+function getmhd() {
+  return form->mhd.cur/50+0.1;
+}
+
+function mup(button) {
+  if (pt0) {
+    var r=makerect();
+    if (mode=="up" || mode=="down") {
+      var dhi=form->dhi.cur/20;
+      if (mode=="down") dhi=-dhi;
+      for(var x=r->x1;x<=r->x2;x++) for(var y=r->y1;y<=r->y2;y++) game.setHi(x,y,1,1,game.getHi(x,y)+dhi);
+      game.repairHeights(r->x1,r->y1,r->x2-r->x1+1,r->y2-r->y1+1,getmhd());
+    }
+    if (mode=="get") {
+      var sum=0;
+      for(var x=r->x1;x<=r->x2;x++) for(var y=r->y1;y<=r->y2;y++) sum+=game.getHi(x,y);
+      savedhi=sum/((r->x2-r->x1+1)*(r->y2-r->y1+1));
+    }
+    if (mode=="set") {
+      game.setHi(r->x1,r->y1,r->x2-r->x1+1,r->y2-r->y1+1,savedhi);
+      game.repairHeights(r->x1,r->y1,r->x2-r->x1+1,r->y2-r->y1+1,getmhd());
+    }
+  }
+  pt0=null;
+}
+
+function mmove() {
+}
+

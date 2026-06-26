@@ -1,0 +1,119 @@
+module bridgeScript;
+
+requires module modelScripts;
+
+readonly text="Bridge";
+readonly name="bridge";
+
+var maxwi=10;
+
+function addpt(line,x,y,z) {
+  var pt=line.add("point");
+  pt->x=x;pt->y=y;pt->z=z;
+}
+
+function fillconst(xml,r,g,b,linewi,ispolygon,texture,freq) {
+  xml->r=r;xml->b=b;xml->g=g;xml->linewi=linewi;
+  xml->texture=texture;
+  xml->frequency=freq;
+  xml->polygon=(ispolygon?"1":"0");
+}
+
+function makebridge(xml,r,g,b,linewi,len,wi,n,hi,crook,ispolygon,texture,freq) {
+  option directly;
+  xml.clearSubs();
+  xml->type="shape3d";
+  var wip=maxwi-wi;
+  var elem=len/n,elem2=elem/2;
+  var z1=wip/2,z2=maxwi-wip/2;
+  
+  if (crook) {
+    var base=xml.add("polyline");
+    addpt(base,0,0,z1);
+    addpt(base,0,0,z2);
+    addpt(base,len,0,z2);
+    addpt(base,len,0,z1);
+    base->closed=1;
+    fillconst(base,r,g,b,linewi,ispolygon,texture,freq);
+  
+    var top=xml.add("polyline");
+    addpt(top,elem2,hi,z1);
+    addpt(top,elem2,hi,z2);
+    addpt(top,len-elem2,hi,z2);
+    addpt(top,len-elem2,hi,z1);
+    top->closed=1;
+    fillconst(top,r,g,b,linewi,ispolygon,texture,freq);
+    
+    for(var i=0;i<n;i++) {
+      var l1=xml.add("polyline");
+      addpt(l1,i*elem,0,z1);
+      addpt(l1,i*elem+elem2,hi,z1);
+      addpt(l1,i*elem+elem,0,z1);
+      fillconst(l1,r,g,b,linewi,ispolygon,texture,freq);
+  
+      var l2=xml.add("polyline");
+      addpt(l2,i*elem,0,z2);
+      addpt(l2,i*elem+elem2,hi,z2);
+      addpt(l2,i*elem+elem,0,z2);
+      fillconst(l2,r,g,b,linewi,ispolygon,texture,freq);
+    }
+    
+    for(var i=1;i<n-1;i++) {
+      var l=xml.add("polyline");
+      addpt(l,i*elem+elem2,hi,z1);
+      addpt(l,i*elem+elem2,hi,z2);
+      fillconst(l,r,g,b,linewi,ispolygon,texture,freq);
+    }
+  } else {
+    var x1=xml.add("polyline");
+    addpt(x1,0,0,z1);
+    addpt(x1,0,hi,z1);
+    addpt(x1,len,hi,z1);
+    addpt(x1,len,0,z1);
+    x1->closed=1;
+    fillconst(x1,r,g,b,linewi,ispolygon,texture,freq);
+
+    var x2=xml.add("polyline");
+    addpt(x2,0,0,z2);
+    addpt(x2,0,hi,z2);
+    addpt(x2,len,hi,z2);
+    addpt(x2,len,0,z2);
+    x2->closed=1;
+    fillconst(x2,r,g,b,linewi,ispolygon,texture,freq);
+
+    for(var i=1;i<n;i++) {
+      var l1=xml.add("polyline");
+      addpt(l1,i*elem,0,z1);
+      addpt(l1,i*elem,hi,z1);
+      fillconst(l1,r,g,b,linewi,ispolygon,texture,freq);
+  
+      var l2=xml.add("polyline");
+      addpt(l2,i*elem,0,z2);
+      addpt(l2,i*elem,hi,z2);
+      fillconst(l2,r,g,b,linewi,ispolygon,texture,freq);
+    }
+    
+  }
+}
+
+function run() {
+  var sel=modelScripts.selected;
+  if (!sel) return;
+  var xml=sel;
+  if (xml->initialized!="yes") {
+    xml->initialized="yes";
+    xml->r=1;
+    xml->g=1;
+    xml->b=1;
+    xml->linewi=1;
+    xml->len=20;
+    xml->wi=5;
+    xml->n=4;
+    xml->hi=10;
+  }
+  if (Application.runXMLDialog(Application.findResource("form.bridgescript"),xml)) {
+    makebridge(sel,xml->r,xml->g,xml->b,xml->linewi,xml->len,xml->wi,xml->n,xml->hi,xml->crook=="1",xml->polygon=="1",xml->texture,xml->frequency);
+  }
+}
+
+modelScripts.addScript(this);

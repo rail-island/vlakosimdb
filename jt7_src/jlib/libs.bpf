@@ -1,0 +1,24 @@
+#pragma hdrstop
+USEUNIT("LibPNG\pngwutil.c");
+USEUNIT("LibPNG\pngerror.c");
+USEUNIT("LibPNG\pnggccrd.c");
+USEUNIT("LibPNG\pngget.c");
+USEUNIT("LibPNG\pngmem.c");
+USEUNIT("LibPNG\pngpread.c");
+USEUNIT("LibPNG\pngread.c");
+USEUNIT("LibPNG\pngrio.c");
+USEUNIT("LibPNG\pngrtran.c");
+USEUNIT("LibPNG\pngrutil.c");
+USEUNIT("LibPNG\pngset.c");
+USEUNIT("LibPNG\pngtest.c");
+USEUNIT("LibPNG\pngtrans.c");
+USEUNIT("LibPNG\pngvcrd.c");
+USEUNIT("LibPNG\pngwio.c");
+USEUNIT("LibPNG\pngwrite.c");
+USEUNIT("LibPNG\pngwtran.c");
+USEUNIT("LibPNG\png.c");
+//---------------------------------------------------------------------------
+#define Library
+
+// To add a file to the library use the Project menu 'Add to Project'.
+

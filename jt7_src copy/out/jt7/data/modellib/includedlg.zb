@@ -1,0 +1,56 @@
+module includeDialogModule;
+
+var form,win;
+var rootitems,childitems;
+var okpressed;
+
+function run(obj,def) {
+  form=new Form();
+  form.handler=this;
+  win=form.loadWindow("poed.includedlg");
+  
+  rootitems=obj.root.listChilds().split("\n");
+  childitems=obj.listChilds().split("\n");
+  form->root.items=rootitems.join("\n");
+  form->child.items=childitems.join("\n");
+  
+  if (def.beginsWith("/")) {
+    form->root.cur=rootitems.searchString(def.substr(1,def.length-1));
+    form->child.cur=-1;
+  } else {
+    form->child.cur==rootitems.searchString(def);
+    form->root.cur=-1;
+  }
+  okpressed=false;
+  
+  win.showModal();
+  
+  var res=null;
+  if (okpressed) {
+    if (form->child.cur<0) res="/"&rootitems[form->root.cur];
+    if (form->root.cur<0) res=childitems[form->child.cur];
+  }
+
+  form.destroy();
+  form=null;
+  win=null;
+  
+  return res;
+}
+
+function ok() {
+  okpressed=true;
+  win.close();
+}
+
+function cancel() {
+  win.close();
+}
+
+function rootchange() {
+  form->child.cur=-1;
+}
+
+function childchange() {
+  form->root.cur=-1;
+}

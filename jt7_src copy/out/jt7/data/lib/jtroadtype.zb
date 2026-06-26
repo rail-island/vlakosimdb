@@ -1,0 +1,16 @@
+module roadTypeModule;
+
+
+include module commonTypeModule;
+
+var formname="jtycon.roadtypefrm";
+
+function gettypes() {
+  return game.roadTypes;
+}
+
+function work(x,y,name) {
+  game.setRoad(x,y,name);
+}
+
+

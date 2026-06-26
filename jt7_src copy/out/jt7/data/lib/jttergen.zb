@@ -1,0 +1,29 @@
+module tergenModule;
+
+var form,win;
+
+function show() {
+  if (form) return;
+  form=new Form();
+  form.handler=this;
+  win=form.loadWindow("jtycon.tergenfrm");
+  win.show();
+  JTWinManager.place(win);
+}
+
+function circles() {
+  JTycon.game.generateCircles(form->count.cur*100,0.01,form->height.cur/20,1,form->size.cur);
+}
+
+function clear() {
+  JTycon.game.clearHeights(0);
+}
+
+function onclose() {
+  JTWinManager.closed(win);
+  form.destroy();
+  form=null;
+  win=null;
+}
+
+

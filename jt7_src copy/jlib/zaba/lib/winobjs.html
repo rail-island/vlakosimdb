@@ -1,0 +1,8753 @@
+<html>
+<head>
+  <link href="help.css" type="text/css" rel="stylesheet">
+</head>
+<a name="top"><h1>Help for module winobjs</h1></a>
+<tt>class <a href="#class_Component">Component</a></tt> 
+
+<br>
+<tt>class <a href="#class_Control">Control</a></tt> 
+Base class of all controls
+<br>
+<tt>class <a href="#class_Window">Window</a></tt> 
+represents any Window
+<br>
+<tt>class <a href="#class_Form">Form</a></tt> 
+non-visible component, maintains event-calls, loading from XML ...
+<br>
+<tt>class <a href="#class_Button">Button</a></tt> 
+Button control
+<br>
+<tt>class <a href="#class_RadioGroup">RadioGroup</a></tt> 
+
+<br>
+<tt>class <a href="#class_CheckBox">CheckBox</a></tt> 
+
+<br>
+<tt>class <a href="#class_ToolButton">ToolButton</a></tt> 
+Button, can have image, cannot be selected by keyboard
+<br>
+<tt>class <a href="#class_SpeedGroup">SpeedGroup</a></tt> 
+
+<br>
+<tt>class <a href="#class_ListBox">ListBox</a></tt> 
+List of string values
+<br>
+<tt>class <a href="#class_PackedList">PackedList</a></tt> 
+Packed list of string values
+<br>
+<tt>class <a href="#class_Edit">Edit</a></tt> 
+Single-line edit
+<br>
+<tt>class <a href="#class_Memo">Memo</a></tt> 
+Multi-line edit constrol
+<br>
+<tt>class <a href="#class_Label">Label</a></tt> 
+Static text constrol
+<br>
+<tt>class <a href="#class_WrapLabel">WrapLabel</a></tt> 
+
+<br>
+<tt>class <a href="#class_TrackBar">TrackBar</a></tt> 
+
+<br>
+<tt>class <a href="#class_Table">Table</a></tt> 
+
+<br>
+<tt>class <a href="#class_TableCols">TableCols</a></tt> 
+
+<br>
+<tt>class <a href="#class_TableModel">TableModel</a></tt> 
+
+<br>
+<tt>class <a href="#class_TreeSource">TreeSource</a></tt> 
+
+<br>
+<tt>class <a href="#class_Tree">Tree</a></tt> 
+Tree view control, data retrieves from source
+<br>
+<tt>class <a href="#class_PaintBox">PaintBox</a></tt> 
+
+<br>
+<tt>class <a href="#class_ScrolledPainter">ScrolledPainter</a></tt> 
+Control, on which you can paint
+<br>
+<tt>class <a href="#class_PropertyList">PropertyList</a></tt> 
+
+<br>
+<tt>class <a href="#class_Pager">Pager</a></tt> 
+
+<br>
+<tt>class <a href="#class_Settings">Settings</a></tt> 
+
+<br>
+<tt>class <a href="#class_Canvas">Canvas</a></tt> 
+when you paint, it is on this object 
+<br>
+<tt>class <a href="#class_Font">Font</a></tt> 
+
+<br>
+<tt>class <a href="#class_Picture">Picture</a></tt> 
+bitmap
+<br>
+<tt>class <a href="#class_Application">Application</a></tt> 
+global methods
+<br>
+<tt>class <a href="#class_Printer">Printer</a></tt> 
+
+<br>
+<tt>class <a href="#class_Console">Console</a></tt> 
+console-like window
+<br>
+<tt>class <a href="#class_Key">Key</a></tt> 
+pressed key with constrol keys(eg. Alt+F1)
+<br>
+<tt>class <a href="#class_Timer">Timer</a></tt> 
+
+<br>
+<tt>class <a href="#class_OpenDialog">OpenDialog</a></tt> 
+
+<br>
+<tt>class <a href="#class_SaveDialog">SaveDialog</a></tt> 
+
+<br>
+<tt>class <a href="#class_PaneGrp">PaneGrp</a></tt> 
+
+<br>
+<tt>class <a href="#class_Pane">Pane</a></tt> 
+
+<br>
+<tt>class <a href="#class_LogPage">LogPage</a></tt> 
+
+<br>
+<tt>class <a href="#class_MetaCanvas">MetaCanvas</a></tt> 
+
+<br>
+<tt>class <a href="#class_ResizeCanvas">ResizeCanvas</a></tt> 
+
+<br>
+<tt>class <a href="#class_SubCanvas">SubCanvas</a></tt> 
+
+<br>
+<tt>class <a href="#class_TextCanvas">TextCanvas</a></tt> 
+
+TextCanvas has two modes:simple, where it only writes the text and with
+limited page height, where it throws expception from methods text and wrap,
+if the page height limit is broken. Data after last call of method flush are lost.
+
+<br>
+<tt>class <a href="#class_PageDistribution">PageDistribution</a></tt> 
+
+<br>
+<tt>class <a href="#class_LogPages">LogPages</a></tt> 
+
+<br>
+<tt>class <a href="#class_WaitWindow">WaitWindow</a></tt> 
+
+<br>
+<hr>
+
+<a href="#top">[Top]</a> <a href="#class_Component_detail">[Detail]</a> <br>
+<a name="class_Component"><h2>Class overview for Component</a></h2>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Control_detail">[Detail]</a> <br>
+<a name="class_Control"><h2>Class overview for Control</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Control_X">X</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Control_Y">Y</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Control_W">W</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Control_H">H</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#Control_destroy_0">destroy</a>()</tt> 
+deletes control object
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Control_show_0">show</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Control_hide_0">hide</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Control_visible">visible</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Control_enabled">enabled</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Window_detail">[Detail]</a> <br>
+<a name="class_Window"><h2>Class overview for Window</a></h2>
+
+
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Window_alert_0">alert</a>(...)</tt> 
+shows simple message window
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Window_text">text</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Window_showModal_0">showModal</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Window_show_0">show</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Window_denyClose_0">denyClose</a>()</tt> 
+if this method is called during onclose event, window is not closed
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Window_close_0">close</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Window_style">style</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Window_msgbox_2_string_string">msgbox</a>(string msg,string buttons)</tt> 
+shows messagebox, returns first char of pressed button in lowercase
+<br>
+
+
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Window_msgwin_3_string_string_string">msgwin</a>(string title,string msg,string buttons)</tt> 
+shows message window, buttons are ';' delimited button names, returns index of selected button or -1
+<br>
+
+
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Window_inputBox_3_string_string_string">inputBox</a>(string title,string msg,string def)</tt> 
+returns inputed text of null, when cancel was pressed
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>static property</b> <a href="#property_Window_ppmmx">ppmmx</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>static property</b> <a href="#property_Window_ppmmy">ppmmy</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#Window_loadData_1_XMLNode">loadData</a>(XMLNode xml)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Window_saveData_1_XMLNode">saveData</a>(XMLNode xml)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Form_detail">[Detail]</a> <br>
+<a name="class_Form"><h2>Class overview for Form</a></h2>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Form_loadWindow_1_string">loadWindow</a>(string name)</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Form_handler">handler</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#Form_search_1_string">search</a>(string name)</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>operator</b> -></tt> 
+
+<br>
+
+
+
+<tt><b>function</b> <a href="#Form_destroy_0">destroy</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Button_detail">[Detail]</a> <br>
+<a name="class_Button"><h2>Class overview for Button</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Button_text">text</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Button_onclick">onclick</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_RadioGroup_detail">[Detail]</a> <br>
+<a name="class_RadioGroup"><h2>Class overview for RadioGroup</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_RadioGroup_text">text</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_RadioGroup_items">items</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_RadioGroup_cur">cur</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_CheckBox_detail">[Detail]</a> <br>
+<a name="class_CheckBox"><h2>Class overview for CheckBox</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_CheckBox_text">text</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_CheckBox_checked">checked</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_ToolButton_detail">[Detail]</a> <br>
+<a name="class_ToolButton"><h2>Class overview for ToolButton</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_ToolButton_text">text</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_ToolButton_onclick">onclick</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_ToolButton_image">image</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_SpeedGroup_detail">[Detail]</a> <br>
+<a name="class_SpeedGroup"><h2>Class overview for SpeedGroup</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_SpeedGroup_cur">cur</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_ListBox_detail">[Detail]</a> <br>
+<a name="class_ListBox"><h2>Class overview for ListBox</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_ListBox_items">items</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_ListBox_cur">cur</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_ListBox_multiSelect">multiSelect</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_ListBox_selected">selected</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_PackedList_detail">[Detail]</a> <br>
+<a name="class_PackedList"><h2>Class overview for PackedList</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_PackedList_items">items</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_PackedList_cur">cur</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Edit_detail">[Detail]</a> <br>
+<a name="class_Edit"><h2>Class overview for Edit</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Edit_text">text</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Memo_detail">[Detail]</a> <br>
+<a name="class_Memo"><h2>Class overview for Memo</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Memo_text">text</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Memo_modified">modified</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Label_detail">[Detail]</a> <br>
+<a name="class_Label"><h2>Class overview for Label</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Label_text">text</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_WrapLabel_detail">[Detail]</a> <br>
+<a name="class_WrapLabel"><h2>Class overview for WrapLabel</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_WrapLabel_text">text</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_TrackBar_detail">[Detail]</a> <br>
+<a name="class_TrackBar"><h2>Class overview for TrackBar</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_TrackBar_min">min</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_TrackBar_max">max</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_TrackBar_cur">cur</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_TrackBar_frequency">frequency</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Table_detail">[Detail]</a> <br>
+<a name="class_Table"><h2>Class overview for Table</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Table_model">model</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Table_selrow">selrow</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Table_selcol">selcol</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#Table_repaint_0">repaint</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Table_repaintLine_1_int">repaintLine</a>(int line)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Table_update_0">update</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_TableCols_detail">[Detail]</a> <br>
+<a name="class_TableCols"><h2>Class overview for TableCols</a></h2>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TableCols_add_2_string_string">add</a>(string fldid,string text)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_TableModel_detail">[Detail]</a> <br>
+<a name="class_TableModel"><h2>Class overview for TableModel</a></h2>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TableModel_getRowCount_0">getRowCount</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TableModel_getCellText_2_string_int">getCellText</a>(string fldid,int row)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TableModel_getCols_1_TableCols">getCols</a>(TableCols cols)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_TreeSource_detail">[Detail]</a> <br>
+<a name="class_TreeSource"><h2>Class overview for TreeSource</a></h2>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TreeSource_getCount_0">getCount</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TreeSource_getText_0">getText</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TreeSource_getNodeAt_1_int">getNodeAt</a>(int index)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TreeSource_equalTo_1_TreeSource">equalTo</a>(TreeSource right)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Tree_detail">[Detail]</a> <br>
+<a name="class_Tree"><h2>Class overview for Tree</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Tree_source">source</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#Tree_update_0">update</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Tree_active">active</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_PaintBox_detail">[Detail]</a> <br>
+<a name="class_PaintBox"><h2>Class overview for PaintBox</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_PaintBox_onpaint">onpaint</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#PaintBox_repaint_0">repaint</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_ScrolledPainter_detail">[Detail]</a> <br>
+<a name="class_ScrolledPainter"><h2>Class overview for ScrolledPainter</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_ScrolledPainter_onpaint">onpaint</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#ScrolledPainter_setInSize_2_int_int">setInSize</a>(int w,int h)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#ScrolledPainter_repaint_0">repaint</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_PropertyList_detail">[Detail]</a> <br>
+<a name="class_PropertyList"><h2>Class overview for PropertyList</a></h2>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#PropertyList_save_1_VarList">save</a>(VarList vars)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#PropertyList_load_1_VarList">load</a>(VarList vars)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#PropertyList_addVar_1_string">addVar</a>(string name)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#PropertyList_eraseVar_0">eraseVar</a>()</tt> 
+erases variable, where is cursor
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_PropertyList_modified">modified</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Pager_detail">[Detail]</a> <br>
+<a name="class_Pager"><h2>Class overview for Pager</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Pager_cur">cur</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Settings_detail">[Detail]</a> <br>
+<a name="class_Settings"><h2>Class overview for Settings</a></h2>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Settings_createAll_0">createAll</a>()</tt> 
+creates all subcontrols
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Canvas_detail">[Detail]</a> <br>
+<a name="class_Canvas"><h2>Class overview for Canvas</a></h2>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Canvas_line_4_int_int_int_int">line</a>(int x1,int y1,int x2,int y2)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Canvas_rectangle_4_int_int_int_int">rectangle</a>(int x1,int y1,int x2,int y2)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Canvas_ellipse_4_int_int_int_int">ellipse</a>(int x1,int y1,int x2,int y2)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Canvas_fg_1_string">fg</a>(string color)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Canvas_bg_1_string">bg</a>(string color)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Canvas_text_3_int_int_string">text</a>(int x,int y,string str)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Canvas_textwi_1_string">textwi</a>(string str)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Canvas_texthi_1_string">texthi</a>(string str)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Canvas_font_1_Font">font</a>(Font font)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Canvas_nextBand_1_int">nextBand</a>(int hi)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Canvas_nextBand_2_int_string">nextBand</a>(int hi,string type)</tt> 
+type:&quot;optional&quot;:if band is first or last on page, on can be omited
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Font_detail">[Detail]</a> <br>
+<a name="class_Font"><h2>Class overview for Font</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Font_name">name</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Font_size">size</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Font_bold">bold</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Font_underline">underline</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Font_strikeout">strikeout</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Font_italic">italic</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Font_load_1_XMLNode">load</a>(XMLNode xml)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Font_save_1_XMLNode">save</a>(XMLNode xml)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Picture_detail">[Detail]</a> <br>
+<a name="class_Picture"><h2>Class overview for Picture</a></h2>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Picture_load_1_string">load</a>(string file)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Picture_draw_3_int_int_Canvas">draw</a>(int x,int y,Canvas cnv)</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Picture_W">W</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Picture_H">H</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Application_detail">[Detail]</a> <br>
+<a name="class_Application"><h2>Class overview for Application</a></h2>
+
+
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Application_run_0">run</a>()</tt> 
+runs application, can be called only once
+<br>
+
+
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Application_exit_0">exit</a>()</tt> 
+ends the message loop
+<br>
+
+
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Application_loadResource_1_string">loadResource</a>(string files)</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>static property</b> <a href="#property_Application_options">options</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Application_addSearchPath_1_string">addSearchPath</a>(string path)</tt> 
+adds search path for images
+<br>
+
+
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Application_setOptionFile_1_string">setOptionFile</a>(string file)</tt> 
+sets the option file and loads options, options are also automatically saved
+<br>
+
+
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Application_runXMLDialog_2_XMLNode_XMLNode">runXMLDialog</a>(XMLNode dialog,XMLNode data)</tt> 
+runs XML dialog, returns success
+<br>
+
+
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Application_findResource_1_string">findResource</a>(string name)</tt> 
+finds resource, if doesn't exist, error
+<br>
+
+
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Application_runSettingsDialog_2_string_XMLNode">runSettingsDialog</a>(string dialog,XMLNode data)</tt> 
+runs Settings dialog, returns success
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>static property</b> <a href="#property_Application_title">title</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Printer_detail">[Detail]</a> <br>
+<a name="class_Printer"><h2>Class overview for Printer</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Printer_getInfo_0">getInfo</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Printer_loadProperties_1_XMLNode">loadProperties</a>(XMLNode xml)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Printer_saveProperties_1_XMLNode">saveProperties</a>(XMLNode xml)</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Printer_pghi">pghi</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Printer_pgwi">pgwi</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#Printer_beginPage_0">beginPage</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Printer_endPage_0">endPage</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Printer_makeFont_1_Font">makeFont</a>(Font src)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Printer_setup_0">setup</a>()</tt> 
+vyrobi tiskarnovy font
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Printer_detailSetup_0">detailSetup</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Printer_beginDoc_1_string">beginDoc</a>(string title)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Printer_beginFileDoc_2_string_string">beginFileDoc</a>(string title,string file)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Printer_endDoc_0">endDoc</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Printer_destroy_0">destroy</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Printer_ppmmx">ppmmx</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Printer_ppmmy">ppmmy</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Console_detail">[Detail]</a> <br>
+<a name="class_Console"><h2>Class overview for Console</a></h2>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Console_print_0">print</a>(...)</tt> 
+prints all arguments
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Console_println_0">println</a>(...)</tt> 
+prints all arguments and goes to new line
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Console_readln_0">readln</a>()</tt> 
+return readed line
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Console_close_0">close</a>()</tt> 
+closes virtual or system console, if console is system, is opened by calling print,println,readln
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Console_wait_0">wait</a>()</tt> 
+waits for key down(this key has no effect)
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>static property</b> <a href="#property_Console_std">std</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#Console_destroy_0">destroy</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Key_detail">[Detail]</a> <br>
+<a name="class_Key"><h2>Class overview for Key</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>operator</b> ==</tt> 
+compares to string representation of key(eg. alt+ctrl+f1==Ctrl+Alt+F1)
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>operator</b> !=</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Timer_detail">[Detail]</a> <br>
+<a name="class_Timer"><h2>Class overview for Timer</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Timer_handler">handler</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#Timer_start_0">start</a>()</tt> 
+starts timer, every iterval handler is called
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#Timer_stop_0">stop</a>()</tt> 
+stops timer, handler is never called before start is called
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Timer_running">running</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Timer_interval">interval</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_Timer_timer_2_float_">timer</a>(float secs, handler,...)</tt> 
+simple timer, is called only ones
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_OpenDialog_detail">[Detail]</a> <br>
+<a name="class_OpenDialog"><h2>Class overview for OpenDialog</a></h2>
+
+
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_OpenDialog_run_1_string">run</a>(string filter)</tt> 
+runs open-file-dialog
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#OpenDialog_execute_0">execute</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_OpenDialog_file">file</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_OpenDialog_initialDir">initialDir</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_OpenDialog_files">files</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_OpenDialog_filter">filter</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_OpenDialog_multiSelect">multiSelect</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_SaveDialog_detail">[Detail]</a> <br>
+<a name="class_SaveDialog"><h2>Class overview for SaveDialog</a></h2>
+
+
+
+
+
+
+
+<tt><b>static function</b> <a href="#static_SaveDialog_run_1_string">run</a>(string filter)</tt> 
+runs open-file-dialog
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#SaveDialog_execute_0">execute</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_SaveDialog_initialDir">initialDir</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_SaveDialog_file">file</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_SaveDialog_filter">filter</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_PaneGrp_detail">[Detail]</a> <br>
+<a name="class_PaneGrp"><h2>Class overview for PaneGrp</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_PaneGrp_canvas">canvas</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#PaneGrp_beginDoc_1_Canvas">beginDoc</a>(Canvas destCanvas)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#PaneGrp_endDoc_0">endDoc</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_PaneGrp_count">count</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>operator</b> []</tt> 
+
+<br>
+
+
+
+<tt><b>function</b> <a href="#PaneGrp_sheetCount_1_int">sheetCount</a>(int pageHi)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#PaneGrp_replaceText_2_string_string">replaceText</a>(string oldtext,string newtext)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_Pane_detail">[Detail]</a> <br>
+<a name="class_Pane"><h2>Class overview for Pane</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Pane_isFirst">isFirst</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Pane_isLast">isLast</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Pane_hi">hi</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Pane_parent">parent</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_Pane_canvas">canvas</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_LogPage_detail">[Detail]</a> <br>
+<a name="class_LogPage"><h2>Class overview for LogPage</a></h2>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#LogPage_addPane_1_Pane">addPane</a>(Pane pane)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#LogPage_canAddPane_1_Pane">canAddPane</a>(Pane pane)</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_LogPage_hi">hi</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_LogPage_isBlocked">isBlocked</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_LogPage_isFreeBegin">isFreeBegin</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_LogPage_isFreeEnd">isFreeEnd</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_LogPage_isLeft">isLeft</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#LogPage_addPaneGrp_1_PaneGrp">addPaneGrp</a>(PaneGrp panegrp)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#LogPage_getExtraPageCount_1_PaneGrp">getExtraPageCount</a>(PaneGrp panes)</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_LogPage_count">count</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>operator</b> []</tt> 
+
+<br>
+
+
+
+<tt><b>function</b> <a href="#LogPage_erasePane_2_int_int">erasePane</a>(int index,int count)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#LogPage_insertPane_2_int_Pane">insertPane</a>(int index,Pane pane)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#LogPage_draw_1_Canvas">draw</a>(Canvas cnv)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_MetaCanvas_detail">[Detail]</a> <br>
+<a name="class_MetaCanvas"><h2>Class overview for MetaCanvas</a></h2>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#MetaCanvas_draw_1_Canvas">draw</a>(Canvas cnv)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#MetaCanvas_replaceText_2_string_string">replaceText</a>(string oldtext,string newtext)</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_MetaCanvas_canvas">canvas</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_ResizeCanvas_detail">[Detail]</a> <br>
+<a name="class_ResizeCanvas"><h2>Class overview for ResizeCanvas</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_ResizeCanvas_canvas">canvas</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_SubCanvas_detail">[Detail]</a> <br>
+<a name="class_SubCanvas"><h2>Class overview for SubCanvas</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_SubCanvas_canvas">canvas</a></tt> 
+
+<br>
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_TextCanvas_detail">[Detail]</a> <br>
+<a name="class_TextCanvas"><h2>Class overview for TextCanvas</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TextCanvas_text_1_string">text</a>(string s)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TextCanvas_font_1_Font">font</a>(Font font)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TextCanvas_wrap_0">wrap</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TextCanvas_flush_0">flush</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TextCanvas_textElemX_3_int_int_string">textElemX</a>(int space,int x,string s)</tt> 
+fixed x-coord, can wrap
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#TextCanvas_textElem_2_int_string">textElem</a>(int space,string s)</tt> 
+cannot divide in more lines
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_PageDistribution_detail">[Detail]</a> <br>
+<a name="class_PageDistribution"><h2>Class overview for PageDistribution</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_PageDistribution_sheetCount">sheetCount</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_PageDistribution_freePageCount">freePageCount</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#PageDistribution_draw_2_int_Canvas">draw</a>(int page,Canvas cnv)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_LogPages_detail">[Detail]</a> <br>
+<a name="class_LogPages"><h2>Class overview for LogPages</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#LogPages_add_1_PaneGrp">add</a>(PaneGrp grp)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#LogPages_print_1_Printer">print</a>(Printer prn)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#LogPages_loadPropsFrom_1_Printer">loadPropsFrom</a>(Printer prn)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#LogPages_setPageSize_2_int_int">setPageSize</a>(int w,int h)</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#LogPages_complete_2_Array_Array">complete</a>(Array ofsx,Array ofsy)</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_LogPages_pageHi">pageHi</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_LogPages_pageWi">pageWi</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>operator</b> []</tt> 
+
+<br>
+
+
+
+<tt><b>function</b> <a href="#LogPages_addPage_0">addPage</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_LogPages_count">count</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_LogPages_last">last</a></tt> 
+
+<br>
+
+
+
+
+
+<tt><b>function</b> <a href="#LogPages_searchPane_1_Pane">searchPane</a>(Pane pane)</tt> 
+returns page number, which contains pane
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a> <a href="#class_WaitWindow_detail">[Detail]</a> <br>
+<a name="class_WaitWindow"><h2>Class overview for WaitWindow</a></h2>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#WaitWindow_show_0">show</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#WaitWindow_hide_0">hide</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>property</b> <a href="#property_WaitWindow_msg">msg</a></tt> 
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+<tt><b>function</b> <a href="#WaitWindow_destroy_0">destroy</a>()</tt> 
+
+<br>
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Component">[Overview]</a> <br>
+<a name="#class_Component_detail"><h2>Class detail for Component</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Control">[Overview]</a> <br>
+<a name="#class_Control_detail"><h2>Class detail for Control</a></h2>
+
+
+Base class of all controls
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Control_X">
+<h3>Property X</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Control_Y">
+<h3>Property Y</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Control_W">
+<h3>Property W</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Control_H">
+<h3>Property H</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+<a name="Control_destroy_0">
+<h3>Function destroy</h3></a>
+
+
+deletes control object
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Control_show_0">
+<h3>Function show</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Control_hide_0">
+<h3>Function hide</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Control_visible">
+<h3>Property visible</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Control_enabled">
+<h3>Property enabled</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Window">[Overview]</a> <br>
+<a name="#class_Window_detail"><h2>Class detail for Window</a></h2>
+
+
+represents any Window
+
+
+
+
+
+
+
+<a name="static_Window_alert_0">
+<h3>Function alert</h3></a>
+
+
+shows simple message window, every argument is on separate line
+
+
+<br>
+<b>Returns:</b>Object<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Window_text">
+<h3>Property text</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>String<br>
+
+
+
+
+
+
+
+
+<a name="Window_showModal_0">
+<h3>Function showModal</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Window_show_0">
+<h3>Function show</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Window_denyClose_0">
+<h3>Function denyClose</h3></a>
+
+
+if this method is called during onclose event, window is not closed
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Window_close_0">
+<h3>Function close</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Window_style">
+<h3>Property style</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+<a name="static_Window_msgbox_2_string_string">
+<h3>Function msgbox</h3></a>
+
+
+
+  Buttons:ync:yes-no-cancel,arf:abort-retry-fail,o:ok,oc:ok-cancel,yn:yes-no
+  
+
+
+<br>
+<b>Returns:</b>string<br>
+
+
+
+
+
+<a name="static_Window_msgwin_3_string_string_string">
+<h3>Function msgwin</h3></a>
+
+
+shows message window, buttons are ';' delimited button names, returns index of selected button or -1
+
+
+<br>
+<b>Returns:</b>int<br>
+
+
+
+
+
+<a name="static_Window_inputBox_3_string_string_string">
+<h3>Function inputBox</h3></a>
+
+
+returns inputed text of null, when cancel was pressed
+
+
+<br>
+<b>Returns:</b>Object<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Window_ppmmx">
+<h3>Property ppmmx</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>float<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Window_ppmmy">
+<h3>Property ppmmy</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>float<br>
+
+
+
+<a name="Window_loadData_1_XMLNode">
+<h3>Function loadData</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Window_saveData_1_XMLNode">
+<h3>Function saveData</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Form">[Overview]</a> <br>
+<a name="#class_Form_detail"><h2>Class detail for Form</a></h2>
+
+
+non-visible component, maintains event-calls, loading from XML ...
+
+
+
+
+
+
+
+<a name="Form_loadWindow_1_string">
+<h3>Function loadWindow</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Object<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Form_handler">
+<h3>Property handler</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>Object<br>
+
+
+
+<a name="Form_search_1_string">
+<h3>Function search</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Component<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Form_destroy_0">
+<h3>Function destroy</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Button">[Overview]</a> <br>
+<a name="#class_Button_detail"><h2>Class detail for Button</a></h2>
+
+
+Button control
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Button_text">
+<h3>Property text</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>String<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Button_onclick">
+<h3>Property onclick</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>String<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_RadioGroup">[Overview]</a> <br>
+<a name="#class_RadioGroup_detail"><h2>Class detail for RadioGroup</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_RadioGroup_text">
+<h3>Property text</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_RadioGroup_items">
+<h3>Property items</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_RadioGroup_cur">
+<h3>Property cur</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_CheckBox">[Overview]</a> <br>
+<a name="#class_CheckBox_detail"><h2>Class detail for CheckBox</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_CheckBox_text">
+<h3>Property text</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_CheckBox_checked">
+<h3>Property checked</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_ToolButton">[Overview]</a> <br>
+<a name="#class_ToolButton_detail"><h2>Class detail for ToolButton</a></h2>
+
+
+Button, can have image, cannot be selected by keyboard
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_ToolButton_text">
+<h3>Property text</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>String<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_ToolButton_onclick">
+<h3>Property onclick</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>String<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_ToolButton_image">
+<h3>Property image</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>Picture<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_SpeedGroup">[Overview]</a> <br>
+<a name="#class_SpeedGroup_detail"><h2>Class detail for SpeedGroup</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_SpeedGroup_cur">
+<h3>Property cur</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_ListBox">[Overview]</a> <br>
+<a name="#class_ListBox_detail"><h2>Class detail for ListBox</a></h2>
+
+
+List of string values
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_ListBox_items">
+<h3>Property items</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_ListBox_cur">
+<h3>Property cur</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_ListBox_multiSelect">
+<h3>Property multiSelect</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_ListBox_selected">
+<h3>Property selected</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_PackedList">[Overview]</a> <br>
+<a name="#class_PackedList_detail"><h2>Class detail for PackedList</a></h2>
+
+
+Packed list of string values
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_PackedList_items">
+<h3>Property items</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_PackedList_cur">
+<h3>Property cur</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Edit">[Overview]</a> <br>
+<a name="#class_Edit_detail"><h2>Class detail for Edit</a></h2>
+
+
+Single-line edit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Edit_text">
+<h3>Property text</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Memo">[Overview]</a> <br>
+<a name="#class_Memo_detail"><h2>Class detail for Memo</a></h2>
+
+
+Multi-line edit constrol
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Memo_text">
+<h3>Property text</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Memo_modified">
+<h3>Property modified</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Label">[Overview]</a> <br>
+<a name="#class_Label_detail"><h2>Class detail for Label</a></h2>
+
+
+Static text constrol
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Label_text">
+<h3>Property text</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>String<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_WrapLabel">[Overview]</a> <br>
+<a name="#class_WrapLabel_detail"><h2>Class detail for WrapLabel</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_WrapLabel_text">
+<h3>Property text</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>String<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_TrackBar">[Overview]</a> <br>
+<a name="#class_TrackBar_detail"><h2>Class detail for TrackBar</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_TrackBar_min">
+<h3>Property min</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_TrackBar_max">
+<h3>Property max</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_TrackBar_cur">
+<h3>Property cur</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_TrackBar_frequency">
+<h3>Property frequency</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Table">[Overview]</a> <br>
+<a name="#class_Table_detail"><h2>Class detail for Table</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Table_model">
+<h3>Property model</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>TableModel<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Table_selrow">
+<h3>Property selrow</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Table_selcol">
+<h3>Property selcol</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+<a name="Table_repaint_0">
+<h3>Function repaint</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Table_repaintLine_1_int">
+<h3>Function repaintLine</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Table_update_0">
+<h3>Function update</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_TableCols">[Overview]</a> <br>
+<a name="#class_TableCols_detail"><h2>Class detail for TableCols</a></h2>
+
+
+
+
+
+
+
+
+
+
+<a name="TableCols_add_2_string_string">
+<h3>Function add</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_TableModel">[Overview]</a> <br>
+<a name="#class_TableModel_detail"><h2>Class detail for TableModel</a></h2>
+
+
+
+
+
+
+
+
+
+
+<a name="TableModel_getRowCount_0">
+<h3>Function getRowCount</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>int<br>
+
+
+
+
+
+<a name="TableModel_getCellText_2_string_int">
+<h3>Function getCellText</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>string<br>
+
+
+
+
+
+<a name="TableModel_getCols_1_TableCols">
+<h3>Function getCols</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_TreeSource">[Overview]</a> <br>
+<a name="#class_TreeSource_detail"><h2>Class detail for TreeSource</a></h2>
+
+
+
+
+
+
+
+
+
+
+<a name="TreeSource_getCount_0">
+<h3>Function getCount</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>int<br>
+
+
+
+
+
+<a name="TreeSource_getText_0">
+<h3>Function getText</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>string<br>
+
+
+
+
+
+<a name="TreeSource_getNodeAt_1_int">
+<h3>Function getNodeAt</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>TreeSource<br>
+
+
+
+
+
+<a name="TreeSource_equalTo_1_TreeSource">
+<h3>Function equalTo</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>bool<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Tree">[Overview]</a> <br>
+<a name="#class_Tree_detail"><h2>Class detail for Tree</a></h2>
+
+
+Tree view control, data retrieves from source
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Tree_source">
+<h3>Property source</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>TreeSource<br>
+
+
+
+<a name="Tree_update_0">
+<h3>Function update</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Tree_active">
+<h3>Property active</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>MultiIndex<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_PaintBox">[Overview]</a> <br>
+<a name="#class_PaintBox_detail"><h2>Class detail for PaintBox</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_PaintBox_onpaint">
+<h3>Property onpaint</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>String<br>
+
+
+
+<a name="PaintBox_repaint_0">
+<h3>Function repaint</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_ScrolledPainter">[Overview]</a> <br>
+<a name="#class_ScrolledPainter_detail"><h2>Class detail for ScrolledPainter</a></h2>
+
+
+Control, on which you can paint
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_ScrolledPainter_onpaint">
+<h3>Property onpaint</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>String<br>
+
+
+
+<a name="ScrolledPainter_setInSize_2_int_int">
+<h3>Function setInSize</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="ScrolledPainter_repaint_0">
+<h3>Function repaint</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_PropertyList">[Overview]</a> <br>
+<a name="#class_PropertyList_detail"><h2>Class detail for PropertyList</a></h2>
+
+
+
+
+
+
+
+
+
+
+<a name="PropertyList_save_1_VarList">
+<h3>Function save</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="PropertyList_load_1_VarList">
+<h3>Function load</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="PropertyList_addVar_1_string">
+<h3>Function addVar</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="PropertyList_eraseVar_0">
+<h3>Function eraseVar</h3></a>
+
+
+erases variable, where is cursor
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_PropertyList_modified">
+<h3>Property modified</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Pager">[Overview]</a> <br>
+<a name="#class_Pager_detail"><h2>Class detail for Pager</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Pager_cur">
+<h3>Property cur</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Settings">[Overview]</a> <br>
+<a name="#class_Settings_detail"><h2>Class detail for Settings</a></h2>
+
+
+
+
+
+
+
+
+
+
+<a name="Settings_createAll_0">
+<h3>Function createAll</h3></a>
+
+
+creates all subcontrols
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Canvas">[Overview]</a> <br>
+<a name="#class_Canvas_detail"><h2>Class detail for Canvas</a></h2>
+
+
+when you paint, it is on this object 
+
+
+
+
+
+
+
+<a name="Canvas_line_4_int_int_int_int">
+<h3>Function line</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Object<br>
+
+
+
+
+
+<a name="Canvas_rectangle_4_int_int_int_int">
+<h3>Function rectangle</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Object<br>
+
+
+
+
+
+<a name="Canvas_ellipse_4_int_int_int_int">
+<h3>Function ellipse</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Object<br>
+
+
+
+
+
+<a name="Canvas_fg_1_string">
+<h3>Function fg</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Object<br>
+
+
+
+
+
+<a name="Canvas_bg_1_string">
+<h3>Function bg</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Object<br>
+
+
+
+
+
+<a name="Canvas_text_3_int_int_string">
+<h3>Function text</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Object<br>
+
+
+
+
+
+<a name="Canvas_textwi_1_string">
+<h3>Function textwi</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>int<br>
+
+
+
+
+
+<a name="Canvas_texthi_1_string">
+<h3>Function texthi</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>int<br>
+
+
+
+
+
+<a name="Canvas_font_1_Font">
+<h3>Function font</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Object<br>
+
+
+
+
+
+<a name="Canvas_nextBand_1_int">
+<h3>Function nextBand</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Canvas<br>
+
+
+
+
+
+<a name="Canvas_nextBand_2_int_string">
+<h3>Function nextBand</h3></a>
+
+
+type:&quot;optional&quot;:if band is first or last on page, on can be omited
+
+
+<br>
+<b>Returns:</b>Canvas<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Font">[Overview]</a> <br>
+<a name="#class_Font_detail"><h2>Class detail for Font</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Font_name">
+<h3>Property name</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Font_size">
+<h3>Property size</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Font_bold">
+<h3>Property bold</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Font_underline">
+<h3>Property underline</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Font_strikeout">
+<h3>Property strikeout</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Font_italic">
+<h3>Property italic</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+<a name="Font_load_1_XMLNode">
+<h3>Function load</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Font_save_1_XMLNode">
+<h3>Function save</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Picture">[Overview]</a> <br>
+<a name="#class_Picture_detail"><h2>Class detail for Picture</a></h2>
+
+
+bitmap
+
+
+
+
+
+
+
+<a name="Picture_load_1_string">
+<h3>Function load</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Picture_draw_3_int_int_Canvas">
+<h3>Function draw</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Picture_W">
+<h3>Property W</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Picture_H">
+<h3>Property H</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Application">[Overview]</a> <br>
+<a name="#class_Application_detail"><h2>Class detail for Application</a></h2>
+
+
+global methods
+
+
+
+
+
+
+
+<a name="static_Application_run_0">
+<h3>Function run</h3></a>
+
+
+runs application, can be called only once
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="static_Application_exit_0">
+<h3>Function exit</h3></a>
+
+
+ends the message loop
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="static_Application_loadResource_1_string">
+<h3>Function loadResource</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Application_options">
+<h3>Property options</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>XMLNode<br>
+
+
+
+<a name="static_Application_addSearchPath_1_string">
+<h3>Function addSearchPath</h3></a>
+
+
+adds search path for images
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="static_Application_setOptionFile_1_string">
+<h3>Function setOptionFile</h3></a>
+
+
+sets the option file and loads options, options are also automatically saved
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="static_Application_runXMLDialog_2_XMLNode_XMLNode">
+<h3>Function runXMLDialog</h3></a>
+
+
+runs XML dialog, returns success
+
+
+<br>
+<b>Returns:</b>bool<br>
+
+
+
+
+
+<a name="static_Application_findResource_1_string">
+<h3>Function findResource</h3></a>
+
+
+finds resource, if doesn't exist, error
+
+
+<br>
+<b>Returns:</b>XMLNode<br>
+
+
+
+
+
+<a name="static_Application_runSettingsDialog_2_string_XMLNode">
+<h3>Function runSettingsDialog</h3></a>
+
+
+runs Settings dialog, returns success
+
+
+<br>
+<b>Returns:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Application_title">
+<h3>Property title</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Printer">[Overview]</a> <br>
+<a name="#class_Printer_detail"><h2>Class detail for Printer</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Printer_getInfo_0">
+<h3>Function getInfo</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Canvas<br>
+
+
+
+
+
+<a name="Printer_loadProperties_1_XMLNode">
+<h3>Function loadProperties</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Printer_saveProperties_1_XMLNode">
+<h3>Function saveProperties</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Printer_pghi">
+<h3>Property pghi</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Printer_pgwi">
+<h3>Property pgwi</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+<a name="Printer_beginPage_0">
+<h3>Function beginPage</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Canvas<br>
+
+
+
+
+
+<a name="Printer_endPage_0">
+<h3>Function endPage</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Printer_makeFont_1_Font">
+<h3>Function makeFont</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>Font<br>
+
+
+
+
+
+<a name="Printer_setup_0">
+<h3>Function setup</h3></a>
+
+
+vyrobi tiskarnovy font
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Printer_detailSetup_0">
+<h3>Function detailSetup</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Printer_beginDoc_1_string">
+<h3>Function beginDoc</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Printer_beginFileDoc_2_string_string">
+<h3>Function beginFileDoc</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Printer_endDoc_0">
+<h3>Function endDoc</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Printer_destroy_0">
+<h3>Function destroy</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Printer_ppmmx">
+<h3>Property ppmmx</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>float<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Printer_ppmmy">
+<h3>Property ppmmy</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>float<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Console">[Overview]</a> <br>
+<a name="#class_Console_detail"><h2>Class detail for Console</a></h2>
+
+
+console-like window
+
+
+
+
+
+
+
+<a name="Console_print_0">
+<h3>Function print</h3></a>
+
+
+prints all arguments
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Console_println_0">
+<h3>Function println</h3></a>
+
+
+prints all arguments and goes to new line
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Console_readln_0">
+<h3>Function readln</h3></a>
+
+
+return readed line
+
+
+<br>
+<b>Returns:</b>string<br>
+
+
+
+
+
+<a name="Console_close_0">
+<h3>Function close</h3></a>
+
+
+closes virtual or system console, if console is system, is opened by calling print,println,readln
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+<a name="Console_wait_0">
+<h3>Function wait</h3></a>
+
+
+waits for key down(this key has no effect)
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Console_std">
+<h3>Property std</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>Console<br>
+
+
+
+<a name="Console_destroy_0">
+<h3>Function destroy</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Key">[Overview]</a> <br>
+<a name="#class_Key_detail"><h2>Class detail for Key</a></h2>
+
+
+pressed key with constrol keys(eg. Alt+F1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Timer">[Overview]</a> <br>
+<a name="#class_Timer_detail"><h2>Class detail for Timer</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Timer_handler">
+<h3>Property handler</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>Object<br>
+
+
+
+<a name="Timer_start_0">
+<h3>Function start</h3></a>
+
+
+starts timer, every iterval handler is called
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="Timer_stop_0">
+<h3>Function stop</h3></a>
+
+
+stops timer, handler is never called before start is called
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Timer_running">
+<h3>Property running</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Timer_interval">
+<h3>Property interval</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>float<br>
+
+
+
+<a name="static_Timer_timer_2_float_">
+<h3>Function timer</h3></a>
+
+
+simple timer, is called only ones
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_OpenDialog">[Overview]</a> <br>
+<a name="#class_OpenDialog_detail"><h2>Class detail for OpenDialog</a></h2>
+
+
+
+
+
+
+
+
+
+
+<a name="static_OpenDialog_run_1_string">
+<h3>Function run</h3></a>
+
+
+filter is *.txt ..., can have only 1 extension, returns file or null
+
+
+<br>
+<b>Returns:</b>Object<br>
+
+
+
+
+
+<a name="OpenDialog_execute_0">
+<h3>Function execute</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_OpenDialog_file">
+<h3>Property file</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_OpenDialog_initialDir">
+<h3>Property initialDir</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_OpenDialog_files">
+<h3>Property files</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_OpenDialog_filter">
+<h3>Property filter</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_OpenDialog_multiSelect">
+<h3>Property multiSelect</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_SaveDialog">[Overview]</a> <br>
+<a name="#class_SaveDialog_detail"><h2>Class detail for SaveDialog</a></h2>
+
+
+
+
+
+
+
+
+
+
+<a name="static_SaveDialog_run_1_string">
+<h3>Function run</h3></a>
+
+
+filter is *.txt ..., can have only 1 extension, returns file or null
+
+
+<br>
+<b>Returns:</b>Object<br>
+
+
+
+
+
+<a name="SaveDialog_execute_0">
+<h3>Function execute</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_SaveDialog_initialDir">
+<h3>Property initialDir</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_SaveDialog_file">
+<h3>Property file</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_SaveDialog_filter">
+<h3>Property filter</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_PaneGrp">[Overview]</a> <br>
+<a name="#class_PaneGrp_detail"><h2>Class detail for PaneGrp</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_PaneGrp_canvas">
+<h3>Property canvas</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>Canvas<br>
+
+
+
+<a name="PaneGrp_beginDoc_1_Canvas">
+<h3>Function beginDoc</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="PaneGrp_endDoc_0">
+<h3>Function endDoc</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_PaneGrp_count">
+<h3>Property count</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="PaneGrp_sheetCount_1_int">
+<h3>Function sheetCount</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>int<br>
+
+
+
+
+
+<a name="PaneGrp_replaceText_2_string_string">
+<h3>Function replaceText</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_Pane">[Overview]</a> <br>
+<a name="#class_Pane_detail"><h2>Class detail for Pane</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Pane_isFirst">
+<h3>Property isFirst</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Pane_isLast">
+<h3>Property isLast</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Pane_hi">
+<h3>Property hi</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Pane_parent">
+<h3>Property parent</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>PaneGrp<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_Pane_canvas">
+<h3>Property canvas</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>Canvas<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_LogPage">[Overview]</a> <br>
+<a name="#class_LogPage_detail"><h2>Class detail for LogPage</a></h2>
+
+
+
+
+
+
+
+
+
+
+<a name="LogPage_addPane_1_Pane">
+<h3>Function addPane</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="LogPage_canAddPane_1_Pane">
+<h3>Function canAddPane</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_LogPage_hi">
+<h3>Property hi</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_LogPage_isBlocked">
+<h3>Property isBlocked</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_LogPage_isFreeBegin">
+<h3>Property isFreeBegin</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_LogPage_isFreeEnd">
+<h3>Property isFreeEnd</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_LogPage_isLeft">
+<h3>Property isLeft</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>bool<br>
+
+
+
+<a name="LogPage_addPaneGrp_1_PaneGrp">
+<h3>Function addPaneGrp</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="LogPage_getExtraPageCount_1_PaneGrp">
+<h3>Function getExtraPageCount</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_LogPage_count">
+<h3>Property count</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="LogPage_erasePane_2_int_int">
+<h3>Function erasePane</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="LogPage_insertPane_2_int_Pane">
+<h3>Function insertPane</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="LogPage_draw_1_Canvas">
+<h3>Function draw</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_MetaCanvas">[Overview]</a> <br>
+<a name="#class_MetaCanvas_detail"><h2>Class detail for MetaCanvas</a></h2>
+
+
+
+
+
+
+
+
+
+
+<a name="MetaCanvas_draw_1_Canvas">
+<h3>Function draw</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="MetaCanvas_replaceText_2_string_string">
+<h3>Function replaceText</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_MetaCanvas_canvas">
+<h3>Property canvas</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>Object<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_ResizeCanvas">[Overview]</a> <br>
+<a name="#class_ResizeCanvas_detail"><h2>Class detail for ResizeCanvas</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_ResizeCanvas_canvas">
+<h3>Property canvas</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>Object<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_SubCanvas">[Overview]</a> <br>
+<a name="#class_SubCanvas_detail"><h2>Class detail for SubCanvas</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_SubCanvas_canvas">
+<h3>Property canvas</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>Object<br>
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_TextCanvas">[Overview]</a> <br>
+<a name="#class_TextCanvas_detail"><h2>Class detail for TextCanvas</a></h2>
+
+
+
+TextCanvas has two modes:simple, where it only writes the text and with
+limited page height, where it throws expception from methods text and wrap,
+if the page height limit is broken. Data after last call of method flush are lost.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="TextCanvas_text_1_string">
+<h3>Function text</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="TextCanvas_font_1_Font">
+<h3>Function font</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="TextCanvas_wrap_0">
+<h3>Function wrap</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="TextCanvas_flush_0">
+<h3>Function flush</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="TextCanvas_textElemX_3_int_int_string">
+<h3>Function textElemX</h3></a>
+
+
+fixed x-coord, can wrap
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="TextCanvas_textElem_2_int_string">
+<h3>Function textElem</h3></a>
+
+
+cannot divide in more lines
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_PageDistribution">[Overview]</a> <br>
+<a name="#class_PageDistribution_detail"><h2>Class detail for PageDistribution</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_PageDistribution_sheetCount">
+<h3>Property sheetCount</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_PageDistribution_freePageCount">
+<h3>Property freePageCount</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+<a name="PageDistribution_draw_2_int_Canvas">
+<h3>Function draw</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_LogPages">[Overview]</a> <br>
+<a name="#class_LogPages_detail"><h2>Class detail for LogPages</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="LogPages_add_1_PaneGrp">
+<h3>Function add</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="LogPages_print_1_Printer">
+<h3>Function print</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="LogPages_loadPropsFrom_1_Printer">
+<h3>Function loadPropsFrom</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="LogPages_setPageSize_2_int_int">
+<h3>Function setPageSize</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="LogPages_complete_2_Array_Array">
+<h3>Function complete</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>PageDistribution<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_LogPages_pageHi">
+<h3>Property pageHi</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_LogPages_pageWi">
+<h3>Property pageWi</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="LogPages_addPage_0">
+<h3>Function addPage</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>LogPage<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_LogPages_count">
+<h3>Property count</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>int<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_LogPages_last">
+<h3>Property last</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>LogPage<br>
+
+
+
+<a name="LogPages_searchPane_1_Pane">
+<h3>Function searchPane</h3></a>
+
+
+returns page number, which contains pane
+
+
+<br>
+<b>Returns:</b>int<br>
+
+
+
+
+
+
+<hr>
+<a href="#top">[Top]</a>  <a href="#class_WaitWindow">[Overview]</a> <br>
+<a name="#class_WaitWindow_detail"><h2>Class detail for WaitWindow</a></h2>
+
+
+
+
+
+
+
+
+
+
+<a name="WaitWindow_show_0">
+<h3>Function show</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+<a name="WaitWindow_hide_0">
+<h3>Function hide</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="property_WaitWindow_msg">
+<h3>Property msg</h3></a>
+
+
+
+
+
+<br>
+<b>Type:</b>string<br>
+
+
+
+
+
+
+
+
+<a name="WaitWindow_destroy_0">
+<h3>Function destroy</h3></a>
+
+
+
+
+
+<br>
+<b>Returns:</b>void<br>
+
+
+
+
+
+
+<hr>
+</html>

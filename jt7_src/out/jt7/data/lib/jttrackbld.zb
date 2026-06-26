@@ -1,0 +1,145 @@
+includable module trackBuildModule;
+
+var form,win;
+var dhi=0;
+var tubusdir;//smer mostu, "hor" nebo "ver"
+var tubuspt0;//prvni bod u mostu
+var tubustype;
+var maxdhi=0.4;
+var erasing;
+var game;
+
+
+function show() {
+  if (form) return;
+  game=JTycon.game;
+  form=new Form();
+  form.handler=this;
+  win=form.loadWindow(formname);
+  setdhi(2);
+  initwindow();
+  win.show();
+  JTycon.state=this;
+  JTWinManager.place(win);
+}
+
+function setdhi(value) {
+  dhi=new Number(value);
+  dhi=dhi/4*maxdhi;
+  form->hi.cur=50+(-dhi/maxdhi*50);
+  changeddhi();
+}
+
+function changeddhi() {
+  dhi=-(form->hi.cur-50)/50*maxdhi;
+}
+
+function onclose() {
+  JTWinManager.closed(win);
+  form.destroy();
+  form=null;
+  win=null;
+  clear();
+  if (JTycon.state===this) JTycon.state=null;
+}
+
+function gethimode() {
+  return ["change","direct","fixed"][form->himode.cur];
+}
+
+function trackmdown(button) {
+  select (button) {
+    "left":{
+      if (tubusdir) {
+        if (tubuspt0) {
+          var s1,s2;
+          if (tubusdir=="ver") {
+            s1=game.mapY;s2=tubuspt0->y;
+          } else {
+            s1=game.mapX;s2=tubuspt0->x;
+          }
+          var slen=(s1-s2).abs();
+          var tx=Math.min(tubuspt0->x,game.mapX),ty=Math.min(tubuspt0->y,game.mapY);
+          if (tubusdir=="ver") tx=tubuspt0->x;else ty=tubuspt0->y;
+          var mode=gethimode();
+          var dh=dhi;
+          if ((tubusdir=="ver" && tubuspt0->y>game.mapY) || (tubusdir=="hor" && tubuspt0->x>game.mapX)) dh=-dh;
+          select (tubustype) {
+            "bridge":game.buildBridge(tx,ty,slen+1,tubusdir=="ver",dh,mode,tracktype);
+            "tunnel":game.buildTunnel(tx,ty,slen+1,tubusdir=="ver",dh,mode,tracktype);
+          }     
+          clear();
+        } else {
+          tubuspt0=new (x=game.mapX,y=game.mapY);
+        }
+        return true;
+      }
+    }
+    "right":{
+      if (tubusdir) {
+        if (tubusdir=="hor") tubusdir="ver";else tubusdir="hor";
+        return true;
+      } else {
+        erasing=true;
+        erase(game.mapX,game.mapY);
+      }
+    }
+  }
+}
+
+function trackmup(button) {
+  select (button) {
+    "left":{
+    }
+    "right":{
+      erasing=false;
+    }
+  }
+}
+
+function trackmmove() {
+  if (erasing) {
+    erase(game.mapX,game.mapY);
+    return true;
+  }
+  return false;
+}
+
+function trackonpaint() {
+  if (tubusdir) {
+    var ver=tubusdir=="ver";
+    var cursor=new ("bridge"=Cursors.bridge,"tunnel"=Cursors.tunnel)[tubustype];
+    if (tubuspt0) {
+      var len=(game.mapX-tubuspt0->x).abs();
+      if (ver) len=(game.mapY-tubuspt0->y).abs();
+      var x1=Math.min(tubuspt0->x,game.mapX),y1=Math.min(tubuspt0->y,game.mapY),x2=x1,y2=y1;
+      if (ver) y2+=len;else x2+=len;
+      if (ver) x1=x2=tubuspt0->x;else y1=y2=tubuspt0->y;
+      game.drawCustomCursors(x1,y1,x2,y2,cursor,ver?1:0);
+    } else {
+      game.drawCustomCursor(game.mapX,game.mapY,cursor,ver?1:0);
+    }
+    return true;
+  }
+  return false;
+}
+
+function trackclear() {
+  tubusdir=null;
+  tubuspt0=null;
+}
+
+function bldbridge() {
+  JTycon.state=this;
+  clear();
+  tubusdir="hor";
+  tubustype="bridge";
+}
+
+function bldtunnel() {
+  JTycon.state=this;
+  clear();
+  tubusdir="hor";
+  tubustype="tunnel";
+}
+

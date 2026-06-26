@@ -1,0 +1,37 @@
+#include <jlib.h>
+#pragma hdrstop
+USEUNIT("..\jlib\com\sfile.cpp");
+USEUNIT("..\jlib\com\bms.cpp");
+USEUNIT("..\jlib\com\com0.cpp");
+USEUNIT("..\jlib\com\dvslist.cpp");
+USEUNIT("..\jlib\com\jobject.cpp");
+USEUNIT("..\jlib\com\jstring.cpp");
+USEUNIT("..\jlib\com\jstrobjs.cpp");
+USEUNIT("..\jlib\com\jsystem.cpp");
+USEUNIT("..\jlib\com\mzip.cpp");
+USEUNIT("..\jlib\com\arrays.cpp");
+USEUNIT("..\jlib\com\strcom.cpp");
+USEUNIT("..\jlib\com\strlist.cpp");
+USEUNIT("..\jlib\com\strms.cpp");
+USEUNIT("..\jlib\com\strout.cpp");
+USEUNIT("..\jlib\com\utils.cpp");
+USEUNIT("..\jlib\com\xerror.cpp");
+USEUNIT("..\jlib\com\jset.cpp");
+USEUNIT("..\jlib\com\carray.cpp");
+USEUNIT("..\jlib\com\memobjs.cpp");
+USEUNIT("..\jlib\gr\comgr.cpp");
+USEUNIT("..\jlib\ext\qalloc.cpp");
+USEUNIT("..\jlib\ext\xmlrep.cpp");
+USEUNIT("..\jlib\ext\xmlnode.cpp");
+USEUNIT("..\jlib\com\convutils.cpp");
+USEUNIT("..\jlib\gram\gmanal.cpp");
+USEUNIT("..\jlib\com\jhash.cpp");
+USEUNIT("..\jlib\ext\xmlfile.cpp");
+USEUNIT("..\jlib\ext\hexstrm.cpp");
+USEUNIT("..\jlib\com\jreflect.cpp");
+USEUNIT("..\jlib\ext\langman.cpp");
+//---------------------------------------------------------------------------
+#define Library
+
+// To add a file to the library use the Project menu 'Add to Project'.
+

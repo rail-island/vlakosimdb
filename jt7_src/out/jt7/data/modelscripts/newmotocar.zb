@@ -1,0 +1,98 @@
+module newMotocarScript;
+
+requires module modelScripts;
+
+readonly text="$Motocar";
+readonly name="motocar";
+
+function create(parobj) {
+  var xml=new XMLNode();
+  xml->name="motocar1";
+  xml->len=12;
+  xml->wi=3;
+  xml->hi=3;
+  xml->difx="1";
+  xml->difz="1";
+  if (Application.runXMLDialog(Application.findResource("poed.newmotocarfrm"),xml)) {
+    if (parobj.hasChild(xml->name&".zip")) {
+      Window.alert("$Object "&xml->name&".zip $object-exists-msg");
+      return null;
+    }
+    var obj=parobj.openChild(xml->name&".zip");
+    var index=new XMLNode();
+    index.name="motocar";
+    index->name=xml->name;
+    
+    var model=obj.openChild("model.zip");
+    var modxml=new XMLNode();
+    
+    var sdata=new Store();
+    sdata->xsize=xml->len;sdata->ysize=xml->hi;sdata->zsize=xml->wi;sdata->name="model";
+    sdata->x0="0";sdata->y0="0";sdata->z0="";//z:centrovane
+    sdata->texx=2;sdata->texy=1;sdata->texz=2;
+    if (xml->difx=="1") sdata->texx=3;
+    if (xml->difz=="1") sdata->texz=3;
+    sdata->texdetail=10;sdata->treemodel="0";
+    
+    index->style=["solid","bus2c","tram2v","tram2c","tram3c"][xml->style];
+    
+    var fillpas=false;  
+   
+   
+    if (index->style=="bus2c") {
+      option directly;
+      fillpas=true;
+      sdata->zclips=[[0,0.5*xml->len],[0.65*xml->len,xml->len]];
+    }
+    if (index->style=="tram2c") {
+      option directly;
+      fillpas=true;
+      sdata->zclips=[[0,0.45*xml->len],[0.55*xml->len,xml->len]];
+    }
+    if (index->style=="tram3c") {
+      option directly;
+      fillpas=true;
+      sdata->zclips=[[0,0.3*xml->len],[0.35*xml->len,0.65*xml->len],[0.7*xml->len,xml->len]];
+    }
+   
+    if (fillpas) {
+      option directly;
+      index->pas_wi=xml->wi;
+      index->pas_y1=0;
+      index->pas_y2=xml->hi;
+      var w2=xml->wi/2;
+      
+      index->yd_rel=1;
+      index->yd_t1=0;
+      index->yd_t2=xml->len;
+      index->yd_s1=-w2;
+      index->yd_s2=w2;
+      index->ydecfile="model.zip/y_dec.bmp";
+      
+      index->zd_rel=1;
+      index->zd_t1=0;
+      index->zd_t2=xml->len;
+      index->zd_s1=0;
+      index->zd_s2=xml->hi;
+      index->zdecfile=((sdata->texz==3)?"model.zip/z_dec.bmp":"model.zip/z_both.bmp");
+      
+      index->zi_rel=1;
+      index->zi_t1=0;
+      index->zi_t2=xml->len;
+      index->zi_s1=0;
+      index->zi_s2=xml->hi;
+      index->zincfile=((sdata->texz==3)?"model.zip/z_inc.bmp":"model.zip/z_both.bmp");
+      
+    }
+      
+    simpleObjectModule.createSimpleObject(sdata,modxml,model);
+    
+    obj.saveXML("index.xml",index);
+    model.saveXML("index.xml",modxml);
+    
+    return obj;
+  }
+}
+
+modelScripts.addNewObjectScript(this);
+

@@ -1,0 +1,67 @@
+includable module simpleEditColorizeModule;
+
+var actcolorize;
+
+function saveactcolorize() {
+  if (actcolorize) {
+    form->colorizespage.saveData(actcolorize);
+  }   
+}
+
+function loadactcolorize() {
+  if (actcolorize) {
+    form->colorizespage.loadData(actcolorize);
+  }   
+}
+
+function initcolorizepage() {
+  actcolorize=null;
+  bitmappicture=null;
+  visibletexture=null;
+  form->matfiles.items=(File.root/"data"/"materials").listFiles("*.bmp").join("\n");
+  updatecolorizelist();
+  updatebitmapfiles();
+}
+
+function donecolorizepage() {
+  saveactcolorize();
+  actcolorize=null;
+  bitmappicture=null;
+}
+
+function updatecolorizelist() {
+  form->colorizelist.items=smodel.forceSub("colorizes").childs.join({value->texture&"["&value->comment&"]"},"\n");
+  form->colorizelist.cur=-1;
+}
+
+function addcolorize() {
+  saveactcolorize();
+  var s=smodel-/colorizes.add("colorize");
+  s->texx1=-1;s->texy1=-1;s->texx2=1;s->texy2=1;
+  updatecolorizelist();
+  actcolorize=null;
+  form->colorizelist.cur=smodel-/colorizes.count-1;
+  actcolorize=s;
+  loadactcolorize();  
+}
+
+function erasecolorize() {
+  if (actcolorize) {
+    actcolorize.remove();
+    actcolorize=null;
+    updatecolorizelist();
+  }
+}
+
+function changecolorizelist() {
+  saveactcolorize();
+  actcolorize=smodel-/colorizes[form->colorizelist.cur];
+  loadactcolorize();
+}
+
+function setcolorize() {
+  if (visibletexture) form->colorizetexture.text=visibletexture;
+//  if (var file=form->bitmapfiles.items.split("\n")[form->bitmapfiles.cur]) 
+//    form->colorizetexture.text="pack:"&file;
+}
+

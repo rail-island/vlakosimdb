@@ -1,0 +1,57 @@
+library module extlib;
+
+///Class accessing zip archive
+class Archive {
+  ///returns array of all files
+  native Array function list() [safecall];
+  ///opens for reading
+  native void function ropen(string file) [calllink cmethod=open safecall];
+  ///opens for writing
+  native void function wopen(string file) [calllink cmethod=create safecall];
+  ///loads XML node from file named item
+  native void function loadXML(string item,XMLNode xml) [calllink cmethod=loadxml cargs safecall];
+  ///saves XML to file named item
+  native void function saveXML(string item,XMLNode xml) [calllink cmethod=savexml cargs safecall];
+  ///loads text from file named item
+  native string function loadText(string item) [calllink cmethod=loadtext safecall];
+  ///saves text to file named item
+  native void function saveText(string item,string text) [calllink cmethod=savetext safecall];
+  ///closes archive
+  native void function close() [calllink cmethod=close safecall];
+  native constructor() [cmethod=newarchive wantrt];
+  native void function unpack(string file,string destPath) [cmethod=unpackfile calllink];
+  native void function pack(string file,string srcPath) [cmethod=packfile calllink];
+}
+
+class PersistentObject {
+  ///returns '\n\ separated childs
+  native string function listChilds() [safecall];
+  ///returns '\n\ separated files
+  native string function listFiles() [safecall];
+  ///creates new file or directory
+  native constructor (string file) [cmethod=newpersistentobject wantrt];
+//  native void function close();
+  native PersistentObject function openChild(string name);
+  native PersistentObject function openChildPath(string name);
+  
+  native string function getFile(string name) [calllink cmethod=getfile safecall];
+  native void function closedGetFile(string path,string name) [calllink cmethod=closedgetfile];
+  
+  native bool function hasFile(string file) [calllink cmethod=hasfile];
+  native bool function hasChild(string file) [calllink cmethod=hasfile];
+  
+  native string function setFile(string name) [calllink cmethod=setfile];
+  native void function closedSetFile(string path,string name) [calllink cmethod=closedsetfile];
+  
+  native void function loadXML(string name,XMLNode xml) [calllink cmethod=loadxml cargs];
+  native void function saveXML(string name,XMLNode xml) [calllink cmethod=savexml cargs];
+  native string function loadText(string name) [calllink cmethod=loadtext];
+  native void function saveText(string name,string value) [calllink cmethod=savetext];
+  native PersistentObject property parent get;
+  native void function flush() [calllink];
+  native string property name get [calllink];
+  native void function remove() [calllink];
+  native PersistentObject property root get;
+  native void function removeFile(string file) [calllink cmethod=removefile];
+}
+

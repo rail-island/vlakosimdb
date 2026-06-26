@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="out\ziplibdll.dll"/>
+    <OBJFILES value="out\tmp\mainu.obj out\tmp\zl_write.obj out\tmp\zl_ctdir.obj 
+      out\tmp\zl_flush.obj out\tmp\zl_hdr.obj out\tmp\zl_read.obj 
+      out\tmp\zl_types.obj out\tmp\ziplib.obj out\tmp\zutil.obj 
+      out\tmp\compress.obj out\tmp\crc32.obj out\tmp\deflate.obj 
+      out\tmp\gvmat32c.obj out\tmp\gzio.obj out\tmp\infblock.obj 
+      out\tmp\infcodes.obj out\tmp\inffast.obj out\tmp\inflate.obj 
+      out\tmp\inftrees.obj out\tmp\infutil.obj out\tmp\maketree.obj 
+      out\tmp\trees.obj out\tmp\uncompr.obj out\tmp\adler32.obj"/>
+    <RESFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="Vcl50.bpi Vclx50.bpi bcbsmp50.bpi dclocx50.bpi bcb2kaxserver50.bpi"/>
+    <PATHCPP value=".;zlib"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="tlink32"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="NO_STRICT;_NO_VCL"/>
+    <MAINSOURCE value="ziplibdll.bpf"/>
+    <INCLUDEPATH value="zlib;$(BCB)\include;$(BCB)\include\vcl;."/>
+    <LIBPATH value="zlib;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-WD -O2 -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -tWD -tWM- 
+      -c"/>
+    <PFLAGS value="-N2out\tmp -N0out\tmp -$Y- -$L- -$D- -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-Iout\tmp -D&quot;&quot; -aa -Tpd -x -Gn -Gi"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0d32.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cw32.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1029
+CodePage=1250
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=2
+Item0=zlib;$(BCB)\include;$(BCB)\include\vcl;.
+Item1=zlib;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=1
+Item0=zlib;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=3
+Item0=out\tmp
+Item1=out/tmp
+Item2=out
+
+[HistoryLists\hlFinalOutputDir]
+Count=2
+Item0=out\
+Item1=out
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+  </IDEOPTIONS>
+</PROJECT>

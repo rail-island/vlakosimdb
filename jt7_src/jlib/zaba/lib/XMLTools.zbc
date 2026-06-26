@@ -1,0 +1,456 @@
+;=========================
+interface XMLTools.module
+initproc=@init,32
+initproc=@registermodule,1
+initproc=@createclasses,2
+initproc=@makeislist,3
+autocreate=1
+begin
+;------------------------
+sub @init 0 0
+code
+pushsys
+pushthis
+join
+polypop 2
+pushthis
+pushlocals
+join
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub @createclasses 0 0
+code
+pushnull
+doret 1
+end
+;------------------------
+sub @makeislist 0 0
+code
+pushnull
+doret 1
+end
+;------------------------
+sub @registermodule 0 0
+code
+pushthis
+pushsys
+setprop XMLTools
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub combine 2 2
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop anc
+polypop 2
+pushparam 1
+pushlocals
+initprop dif
+polypop 2
+pushlocals
+find 011 anc
+getprop anc
+cm clone 0
+pushlocals
+initprop res
+polypop 2
+pushlocals
+find 011 res
+getprop res
+pushlocals
+find 011 dif
+getprop dif
+pushthis
+xcm combine_res 2
+jnx 1
+pop
+pushlocals
+find 011 combine_res
+getprop combine_res
+cm op:call 2
+@1:
+pop
+pushlocals
+find 011 res
+getprop res
+doret 1
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub combine_res 2 2
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop res
+polypop 2
+pushparam 1
+pushlocals
+initprop dif
+polypop 2
+pushnum 0
+pushlocals
+initprop i
+pop
+pop
+@3:
+pushlocals
+find 011 dif
+getprop dif
+cm get:varCount 0
+pushlocals
+find 011 i
+getprop i
+cm op:lt 1
+condnotjmp 4
+pushlocals
+find 011 i
+getprop i
+pushlocals
+find 011 dif
+getprop dif
+cm varNameAt 1
+pushlocals
+find 011 i
+getprop i
+pushlocals
+find 011 dif
+getprop dif
+cm varAt 1
+pushlocals
+find 011 res
+getprop res
+cm setVar 2
+pop
+@2:
+pushlocals
+find 011 i
+dup 1
+getprop i
+dup 1
+cm op:inc 0
+xchg 2 3
+xchg 1 2
+assignprop i
+polypop 2
+pop
+jmp 3
+@4:
+pushlocals
+deleteprops 1
+pop
+pushlocals
+find 011 dif
+getprop dif
+cm getIterator 0
+@6:
+dup 1
+cm getValue 0
+dup 1
+condnotjmp 7
+pushlocals
+initprop child
+polypop 2
+pushlocals
+find 011 child
+getprop child
+cm get:name 0
+pushlocals
+find 011 res
+getprop res
+cm isSub 1
+condnotjmp 8
+pushlocals
+find 011 child
+getprop child
+cm get:name 0
+pushlocals
+find 011 res
+getprop res
+cm getSub 1
+pushlocals
+initprop my
+polypop 2
+pushlocals
+find 011 my
+getprop my
+pushlocals
+find 011 child
+getprop child
+pushthis
+xcm combine_res 2
+jnx 9
+pop
+pushlocals
+find 011 combine_res
+getprop combine_res
+cm op:call 2
+@9:
+pop
+pushlocals
+deleteprops 1
+pop
+jmp 10
+@8:
+pushlocals
+find 011 child
+getprop child
+pushlocals
+find 011 res
+getprop res
+cm add 0
+cm assign 1
+pop
+@10:
+@5:
+dup 1
+cm moveNext 0
+pop
+pushlocals
+deleteprops 1
+pop
+jmp 6
+@7:
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub difference 2 2
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop des
+polypop 2
+pushparam 1
+pushlocals
+initprop anc
+polypop 2
+pushlocals
+find 011 XMLNode
+getprop XMLNode
+cm op:new 0
+pushlocals
+initprop res
+polypop 2
+pushlocals
+find 011 res
+getprop res
+pushlocals
+find 011 des
+getprop des
+pushlocals
+find 011 anc
+getprop anc
+pushthis
+xcm difference_res 3
+jnx 11
+pop
+pushlocals
+find 011 difference_res
+getprop difference_res
+cm op:call 3
+@11:
+pop
+pushlocals
+find 011 res
+getprop res
+doret 1
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub difference_res 3 3
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop res
+polypop 2
+pushparam 1
+pushlocals
+initprop des
+polypop 2
+pushparam 2
+pushlocals
+initprop anc
+polypop 2
+pushlocals
+find 011 des
+getprop des
+cm get:name 0
+pushlocals
+find 011 res
+getprop res
+cm set:name 1
+pop
+pushnum 0
+pushlocals
+initprop i
+pop
+pop
+@13:
+pushlocals
+find 011 des
+getprop des
+cm get:varCount 0
+pushlocals
+find 011 i
+getprop i
+cm op:lt 1
+condnotjmp 14
+pushlocals
+find 011 i
+getprop i
+pushlocals
+find 011 des
+getprop des
+cm varNameAt 1
+pushlocals
+find 011 anc
+getprop anc
+cm getVar 1
+pushlocals
+find 011 i
+getprop i
+pushlocals
+find 011 des
+getprop des
+cm varAt 1
+cm op:neq 1
+condnotjmp 15
+pushlocals
+find 011 i
+getprop i
+pushlocals
+find 011 des
+getprop des
+cm varNameAt 1
+pushlocals
+find 011 i
+getprop i
+pushlocals
+find 011 des
+getprop des
+cm varAt 1
+pushlocals
+find 011 res
+getprop res
+cm setVar 2
+pop
+@15:
+@12:
+pushlocals
+find 011 i
+dup 1
+getprop i
+dup 1
+cm op:inc 0
+xchg 2 3
+xchg 1 2
+assignprop i
+polypop 2
+pop
+jmp 13
+@14:
+pushlocals
+deleteprops 1
+pop
+pushlocals
+find 011 des
+getprop des
+cm getIterator 0
+@17:
+dup 1
+cm getValue 0
+dup 1
+condnotjmp 18
+pushlocals
+initprop child
+polypop 2
+pushlocals
+find 011 child
+getprop child
+cm get:name 0
+pushlocals
+find 011 anc
+getprop anc
+cm getSub 1
+pushlocals
+find 011 child
+getprop child
+cm weekEqualTo 1
+condjmp 19
+pushsys
+jmp 20
+@19:
+pushnull
+@20:
+condnotjmp 21
+pushlocals
+find 011 res
+getprop res
+cm add 0
+pushlocals
+find 011 child
+getprop child
+pushlocals
+find 011 child
+getprop child
+cm get:name 0
+pushlocals
+find 011 anc
+getprop anc
+cm getSub 1
+pushthis
+xcm difference_res 3
+jnx 22
+pop
+pushlocals
+find 011 difference_res
+getprop difference_res
+cm op:call 3
+@22:
+pop
+@21:
+@16:
+dup 1
+cm moveNext 0
+pop
+pushlocals
+deleteprops 1
+pop
+jmp 17
+@18:
+polypop 2
+pushnull
+doret 1
+end
+end

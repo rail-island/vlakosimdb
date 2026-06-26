@@ -1,0 +1,4292 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<module initlevel="16" name="winobjs" label_count="0">
+<class virtual="0" name="Component">
+<attrs/>
+</class>
+<class comment1="Base class of all controls" virtual="0" name="Control" baseclass="Component">
+<attrs/>
+<function static="0" native="1" name="get:X" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:X" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="X" type="int" get="1" set="1">
+<attrs>
+<attr name="link"/>
+</attrs>
+<attrs>
+<attr name="link"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:Y" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:Y" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="Y" type="int" get="1" set="1">
+<attrs>
+<attr name="link"/>
+</attrs>
+<attrs>
+<attr name="link"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:W" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:W" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="W" type="int" get="1" set="1">
+<attrs>
+<attr name="link"/>
+</attrs>
+<attrs>
+<attr name="link"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:H" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:H" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="H" type="int" get="1" set="1">
+<attrs>
+<attr name="link"/>
+</attrs>
+<attrs>
+<attr name="link"/>
+</attrs>
+</invalid>
+<function comment1="deletes control object" help="1" static="0" native="1" name="destroy" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="show" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="hide" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:visible" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:visible" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="visible" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:enabled" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:enabled" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="enabled" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:parent" resulttype="Control" get="1">
+<pars/>
+<attrs/>
+</function>
+<function static="0" native="1" name="set:parent" void="1" set="1">
+<pars>
+<param name="value" type="Control"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="parent" type="Control" get="1" set="1">
+<attrs/>
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:font" resulttype="Font" get="1">
+<pars/>
+<attrs/>
+</function>
+<function static="0" native="1" name="set:font" void="1" set="1">
+<pars>
+<param name="value" type="Font"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="font" type="Font" get="1" set="1">
+<attrs/>
+<attrs/>
+</invalid>
+<function help="1" static="0" native="1" name="loadProps" resulttype="void" type="void">
+<pars>
+<param name="xml" type="XMLNode"/>
+<param name="form" type="Form"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="loadprops"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="saveData" resulttype="void" type="void">
+<pars>
+<param name="xml" type="XMLNode"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="savedata"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="loadData" resulttype="void" type="void">
+<pars>
+<param name="xml" type="XMLNode"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="loaddata"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="clearChilds" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="clearchilds"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:tag" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:tag" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="tag" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class comment1="represents any Window" virtual="0" name="Window" baseclass="Component">
+<attrs/>
+<function comment1="shows simple message window" comment2="shows simple message window, every argument is on separate line" help="1" static="1" native="1" name="alert" resulttype="Object" type="Object">
+<pars extra="1"/>
+<attrs>
+<attr name="cmethod" value="alert"/>
+<attr name="wantextra"/>
+<attr name="wantrt"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:text" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:text" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="text" type="string" get="1" set="1" comment1="title bar of window">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="cmethod" value="newwindow"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function help="1" static="0" native="1" name="showModal" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="show" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function comment1="if this method is called during onclose event, window is not closed" help="1" static="0" native="1" name="denyClose" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="denyclose"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="close" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:style" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:style" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="style" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:X" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:X" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="X" type="int" get="1" set="1">
+<attrs>
+<attr name="link"/>
+</attrs>
+<attrs>
+<attr name="link"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:Y" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:Y" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="Y" type="int" get="1" set="1">
+<attrs>
+<attr name="link"/>
+</attrs>
+<attrs>
+<attr name="link"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:W" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:W" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="W" type="int" get="1" set="1">
+<attrs>
+<attr name="link"/>
+</attrs>
+<attrs>
+<attr name="link"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:H" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:H" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="H" type="int" get="1" set="1">
+<attrs>
+<attr name="link"/>
+</attrs>
+<attrs>
+<attr name="link"/>
+</attrs>
+</invalid>
+<function comment1="shows messagebox, returns first char of pressed button in lowercase" comment2="
+  Buttons:ync:yes-no-cancel,arf:abort-retry-fail,o:ok,oc:ok-cancel,yn:yes-no
+  " help="1" static="1" native="1" name="msgbox" resulttype="string" type="string">
+<pars>
+<param name="msg" type="string"/>
+<param name="buttons" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="zbmsgbox"/>
+<attr name="wantir"/>
+</attrs>
+</function>
+<function comment1="shows message window, buttons are &apos;;&apos; delimited button names, returns index of selected button or -1" help="1" static="1" native="1" name="msgwin" resulttype="int" type="int">
+<pars>
+<param name="title" type="string"/>
+<param name="msg" type="string"/>
+<param name="buttons" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="zbmsgwin"/>
+</attrs>
+</function>
+<function comment1="returns inputed text of null, when cancel was pressed" help="1" static="1" native="1" name="inputBox" resulttype="Object" type="Object">
+<pars>
+<param name="title" type="string"/>
+<param name="msg" type="string"/>
+<param name="def" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="zbinputbox"/>
+<attr name="wantrt"/>
+</attrs>
+</function>
+<function static="1" native="1" name="get:ppmmx" resulttype="float" get="1">
+<pars/>
+<attrs>
+<attr name="cmethod" value="getppmmx"/>
+</attrs>
+</function>
+<invalid static="1" native="1" name="set:ppmmx" void="1" set="0">
+<pars>
+<param name="value" type="float"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="1" native="1" name="ppmmx" type="float" get="1" set="0">
+<attrs>
+<attr name="cmethod" value="getppmmx"/>
+</attrs>
+</invalid>
+<function static="1" native="1" name="get:ppmmy" resulttype="float" get="1">
+<pars/>
+<attrs>
+<attr name="cmethod" value="getppmmx"/>
+</attrs>
+</function>
+<invalid static="1" native="1" name="set:ppmmy" void="1" set="0">
+<pars>
+<param name="value" type="float"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="1" native="1" name="ppmmy" type="float" get="1" set="0">
+<attrs>
+<attr name="cmethod" value="getppmmx"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="loadData" resulttype="void" type="void">
+<pars>
+<param name="xml" type="XMLNode"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cargs"/>
+<attr name="cmethod" value="loaddata"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="saveData" resulttype="void" type="void">
+<pars>
+<param name="xml" type="XMLNode"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cargs"/>
+<attr name="cmethod" value="savedata"/>
+</attrs>
+</function>
+</class>
+<class comment1="non-visible component, maintains event-calls, loading from XML ..." virtual="0" name="Form" baseclass="Component">
+<attrs/>
+<function help="1" static="0" native="1" name="loadWindow" resulttype="Object" type="Object">
+<pars>
+<param name="name" type="string"/>
+</pars>
+<attrs>
+<attr name="wantrt"/>
+</attrs>
+</function>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="cmethod" value="newform"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars>
+<param name="owner" type="Component"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="newform"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function static="0" native="1" name="get:handler" resulttype="Object" get="1">
+<pars/>
+<attrs/>
+</function>
+<function static="0" native="1" name="set:handler" void="1" set="1">
+<pars>
+<param name="value" type="Object"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="handler" type="Object" get="1" set="1">
+<attrs/>
+<attrs/>
+</invalid>
+<function help="1" static="0" native="1" name="search" resulttype="Component" type="Component">
+<pars>
+<param name="name" type="string"/>
+</pars>
+<attrs>
+<attr name="cresult"/>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function resulttype="Component" native="1" name="op:get:prop" get="1">
+<pars>
+<param name="name" type="string"/>
+</pars>
+<attrs>
+<attr name="cresult"/>
+<attr name="calllink"/>
+<attr name="cmethod" value="search"/>
+</attrs>
+</function>
+<invalid resulttype="void" native="1" name="op:set:prop" set="0">
+<pars>
+<param name="name" type="string"/>
+<param name="right" type="Component"/>
+</pars>
+</invalid>
+<invalid hlpname="operator" help="1" native="1" name="-&gt;" get="1" set="0" type="Component">
+<attrs>
+<attr name="cresult"/>
+<attr name="calllink"/>
+<attr name="cmethod" value="search"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="destroy" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+</class>
+<class comment1="Button control" virtual="0" name="Button" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:text" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:text" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="text" type="string" get="1" set="1" comment1="caption of button">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:onclick" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:onclick" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="onclick" type="string" get="1" set="1" comment1="mouse or key click">
+<attrs>
+<attr name="link"/>
+</attrs>
+<attrs>
+<attr name="link"/>
+</attrs>
+</invalid>
+</class>
+<class virtual="0" name="RadioGroup" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:text" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:text" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="text" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:items" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:items" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="items" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:cur" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:cur" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="cur" type="int" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class virtual="0" name="CheckBox" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:text" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:text" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="text" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:checked" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:checked" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="checked" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class comment1="Button, can have image, cannot be selected by keyboard" virtual="0" name="SpeedButton" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:text" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:text" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="text" type="string" get="1" set="1" comment1="caption of button">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="cargs"/>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:onclick" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:onclick" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+<attr name="link"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="onclick" type="string" get="1" set="1" comment1="mouse click">
+<attrs>
+<attr name="link"/>
+</attrs>
+<attrs>
+<attr name="cargs"/>
+<attr name="link"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:image" resulttype="Picture" get="1">
+<pars/>
+<attrs>
+<attr name="cresult"/>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:image" void="1" set="1">
+<pars>
+<param name="value" type="Picture"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="image" type="Picture" get="1" set="1" comment1="image shown on this button">
+<attrs>
+<attr name="cresult"/>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="cargs"/>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:switched" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:switched" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="switched" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars>
+<param name="form" type="Form"/>
+</pars>
+<attrs>
+<attr name="wantrt"/>
+<attr name="cmethod" value="newspeedbutton"/>
+</attrs>
+</constructor>
+<function static="0" native="1" name="get:color" resulttype="string" get="1">
+<pars/>
+<attrs/>
+</function>
+<function static="0" native="1" name="set:color" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="color" type="string" get="1" set="1">
+<attrs/>
+<attrs/>
+</invalid>
+</class>
+<class comment1="group of ToolButtons" virtual="0" name="SpeedGroup" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:cur" resulttype="int" get="1">
+<pars/>
+<attrs/>
+</function>
+<function static="0" native="1" name="set:cur" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="cur" type="int" get="1" set="1">
+<attrs/>
+<attrs/>
+</invalid>
+</class>
+<class comment1="Button, can have image, cannot be selected by keyboard" virtual="0" name="ColorTable" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:rows" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:rows" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="rows" type="int" get="1" set="1" comment1="number of rows">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:cols" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:cols" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="cols" type="int" get="1" set="1" comment1="number of columns">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function resulttype="string" native="1" name="op:get:index" get="1">
+<pars>
+<param name="row" type="int"/>
+<param name="col" type="int"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="getcolor"/>
+</attrs>
+</function>
+<function resulttype="string" native="1" name="op:set:index" set="1">
+<pars>
+<param name="row" type="int"/>
+<param name="col" type="int"/>
+<param name="right" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="setcolor"/>
+</attrs>
+</function>
+<invalid hlpname="operator" comment1="colors" help="1" native="1" name="[]" get="1" set="1" type="string">
+<attrs>
+<attr name="cmethod" value="getcolor"/>
+</attrs>
+<attrs>
+<attr name="cmethod" value="setcolor"/>
+</attrs>
+</invalid>
+</class>
+<class comment1="List of string values" virtual="0" name="ListBox" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:items" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:items" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="items" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:cur" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:cur" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="cur" type="int" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:multiSelect" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getmultiselect"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:multiSelect" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setmultiselect"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="multiSelect" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getmultiselect"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setmultiselect"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:selected" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:selected" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="selected" type="string" get="1" set="1" comment1="if multiSelect, selected is &apos;;&apos; separated indexes of selected items">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class comment1="Packed list of string values" virtual="0" name="PackedList" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:items" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:items" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="items" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:cur" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:cur" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="cur" type="int" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class comment1="Single-line edit" virtual="0" name="Edit" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:text" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:text" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="text" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:modified" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:modified" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="modified" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class comment1="Multi-line edit constrol" virtual="0" name="Memo" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:text" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:text" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="text" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:modified" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:modified" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="modified" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class comment1="Static text constrol" virtual="0" name="Label" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:text" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:text" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="text" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class virtual="0" name="WrapLabel" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:text" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:text" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="text" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class virtual="0" name="TrackBar" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:min" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:min" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="min" type="int" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:max" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:max" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="max" type="int" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:cur" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:cur" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="cur" type="int" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:frequency" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:frequency" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="frequency" type="int" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class virtual="0" name="Table" baseclass="Control">
+<attrs/>
+<invalid static="0" native="1" name="get:model" resulttype="TableModel" get="0">
+<pars/>
+</invalid>
+<function static="0" native="1" name="set:model" void="1" set="1">
+<pars>
+<param name="value" type="TableModel"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="model" type="TableModel" get="0" set="1">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:selrow" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:selrow" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="selrow" type="int" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:selcol" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:selcol" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="selcol" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="repaint" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="repaintLine" resulttype="void" type="void">
+<pars>
+<param name="line" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="repaintline"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="update" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+</class>
+<class virtual="0" name="CheckList" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:cur" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:cur" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="cur" type="int" get="1" set="1" comment1="current position">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:items" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:items" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="items" type="string" get="1" set="1" comment1="items divided by &apos;\n&apos;">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:checked" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:checked" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="checked" type="string" get="1" set="1" comment1="0|1 divided by &apos;;&apos;">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class virtual="0" name="TableCols">
+<attrs/>
+<function comment1="adds new collumn with text type" help="1" static="0" native="1" name="add" resulttype="void" type="void">
+<pars>
+<param name="fldid" type="string"/>
+<param name="text" type="string"/>
+</pars>
+<attrs/>
+</function>
+<function comment1="adds new collumn, text=&quot;text&quot;|&quot;check&quot;" help="1" static="0" native="1" name="add" resulttype="void" type="void">
+<pars>
+<param name="fldid" type="string"/>
+<param name="text" type="string"/>
+<param name="type" type="string"/>
+</pars>
+<attrs/>
+</function>
+</class>
+<class virtual="1" name="TableModel">
+<attrs/>
+<function help="1" name="getRowCount" virtual="1" resulttype="int">
+<pars/>
+<attrs/>
+</function>
+<function help="1" name="getCellText" virtual="1" resulttype="string">
+<pars>
+<param name="fldid" type="string"/>
+<param name="row" type="int"/>
+</pars>
+<attrs/>
+</function>
+<function help="1" name="getCols" virtual="1" resulttype="void">
+<pars>
+<param name="cols" type="TableCols"/>
+</pars>
+<attrs/>
+</function>
+</class>
+<class virtual="1" name="TreeSource">
+<attrs/>
+<function help="1" name="getCount" virtual="1" resulttype="int">
+<pars/>
+<attrs/>
+</function>
+<function help="1" name="getText" virtual="1" resulttype="string">
+<pars/>
+<attrs/>
+</function>
+<function help="1" name="getNodeAt" virtual="1" resulttype="TreeSource">
+<pars>
+<param name="index" type="int"/>
+</pars>
+<attrs/>
+</function>
+<function help="1" name="equalTo" virtual="1" resulttype="bool">
+<pars>
+<param name="right" type="TreeSource"/>
+</pars>
+<attrs/>
+</function>
+</class>
+<class comment1="Tree view control, data retrieves from source" virtual="0" name="Tree" baseclass="Control">
+<attrs/>
+<invalid static="0" native="1" name="get:source" resulttype="TreeSource" get="0">
+<pars/>
+</invalid>
+<function static="0" native="1" name="set:source" void="1" set="1">
+<pars>
+<param name="value" type="TreeSource"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="source" type="TreeSource" get="0" set="1">
+<attrs/>
+</invalid>
+<function help="1" static="0" native="1" name="update" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:active" resulttype="MultiIndex" get="1">
+<pars/>
+<attrs/>
+</function>
+<function static="0" native="1" name="set:active" void="1" set="1">
+<pars>
+<param name="value" type="MultiIndex"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="active" type="MultiIndex" get="1" set="1" comment1="returns path to active or null, when nothing is active">
+<attrs/>
+<attrs/>
+</invalid>
+<function help="1" static="0" native="1" name="expand" resulttype="void" type="void">
+<pars>
+<param name="item" type="MultiIndex"/>
+</pars>
+<attrs/>
+</function>
+<function help="1" static="0" native="1" name="collapse" resulttype="void" type="void">
+<pars>
+<param name="item" type="MultiIndex"/>
+</pars>
+<attrs/>
+</function>
+</class>
+<class virtual="0" name="PaintBox" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:onpaint" resulttype="String" get="1">
+<pars/>
+<attrs>
+<attr name="cresult"/>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:onpaint" void="1" set="1">
+<pars>
+<param name="value" type="String"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+<attr name="link"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="onpaint" type="String" get="1" set="1">
+<attrs>
+<attr name="cresult"/>
+<attr name="link"/>
+</attrs>
+<attrs>
+<attr name="cargs"/>
+<attr name="link"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="repaint" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+</class>
+<class comment1="Control, on which you can paint" virtual="0" name="ScrolledPainter" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:onpaint" resulttype="String" get="1">
+<pars/>
+<attrs>
+<attr name="cresult"/>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:onpaint" void="1" set="1">
+<pars>
+<param name="value" type="String"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+<attr name="link"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="onpaint" type="String" get="1" set="1">
+<attrs>
+<attr name="cresult"/>
+<attr name="link"/>
+</attrs>
+<attrs>
+<attr name="cargs"/>
+<attr name="link"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="setInSize" resulttype="void" type="void">
+<pars>
+<param name="w" type="int"/>
+<param name="h" type="int"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="repaint" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+</class>
+<class virtual="0" name="PropertyList" baseclass="Control">
+<attrs/>
+<function help="1" static="0" native="1" name="save" resulttype="void" type="void">
+<pars>
+<param name="vars" type="VarList"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="load" resulttype="void" type="void">
+<pars>
+<param name="vars" type="VarList"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="addVar" resulttype="void" type="void">
+<pars>
+<param name="name" type="string"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function comment1="erases variable, where is cursor" help="1" static="0" native="1" name="eraseVar" resulttype="void" type="void">
+<pars/>
+<attrs/>
+</function>
+<function static="0" native="1" name="get:modified" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:modified" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="modified" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class virtual="0" name="Pager">
+<attrs/>
+<function static="0" native="1" name="get:cur" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:cur" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="cur" type="int" get="1" set="1" comment1="active page index">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class virtual="0" name="Settings">
+<attrs/>
+<function comment1="creates all subcontrols" help="1" static="0" native="1" name="createAll" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="createall"/>
+</attrs>
+</function>
+</class>
+<class virtual="0" name="HTMLView" baseclass="Control">
+<attrs/>
+<function static="0" native="1" name="get:text" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:text" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="text" type="string" get="1" set="1" comment1="HTML source to view">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function comment1="call this function as answer to event onfindpicture" help="1" static="0" native="1" name="searchedPicture" resulttype="void" type="void">
+<pars>
+<param name="src" type="string"/>
+<param name="picture" type="Picture"/>
+</pars>
+<attrs/>
+</function>
+</class>
+<class comment1="when you paint, it is on this object " virtual="0" name="Canvas">
+<attrs/>
+<function comment1="draws line from [x1,y1] to [x2,y2]" help="1" static="0" native="1" name="line" resulttype="Object" type="Object">
+<pars>
+<param name="x1" type="int"/>
+<param name="y1" type="int"/>
+<param name="x2" type="int"/>
+<param name="y2" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="retthis"/>
+</attrs>
+</function>
+<function comment1="draws rectangle" help="1" static="0" native="1" name="rectangle" resulttype="Object" type="Object">
+<pars>
+<param name="x1" type="int"/>
+<param name="y1" type="int"/>
+<param name="x2" type="int"/>
+<param name="y2" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cargs"/>
+<attr name="retthis"/>
+<attr name="cmethod" value="rect"/>
+</attrs>
+</function>
+<function comment1="draws ellipse enclosed in specified rectangle" help="1" static="0" native="1" name="ellipse" resulttype="Object" type="Object">
+<pars>
+<param name="x1" type="int"/>
+<param name="y1" type="int"/>
+<param name="x2" type="int"/>
+<param name="y2" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cargs"/>
+<attr name="retthis"/>
+</attrs>
+</function>
+<function comment1="sets foreground color, used for lines and shapes, colors like in html" help="1" static="0" native="1" name="fg" resulttype="Object" type="Object">
+<pars>
+<param name="color" type="string"/>
+</pars>
+<attrs>
+<attr name="link"/>
+<attr name="retthis"/>
+</attrs>
+</function>
+<function comment1="sets background color, used for filling shapes, colors like in html" help="1" static="0" native="1" name="bg" resulttype="Object" type="Object">
+<pars>
+<param name="color" type="string"/>
+</pars>
+<attrs>
+<attr name="link"/>
+<attr name="retthis"/>
+</attrs>
+</function>
+<function comment1="draws text at [x,y], this is left-top corner of text" help="1" static="0" native="1" name="text" resulttype="Object" type="Object">
+<pars>
+<param name="x" type="int"/>
+<param name="y" type="int"/>
+<param name="str" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="retthis"/>
+</attrs>
+</function>
+<function comment1="returns text width written with actua;l font" help="1" static="0" native="1" name="textwi" resulttype="int" type="int">
+<pars>
+<param name="str" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function comment1="returns text height written with actua;l font" help="1" static="0" native="1" name="texthi" resulttype="int" type="int">
+<pars>
+<param name="str" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function comment1="selects font for this canvas" help="1" static="0" native="1" name="font" resulttype="Object" type="Object">
+<pars>
+<param name="font" type="Font"/>
+</pars>
+<attrs>
+<attr name="link"/>
+<attr name="retthis"/>
+</attrs>
+</function>
+<function comment1="selects pen width, 0:minimal width" help="1" static="0" native="1" name="penwi" resulttype="Object" type="Object">
+<pars>
+<param name="wi" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="retthis"/>
+</attrs>
+</function>
+<function comment1="draws frame around specified rectangle, type:&quot;raised&quot; | &quot;sunken&quot;" help="1" static="0" native="1" name="drawFrame" resulttype="Object" type="Object">
+<pars>
+<param name="x1" type="int"/>
+<param name="y1" type="int"/>
+<param name="x2" type="int"/>
+<param name="y2" type="int"/>
+<param name="type" type="string"/>
+</pars>
+<attrs>
+<attr name="retthis"/>
+</attrs>
+</function>
+<function comment1="draws text centered in rectangle, flags:bool centerx,centery,clip" help="1" static="0" native="1" name="centerText" resulttype="Object" type="Object">
+<pars>
+<param name="x1" type="int"/>
+<param name="y1" type="int"/>
+<param name="x2" type="int"/>
+<param name="y2" type="int"/>
+<param name="text" type="string"/>
+<param name="flags" type="Store"/>
+</pars>
+<attrs>
+<attr name="retthis"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="centerText" resulttype="Object" type="Object">
+<pars>
+<param name="x1" type="int"/>
+<param name="y1" type="int"/>
+<param name="x2" type="int"/>
+<param name="y2" type="int"/>
+<param name="text" type="string"/>
+</pars>
+<attrs>
+<attr name="retthis"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="nextBand" resulttype="Canvas" type="Canvas">
+<pars>
+<param name="hi" type="int"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function comment1="type:&quot;optional&quot;:if band is first or last on page, on can be omited" help="1" static="0" native="1" name="nextBand" resulttype="Canvas" type="Canvas">
+<pars>
+<param name="hi" type="int"/>
+<param name="type" type="string"/>
+</pars>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function comment1="draws radio button centered to [x,y]" help="1" static="0" native="1" name="drawRadio" resulttype="Object" type="Object">
+<pars>
+<param name="x" type="int"/>
+<param name="y" type="int"/>
+<param name="checked" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="retthis"/>
+<attr name="cmethod" value="drawradio"/>
+</attrs>
+</function>
+<function comment1="draws check box centered to [x,y]" help="1" static="0" native="1" name="drawCheck" resulttype="Object" type="Object">
+<pars>
+<param name="x" type="int"/>
+<param name="y" type="int"/>
+<param name="checked" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="retthis"/>
+<attr name="cmethod" value="drawcheck"/>
+</attrs>
+</function>
+<function resulttype="string" native="1" name="op:get:index" get="1">
+<pars>
+<param name="x" type="int"/>
+<param name="y" type="int"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="getpixel"/>
+</attrs>
+</function>
+<function resulttype="string" native="1" name="op:set:index" set="1">
+<pars>
+<param name="x" type="int"/>
+<param name="y" type="int"/>
+<param name="right" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="putpixel"/>
+</attrs>
+</function>
+<invalid hlpname="operator" comment1="access to pixels" help="1" native="1" name="[]" get="1" set="1" type="string">
+<attrs>
+<attr name="cmethod" value="getpixel"/>
+</attrs>
+<attrs>
+<attr name="cmethod" value="putpixel"/>
+</attrs>
+</invalid>
+<function comment1="draws rectangle with random color" help="1" static="0" native="1" name="drawSelection" resulttype="void" type="void">
+<pars>
+<param name="x1" type="int"/>
+<param name="y1" type="int"/>
+<param name="x2" type="int"/>
+<param name="y2" type="int"/>
+</pars>
+<attrs/>
+</function>
+<function comment1="draws line with random color" help="1" static="0" native="1" name="randomLine" resulttype="void" type="void">
+<pars>
+<param name="x1" type="int"/>
+<param name="y1" type="int"/>
+<param name="x2" type="int"/>
+<param name="y2" type="int"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="randomline"/>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function comment1="mode=&quot;surface&quot;|&quot;border&quot;, color==border color" help="1" static="0" native="1" name="floodFill" resulttype="void" type="void">
+<pars>
+<param name="x" type="int"/>
+<param name="y" type="int"/>
+<param name="mode" type="string"/>
+<param name="color" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="floodfill"/>
+</attrs>
+</function>
+</class>
+<class virtual="0" name="Font">
+<attrs/>
+<function static="0" native="1" name="get:name" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:name" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="name" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:size" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:size" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="size" type="int" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:bold" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:bold" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="bold" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:underline" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:underline" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="underline" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:strikeout" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:strikeout" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="strikeout" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:italic" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:italic" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="italic" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="edit" resulttype="bool" type="bool">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="cmethod" value="newfont"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function help="1" static="0" native="1" name="load" resulttype="void" type="void">
+<pars>
+<param name="xml" type="XMLNode"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="save" resulttype="void" type="void">
+<pars>
+<param name="xml" type="XMLNode"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="getHeight" resulttype="int" type="int">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getheight"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="getWidth" resulttype="int" type="int">
+<pars>
+<param name="text" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getwidth"/>
+</attrs>
+</function>
+</class>
+<class comment1="bitmap" virtual="0" name="Picture">
+<attrs/>
+<function help="1" static="0" native="1" name="load" resulttype="void" type="void">
+<pars>
+<param name="file" type="string"/>
+</pars>
+<attrs>
+<attr name="safecall"/>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="save" resulttype="void" type="void">
+<pars>
+<param name="file" type="string"/>
+</pars>
+<attrs>
+<attr name="safecall"/>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:canvas" resulttype="Canvas" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:canvas" void="1" set="0">
+<pars>
+<param name="value" type="Canvas"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="canvas" type="Canvas" get="1" set="0">
+<attrs/>
+</invalid>
+<function help="1" static="0" native="1" name="draw" resulttype="void" type="void">
+<pars>
+<param name="x" type="int"/>
+<param name="y" type="int"/>
+<param name="cnv" type="Canvas"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="stretch" resulttype="void" type="void">
+<pars>
+<param name="x" type="int"/>
+<param name="y" type="int"/>
+<param name="w" type="int"/>
+<param name="h" type="int"/>
+<param name="cnv" type="Canvas"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="stretchRectangle" resulttype="void" type="void">
+<pars>
+<param name="x" type="int"/>
+<param name="y" type="int"/>
+<param name="w" type="int"/>
+<param name="h" type="int"/>
+<param name="srcx" type="int"/>
+<param name="srcy" type="int"/>
+<param name="srcw" type="int"/>
+<param name="srch" type="int"/>
+<param name="cnv" type="Canvas"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="hflip" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="vflip" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="transp" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:W" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getw"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:W" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setw"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="W" type="int" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getw"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setw"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:H" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="geth"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:H" void="1" set="1">
+<pars>
+<param name="value" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="seth"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="H" type="int" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="geth"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="seth"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="invert" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="clone" resulttype="Picture" type="Picture">
+<pars/>
+<attrs/>
+</function>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="cmethod" value="newpicture"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+</class>
+<class comment1="global methods" virtual="0" name="ApplicationClass">
+<attrs/>
+<function comment1="runs application, can be called only once" help="1" static="0" native="1" name="run" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="cmethod" value="runapp"/>
+<attr name="wantir"/>
+</attrs>
+</function>
+<function comment1="ends the message loop" help="1" static="0" native="1" name="exit" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="quit"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="loadResource" resulttype="void" type="void">
+<pars>
+<param name="files" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="loadresource"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:options" resulttype="XMLNode" get="1">
+<pars/>
+<attrs>
+<attr name="cmethod" value="getopts"/>
+<attr name="cresult"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:options" void="1" set="0">
+<pars>
+<param name="value" type="XMLNode"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="options" type="XMLNode" get="1" set="0" comment1="options XML-automatically saved and loaded, setOptionFile was called">
+<attrs>
+<attr name="cmethod" value="getopts"/>
+<attr name="cresult"/>
+</attrs>
+</invalid>
+<function comment1="adds search path for images" help="1" static="0" native="1" name="addSearchPath" resulttype="void" type="void">
+<pars>
+<param name="path" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="addSearchPath"/>
+</attrs>
+</function>
+<function comment1="sets the option file and loads options, options are also automatically saved" help="1" static="0" native="1" name="setOptionFile" resulttype="void" type="void">
+<pars>
+<param name="file" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="setOptionFile"/>
+</attrs>
+</function>
+<function comment1="runs XML dialog, returns success" help="1" static="0" native="1" name="runXMLDialog" resulttype="bool" type="bool">
+<pars>
+<param name="dialog" type="XMLNode"/>
+<param name="data" type="XMLNode"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="runxmldialog"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function comment1="finds resource, if doesn&apos;t exist, error" help="1" static="0" native="1" name="findResource" resulttype="XMLNode" type="XMLNode">
+<pars>
+<param name="name" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="findresource"/>
+<attr name="wantir"/>
+</attrs>
+</function>
+<function comment1="runs Settings dialog, returns success" help="1" static="0" native="1" name="runSettingsDialog" resulttype="bool" type="bool">
+<pars>
+<param name="dialog" type="string"/>
+<param name="data" type="XMLNode"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="runsettingsdialog"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:title" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:title" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="title" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:systemMenu" resulttype="Object" get="1">
+<pars/>
+<attrs>
+<attr name="cmethod" value="getsysmenu"/>
+<attr name="wantrt"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:systemMenu" void="1" set="1">
+<pars>
+<param name="value" type="Object"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="setsysmenu"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="systemMenu" type="Object" get="1" set="1">
+<attrs>
+<attr name="cmethod" value="getsysmenu"/>
+<attr name="wantrt"/>
+</attrs>
+<attrs>
+<attr name="cmethod" value="setsysmenu"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:handler" resulttype="Object" get="1">
+<pars/>
+<attrs/>
+</function>
+<function static="0" native="1" name="set:handler" void="1" set="1">
+<pars>
+<param name="value" type="Object"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="handler" type="Object" get="1" set="1">
+<attrs/>
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:onIdle" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getidle"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:onIdle" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setidle"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="onIdle" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getidle"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setidle"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:onDesktopMouseDown" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getdesktopmousedown"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:onDesktopMouseDown" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setdesktopmousedown"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="onDesktopMouseDown" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getdesktopmousedown"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setdesktopmousedown"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:onDesktopMouseUp" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getdesktopmouseup"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:onDesktopMouseUp" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setdesktopmouseup"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="onDesktopMouseUp" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getdesktopmouseup"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setdesktopmouseup"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:onDesktopMouseMove" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getdesktopmousemove"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:onDesktopMouseMove" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setdesktopmousemove"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="onDesktopMouseMove" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getdesktopmousemove"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setdesktopmousemove"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:desktopW" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getdesktopw"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:desktopW" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="desktopW" type="int" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getdesktopw"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:desktopH" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getdesktoph"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:desktopH" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="desktopH" type="int" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getdesktoph"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:shiftState" resulttype="ShiftState" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:shiftState" void="1" set="0">
+<pars>
+<param name="value" type="ShiftState"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="shiftState" type="ShiftState" get="1" set="0">
+<attrs/>
+</invalid>
+</class>
+<class virtual="0" name="Printer">
+<attrs/>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="cmethod" value="newprinter"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function help="1" static="0" native="1" name="getInfo" resulttype="Canvas" type="Canvas">
+<pars/>
+<attrs>
+<attr name="link"/>
+<attr name="cresult"/>
+<attr name="calllink"/>
+<attr name="cmethod" value="getinfo"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="loadProperties" resulttype="void" type="void">
+<pars>
+<param name="xml" type="XMLNode"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+<attr name="cmethod" value="loadprops"/>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="saveProperties" resulttype="void" type="void">
+<pars>
+<param name="xml" type="XMLNode"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+<attr name="cmethod" value="saveprops"/>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:pghi" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:pghi" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="pghi" type="int" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:pgwi" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:pgwi" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="pgwi" type="int" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="beginPage" resulttype="Canvas" type="Canvas">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cresult"/>
+<attr name="cmethod" value="beginpage"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="endPage" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cresult"/>
+<attr name="cmethod" value="endpage"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="makeFont" resulttype="Font" type="Font">
+<pars>
+<param name="src" type="Font"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="createprnfont"/>
+<attr name="cargs"/>
+<attr name="cresult"/>
+</attrs>
+</function>
+<function comment1="vyrobi tiskarnovy font" help="1" static="0" native="1" name="setup" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="detailSetup" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="detailsetup"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="beginDoc" resulttype="void" type="void">
+<pars>
+<param name="title" type="string"/>
+</pars>
+<attrs/>
+</function>
+<function help="1" static="0" native="1" name="beginFileDoc" resulttype="void" type="void">
+<pars>
+<param name="title" type="string"/>
+<param name="file" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="begindoc"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="endDoc" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="enddoc"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="destroy" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:ppmmx" resulttype="float" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:ppmmx" void="1" set="0">
+<pars>
+<param name="value" type="float"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="ppmmx" type="float" get="1" set="0" comment1="pixels per milimeter int X axis direction">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:ppmmy" resulttype="float" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:ppmmy" void="1" set="0">
+<pars>
+<param name="value" type="float"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="ppmmy" type="float" get="1" set="0" comment1="pixels per milimeter int Y axis direction">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class comment1="console-like window" virtual="0" name="Console">
+<attrs/>
+<function comment1="prints all arguments" help="1" static="0" native="1" name="print" resulttype="void" type="void">
+<pars extra="1"/>
+<attrs>
+<attr name="wantextra"/>
+</attrs>
+</function>
+<function comment1="prints all arguments and goes to new line" help="1" static="0" native="1" name="println" resulttype="void" type="void">
+<pars extra="1"/>
+<attrs>
+<attr name="wantextra"/>
+</attrs>
+</function>
+<function comment1="return readed line" help="1" static="0" native="1" name="readln" resulttype="string" type="string">
+<pars/>
+<attrs/>
+</function>
+<function comment1="closes virtual or system console, if console is system, is opened by calling print,println,readln" help="1" static="0" native="1" name="close" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<constructor help="1" comment1="creates and opens virtual console" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="cmethod" value="newconsole"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function comment1="waits for key down(this key has no effect)" help="1" static="0" native="1" name="wait" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="1" native="1" name="get:std" resulttype="Console" get="1">
+<pars/>
+<attrs>
+<attr name="cmethod" value="getstdcon"/>
+<attr name="wantrt"/>
+</attrs>
+</function>
+<invalid static="1" native="1" name="set:std" void="1" set="0">
+<pars>
+<param name="value" type="Console"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="1" native="1" name="std" type="Console" get="1" set="0" comment1="returns system console">
+<attrs>
+<attr name="cmethod" value="getstdcon"/>
+<attr name="wantrt"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="destroy" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+</class>
+<class comment1="pressed key with constrol keys(eg. Alt+F1)" virtual="0" name="Key">
+<attrs/>
+<function native="1" name="op:eq" resulttype="bool">
+<pars>
+<param name="key" type="string"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="operator" comment1="compares to string representation of key(eg. alt+ctrl+f1==Ctrl+Alt+F1)" help="1" native="1" name="==" type="bool"/>
+<function native="1" name="op:neq" resulttype="bool">
+<pars>
+<param name="key" type="string"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="operator" help="1" native="1" name="!=" type="bool"/>
+<constructor help="1" comment1="creates new key object from string like ctrl+f2" native="1" resulttype="Object" name="op:new">
+<pars>
+<param name="keyname" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="newkey"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function static="0" native="1" name="get:shift" resulttype="bool" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:shift" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="shift" type="bool" get="1" set="0" comment1="returns, whether key contains shift">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:alt" resulttype="bool" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:alt" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="alt" type="bool" get="1" set="0" comment1="returns, whether key contains alt">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:ctrl" resulttype="bool" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:ctrl" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="ctrl" type="bool" get="1" set="0" comment1="returns, whether key contains control">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:lshift" resulttype="bool" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:lshift" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="lshift" type="bool" get="1" set="0" comment1="returns, whether key contains left shift">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:rshift" resulttype="bool" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:rshift" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="rshift" type="bool" get="1" set="0" comment1="returns, whether key contains right shift">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:key" resulttype="string" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:key" void="1" set="0">
+<pars>
+<param name="value" type="string"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="key" type="string" get="1" set="0" comment1="returns key name (if this==Alt+M, key is M)">
+<attrs/>
+</invalid>
+</class>
+<class virtual="0" name="ShiftState">
+<attrs/>
+<function static="0" native="1" name="get:shift" resulttype="bool" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:shift" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="shift" type="bool" get="1" set="0" comment1="returns, whether key contains shift">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:alt" resulttype="bool" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:alt" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="alt" type="bool" get="1" set="0" comment1="returns, whether key contains alt">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:ctrl" resulttype="bool" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:ctrl" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="ctrl" type="bool" get="1" set="0" comment1="returns, whether key contains control">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:lshift" resulttype="bool" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:lshift" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="lshift" type="bool" get="1" set="0" comment1="returns, whether key contains left shift">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:rshift" resulttype="bool" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:rshift" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="rshift" type="bool" get="1" set="0" comment1="returns, whether key contains right shift">
+<attrs/>
+</invalid>
+</class>
+<class virtual="0" name="Timer">
+<attrs/>
+<constructor help="1" comment1="creates new timer, new is not running" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="cmethod" value="newtimer"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function static="0" native="1" name="get:handler" resulttype="Object" get="1">
+<pars/>
+<attrs/>
+</function>
+<function static="0" native="1" name="set:handler" void="1" set="1">
+<pars>
+<param name="value" type="Object"/>
+</pars>
+<attrs/>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="handler" type="Object" get="1" set="1" comment1="delegate, is called every interval, if timer is running">
+<attrs/>
+<attrs/>
+</invalid>
+<function comment1="starts timer, every iterval handler is called" help="1" static="0" native="1" name="start" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="restart"/>
+</attrs>
+</function>
+<function comment1="stops timer, handler is never called before start is called" help="1" static="0" native="1" name="stop" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:running" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="isrunning"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:running" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="running" type="bool" get="1" set="0" comment1="timer is running or waiting to run">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="isrunning"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:interval" resulttype="float" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:interval" void="1" set="1">
+<pars>
+<param name="value" type="float"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="interval" type="float" get="1" set="1" comment1="interval in seconds">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function comment1="simple timer, is called only ones" help="1" static="1" native="1" name="timer" resulttype="void" type="void">
+<pars extra="1">
+<param name="secs" type="float"/>
+<param name="handler"/>
+</pars>
+<attrs>
+<attr name="wantextra"/>
+<attr name="cmethod" value="newsimpletimer"/>
+</attrs>
+</function>
+</class>
+<class virtual="0" name="OpenDialog">
+<attrs/>
+<function comment1="runs open-file-dialog" comment2="filter is *.txt ..., can have only 1 extension, returns file or null" help="1" static="1" native="1" name="run" resulttype="Object" type="Object">
+<pars>
+<param name="filter" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="runopendialog"/>
+<attr name="wantrt"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="execute" resulttype="bool" type="bool">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:file" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:file" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="file" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:initialDir" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getinitialdir"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:initialDir" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setinitialdir"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="initialDir" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getinitialdir"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setinitialdir"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:files" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:files" void="1" set="0">
+<pars>
+<param name="value" type="string"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="files" type="string" get="1" set="0" comment1="files separated by \n">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:filter" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:filter" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="filter" type="string" get="1" set="1" comment1="filter:&quot;Text files~*.txt|All files~*.*&quot;">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:multiSelect" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getmultiselect"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:multiSelect" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setmultiselect"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="multiSelect" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getmultiselect"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setmultiselect"/>
+</attrs>
+</invalid>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="cmethod" value="newopendialog"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+</class>
+<class virtual="0" name="SaveDialog">
+<attrs/>
+<function comment1="runs open-file-dialog" comment2="filter is *.txt ..., can have only 1 extension, returns file or null" help="1" static="1" native="1" name="run" resulttype="Object" type="Object">
+<pars>
+<param name="filter" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="runsavedialog"/>
+<attr name="wantrt"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="execute" resulttype="bool" type="bool">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:initialDir" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getinitialdir"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:initialDir" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setinitialdir"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="initialDir" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getinitialdir"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="setinitialdir"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:file" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:file" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="file" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="cmethod" value="newsavedialog"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function static="0" native="1" name="get:filter" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:filter" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="filter" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+</class>
+<class virtual="0" name="ColorDialog">
+<attrs/>
+<function comment1="returns color name or null, when cancelled" help="1" static="1" native="1" name="run" resulttype="Object" type="Object">
+<pars>
+<param name="color" type="string"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="runcolordialog"/>
+<attr name="wantrt"/>
+</attrs>
+</function>
+</class>
+<class virtual="0" name="PaneGrp">
+<attrs/>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="cmethod" value="newpanegrp"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function static="0" native="1" name="get:canvas" resulttype="Canvas" get="1">
+<pars/>
+<attrs>
+<attr name="safecall"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:canvas" void="1" set="0">
+<pars>
+<param name="value" type="Canvas"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="canvas" type="Canvas" get="1" set="0">
+<attrs>
+<attr name="safecall"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="beginDoc" resulttype="void" type="void">
+<pars>
+<param name="destCanvas" type="Canvas"/>
+</pars>
+<attrs/>
+</function>
+<function help="1" static="0" native="1" name="endDoc" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="cmethod" value="enddoc"/>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:count" resulttype="int" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:count" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="count" type="int" get="1" set="0">
+<attrs/>
+</invalid>
+<function resulttype="Pane" native="1" name="op:get:index" get="1">
+<pars>
+<param name="index" type="int"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="getpane"/>
+</attrs>
+</function>
+<invalid resulttype="Pane" native="1" name="op:set:index" set="0">
+<pars>
+<param name="index" type="int"/>
+<param name="right" type="Pane"/>
+</pars>
+</invalid>
+<invalid hlpname="operator" help="1" native="1" name="[]" get="1" set="0" type="Pane">
+<attrs>
+<attr name="cmethod" value="getpane"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="sheetCount" resulttype="int" type="int">
+<pars>
+<param name="pageHi" type="int"/>
+</pars>
+<attrs/>
+</function>
+<function help="1" static="0" native="1" name="replaceText" resulttype="void" type="void">
+<pars>
+<param name="oldtext" type="string"/>
+<param name="newtext" type="string"/>
+</pars>
+<attrs/>
+</function>
+</class>
+<class virtual="0" name="Pane">
+<attrs/>
+<function static="0" native="1" name="get:isFirst" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="first"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:isFirst" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="isFirst" type="bool" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="first"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:isLast" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="last"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:isLast" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="isLast" type="bool" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="last"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:hi" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="gethisum"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:hi" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="hi" type="int" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="gethisum"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:parent" resulttype="PaneGrp" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:parent" void="1" set="0">
+<pars>
+<param name="value" type="PaneGrp"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="parent" type="PaneGrp" get="1" set="0">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:canvas" resulttype="Canvas" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:canvas" void="1" set="0">
+<pars>
+<param name="value" type="Canvas"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="canvas" type="Canvas" get="1" set="0">
+<attrs/>
+</invalid>
+</class>
+<class virtual="0" name="LogPage">
+<attrs/>
+<function help="1" static="0" native="1" name="addPane" resulttype="void" type="void">
+<pars>
+<param name="pane" type="Pane"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="addpane"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="canAddPane" resulttype="bool" type="bool">
+<pars>
+<param name="pane" type="Pane"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="canaddpane"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:hi" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:hi" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="hi" type="int" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:isBlocked" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="isblocked"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:isBlocked" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="isBlocked" type="bool" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="isblocked"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:isFreeBegin" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="freebegin"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:isFreeBegin" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="isFreeBegin" type="bool" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="freebegin"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:isFreeEnd" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="freeend"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:isFreeEnd" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="isFreeEnd" type="bool" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="freeend"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:isLeft" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="isleft"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:isLeft" void="1" set="0">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="isLeft" type="bool" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="isleft"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="addPaneGrp" resulttype="void" type="void">
+<pars>
+<param name="panegrp" type="PaneGrp"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="addpanegrp"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function comment1="returns number of pages neccessary added, when adding panes" help="1" static="0" native="1" name="getExtraPageCount" resulttype="int" type="int">
+<pars>
+<param name="panes" type="PaneGrp"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getextrapagecount"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:count" resulttype="int" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:count" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="count" type="int" get="1" set="0">
+<attrs/>
+</invalid>
+<function resulttype="Pane" native="1" name="op:get:index" get="1">
+<pars>
+<param name="index" type="int"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="getpane"/>
+</attrs>
+</function>
+<invalid resulttype="Pane" native="1" name="op:set:index" set="0">
+<pars>
+<param name="index" type="int"/>
+<param name="right" type="Pane"/>
+</pars>
+</invalid>
+<invalid hlpname="operator" help="1" native="1" name="[]" get="1" set="0" type="Pane">
+<attrs>
+<attr name="cmethod" value="getpane"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="erasePane" resulttype="void" type="void">
+<pars>
+<param name="index" type="int"/>
+<param name="count" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="erasepane"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="insertPane" resulttype="void" type="void">
+<pars>
+<param name="index" type="int"/>
+<param name="pane" type="Pane"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="insertpane"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="draw" resulttype="void" type="void">
+<pars>
+<param name="cnv" type="Canvas"/>
+</pars>
+<attrs/>
+</function>
+</class>
+<class virtual="0" name="MetaCanvas">
+<attrs/>
+<function help="1" static="0" native="1" name="draw" resulttype="void" type="void">
+<pars>
+<param name="cnv" type="Canvas"/>
+</pars>
+<attrs/>
+</function>
+<function help="1" static="0" native="1" name="replaceText" resulttype="void" type="void">
+<pars>
+<param name="oldtext" type="string"/>
+<param name="newtext" type="string"/>
+</pars>
+<attrs/>
+</function>
+<function static="0" native="1" name="get:canvas" resulttype="Object" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:canvas" void="1" set="0">
+<pars>
+<param name="value" type="Object"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="canvas" type="Object" get="1" set="0">
+<attrs/>
+</invalid>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="wantrt"/>
+<attr name="cmethod" value="newmetacanvas"/>
+</attrs>
+</constructor>
+</class>
+<class virtual="0" name="ResizeCanvas">
+<attrs/>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars>
+<param name="cnv" type="Canvas"/>
+<param name="kx" type="float"/>
+<param name="ky" type="float"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="newresizecanvas"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function static="0" native="1" name="get:canvas" resulttype="Object" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:canvas" void="1" set="0">
+<pars>
+<param name="value" type="Object"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="canvas" type="Object" get="1" set="0">
+<attrs/>
+</invalid>
+</class>
+<class virtual="0" name="SubCanvas">
+<attrs/>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars>
+<param name="cnv" type="Canvas"/>
+<param name="dx" type="int"/>
+<param name="dy" type="int"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="newsubcanvas"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function static="0" native="1" name="get:canvas" resulttype="Object" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:canvas" void="1" set="0">
+<pars>
+<param name="value" type="Object"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="canvas" type="Object" get="1" set="0">
+<attrs/>
+</invalid>
+</class>
+<class comment1="
+TextCanvas has two modes:simple, where it only writes the text and with
+limited page height, where it throws expception from methods text and wrap,
+if the page height limit is broken. Data after last call of method flush are lost.
+" virtual="0" name="TextCanvas">
+<attrs/>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars>
+<param name="cnv" type="Canvas"/>
+<param name="wi" type="int"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="newtextcanvas"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars>
+<param name="cnv" type="Canvas"/>
+<param name="wi" type="int"/>
+<param name="pagehi" type="int"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="newtextcanvas"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function help="1" static="0" native="1" name="text" resulttype="void" type="void">
+<pars>
+<param name="s" type="string"/>
+</pars>
+<attrs>
+<attr name="wantir"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="font" resulttype="void" type="void">
+<pars>
+<param name="font" type="Font"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="wrap" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="flush" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function comment1="fixed x-coord, can wrap" help="1" static="0" native="1" name="textElemX" resulttype="void" type="void">
+<pars>
+<param name="space" type="int"/>
+<param name="x" type="int"/>
+<param name="s" type="string"/>
+</pars>
+<attrs>
+<attr name="wantir"/>
+</attrs>
+</function>
+<function comment1="cannot divide in more lines" help="1" static="0" native="1" name="textElem" resulttype="void" type="void">
+<pars>
+<param name="space" type="int"/>
+<param name="s" type="string"/>
+</pars>
+<attrs>
+<attr name="wantir"/>
+</attrs>
+</function>
+</class>
+<class virtual="0" name="PageDistribution">
+<attrs/>
+<function static="0" native="1" name="get:sheetCount" resulttype="int" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:sheetCount" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="sheetCount" type="int" get="1" set="0">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:freePageCount" resulttype="int" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:freePageCount" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="freePageCount" type="int" get="1" set="0">
+<attrs/>
+</invalid>
+<function help="1" static="0" native="1" name="draw" resulttype="void" type="void">
+<pars>
+<param name="page" type="int"/>
+<param name="cnv" type="Canvas"/>
+</pars>
+<attrs/>
+</function>
+</class>
+<class comment1="Array of LogPage" virtual="0" name="LogPages">
+<attrs/>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="cmethod" value="newlogpages"/>
+<attr name="wantrt"/>
+</attrs>
+</constructor>
+<function comment1="adds grp, can add new pages" help="1" static="0" native="1" name="add" resulttype="void" type="void">
+<pars>
+<param name="grp" type="PaneGrp"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="addpanegrp"/>
+<attr name="calllink"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="print" resulttype="void" type="void">
+<pars>
+<param name="prn" type="Printer"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="print"/>
+<attr name="calllink"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="loadPropsFrom" resulttype="void" type="void">
+<pars>
+<param name="prn" type="Printer"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="setpropsfrom"/>
+<attr name="calllink"/>
+<attr name="cargs"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="setPageSize" resulttype="void" type="void">
+<pars>
+<param name="w" type="int"/>
+<param name="h" type="int"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="setsize"/>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function comment1="makes book page distrubution" help="1" static="0" native="1" name="complete" resulttype="PageDistribution" type="PageDistribution">
+<pars>
+<param name="ofsx" type="Array"/>
+<param name="ofsy" type="Array"/>
+</pars>
+<attrs/>
+</function>
+<function comment1="makes linear page distrubution" help="1" static="0" native="1" name="completeLines" resulttype="PageDistribution" type="PageDistribution">
+<pars>
+<param name="ofsx" type="Array"/>
+<param name="ofsy" type="Array"/>
+</pars>
+<attrs/>
+</function>
+<function static="0" native="1" name="get:pageHi" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getpghi"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:pageHi" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="pageHi" type="int" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getpghi"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:pageWi" resulttype="int" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getpgwi"/>
+</attrs>
+</function>
+<invalid static="0" native="1" name="set:pageWi" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="pageWi" type="int" get="1" set="0">
+<attrs>
+<attr name="calllink"/>
+<attr name="cmethod" value="getpgwi"/>
+</attrs>
+</invalid>
+<function resulttype="LogPage" native="1" name="op:get:index" get="1">
+<pars>
+<param name="index" type="int"/>
+</pars>
+<attrs>
+<attr name="cmethod" value="getpage"/>
+</attrs>
+</function>
+<invalid resulttype="LogPage" native="1" name="op:set:index" set="0">
+<pars>
+<param name="index" type="int"/>
+<param name="right" type="LogPage"/>
+</pars>
+</invalid>
+<invalid hlpname="operator" help="1" native="1" name="[]" get="1" set="0" type="LogPage">
+<attrs>
+<attr name="cmethod" value="getpage"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="addPage" resulttype="LogPage" type="LogPage">
+<pars/>
+<attrs/>
+</function>
+<function static="0" native="1" name="get:count" resulttype="int" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:count" void="1" set="0">
+<pars>
+<param name="value" type="int"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="count" type="int" get="1" set="0">
+<attrs/>
+</invalid>
+<function static="0" native="1" name="get:last" resulttype="LogPage" get="1">
+<pars/>
+<attrs/>
+</function>
+<invalid static="0" native="1" name="set:last" void="1" set="0">
+<pars>
+<param name="value" type="LogPage"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" native="1" name="last" type="LogPage" get="1" set="0">
+<attrs/>
+</invalid>
+<function comment1="returns page number, which contains pane" help="1" static="0" native="1" name="searchPane" resulttype="int" type="int">
+<pars>
+<param name="pane" type="Pane"/>
+</pars>
+<attrs>
+<attr name="cargs"/>
+<attr name="calllink"/>
+<attr name="cmethod" value="searchpane"/>
+</attrs>
+</function>
+</class>
+<class virtual="0" name="MenuItem">
+<attrs/>
+<function static="0" native="1" name="get:text" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:text" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="text" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:checked" resulttype="bool" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:checked" void="1" set="1">
+<pars>
+<param name="value" type="bool"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="checked" type="bool" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function static="0" native="1" name="get:shortcut" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:shortcut" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="shortcut" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<function help="1" static="0" native="1" name="load" resulttype="void" type="void">
+<pars>
+<param name="xml" type="XMLNode"/>
+</pars>
+<attrs/>
+</function>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="wantrt"/>
+<attr name="cmethod" value="newmenuitem"/>
+</attrs>
+</constructor>
+</class>
+<class virtual="0" name="WaitWindow">
+<attrs/>
+<function help="1" static="0" native="1" name="show" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="hide" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="get:msg" resulttype="string" get="1">
+<pars/>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function static="0" native="1" name="set:msg" void="1" set="1">
+<pars>
+<param name="value" type="string"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<invalid hlpname="property" help="1" static="0" native="1" name="msg" type="string" get="1" set="1">
+<attrs>
+<attr name="calllink"/>
+</attrs>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</invalid>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="wantrt"/>
+<attr name="cmethod" value="newwaitwindow"/>
+</attrs>
+</constructor>
+<function help="1" static="0" native="1" name="destroy" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="link"/>
+</attrs>
+</function>
+</class>
+<class virtual="0" name="MidiOut">
+<attrs/>
+<constructor help="1" native="1" resulttype="Object" name="op:new">
+<pars/>
+<attrs>
+<attr name="wantrt"/>
+<attr name="cmethod" value="newmidiout"/>
+</attrs>
+</constructor>
+<function help="1" static="0" native="1" name="open" resulttype="void" type="void">
+<pars/>
+<attrs>
+<attr name="wantir"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="message" resulttype="void" type="void">
+<pars>
+<param name="status" type="int"/>
+<param name="param1" type="int"/>
+<param name="param2" type="int"/>
+</pars>
+<attrs>
+<attr name="calllink"/>
+</attrs>
+</function>
+<function help="1" static="0" native="1" name="close" resulttype="void" type="void">
+<pars/>
+<attrs/>
+</function>
+<function help="1" static="0" native="1" name="noteOn" resulttype="void" type="void">
+<pars>
+<param name="channel" type="int"/>
+<param name="midihi" type="int"/>
+<param name="velocity" type="int"/>
+</pars>
+<attrs/>
+</function>
+<function help="1" static="0" native="1" name="noteOff" resulttype="void" type="void">
+<pars>
+<param name="channel" type="int"/>
+<param name="midihi" type="int"/>
+<param name="velocity" type="int"/>
+</pars>
+<attrs/>
+</function>
+<function help="1" static="0" native="1" name="setInstrument" resulttype="void" type="void">
+<pars>
+<param name="channel" type="int"/>
+<param name="instrumentId" type="int"/>
+</pars>
+<attrs/>
+</function>
+</class>
+</module>

@@ -1,0 +1,257 @@
+program module JTycon;
+
+readonly startform,startwin;
+readonly game;
+//readwrite loadWarning;
+
+var mainmenu=new MenuItem();
+var startmode=true;
+readonly machdir;
+
+readwrite state;
+//state musi implementovat:onpaint(),mdown(button),mup(button),mmove()
+
+function doquit() {
+  JTWinManager.closeAll();
+  Application.exit();
+}
+
+function onstartclose() {
+  if (startmode) Application.exit();
+}
+
+function exitgame() {endModule.show("exit");}
+function quit() {endModule.show("quit");}
+
+function doexitgame() {
+  JTWinManager.closeAll();
+  game.end();
+  Application.systemMenu=null;
+  game=null;
+  system.game=null;
+  startwin.show();
+  startmode=true;
+}
+
+function onCreateGameObject(id) {
+  var zbtypes=["Train","Aircraft","Motocar"];
+  var type=game.objectType(id);
+  if (zbtypes.searchString(type)>=0) {
+    var obj=game.objectFromId(id);
+    obj->handler=new JTWindow(obj);
+  }
+  select (type) {
+  }
+}
+
+function onPaint() {
+  if (state) state.onpaint();
+  else game.drawCustomCursor(game.mapX,game.mapY,Cursors.normal,0);
+//  else game.drawCustomCursor(game.mapX,game.mapY,"r5a4Q11199991",0);
+//  game.drawCursor(game.mapX,game.mapY,"red");
+}
+
+function rrbuild() {
+  RRBuildModule.show();
+}
+
+function initgame() {
+  game.handler=this;
+  startmode=false;
+  startwin.close();
+  system.game=game;
+  Application.systemMenu=mainmenu;
+}
+
+function wantdirs() {
+  if (!machdir) {
+    machdir=new jtDirectory();
+    for (m in game.machines) machdir.add(m);
+    machdir.sort();
+  }
+}
+
+function rrtemplates() {
+  RRTemplateModule.run();
+}
+
+function loadgame() {
+//  loadWarning=null;
+  if (var file=JTDialogs.runopen()) {
+    var ar=new Archive();
+    ar.ropen(file);
+    game=new Game(ar);
+    wantdirs();
+    linesModule.loadgame(ar);
+    ar.close();
+    for (m in game.mobiles) inspect (m) {
+      Train:{
+        m->handler=new JTWindow(m);
+        m->handler.loadtrain(m.loadXML);
+      }
+      Motocar:{
+        m->handler=new JTWindow(m);
+        m->handler.loadmotocar(m.loadXML);
+      }
+      Aircraft:{
+        m->handler=new JTWindow(m);
+        m->handler.loadaircraft(m.loadXML);
+      }
+    }
+    game.loaded();
+    if (game.loadMessages!="") {
+      Window.alert(game.loadMessages);
+      game.loadMessages.save(File.root/"loadmessages");
+    }
+    initgame();
+  }
+}
+
+function buildroad() {
+  roadModule.show();
+}
+function planttrees() {
+  treesModule.show();
+}
+function buildbuildings() {
+  buildingsModule.show();
+}                          
+function teredit() {
+  terrainModule.show();
+}
+function tergen() {
+  tergenModule.show();
+}
+function water() {
+  waterModule.show();
+}
+function tercreat() {
+  terCreatModule.show();
+}
+
+
+function dview(dangle) {
+  directly game.viewAngle+=dangle/180*Math.PI;
+}
+function dsee(dangle) {
+  directly game.seeAngle+=dangle/180*Math.PI;
+}
+
+function showobj(st) {
+  if (!st->handler) {
+    st->handler=new JTWindow(st);
+  }
+  st->handler.showwindow();
+}
+
+function buldozere() {
+  buldozereModule.run();
+}
+
+function onMouseDown(button) {
+  if (state) {
+    state.mdown(button);
+  } else if (game) {
+    if (var st=game.staticAt(game.mapX,game.mapY)) showobj(st);
+    if (var mob=game.mobileAt(game.mouseX,game.mouseY)) showobj(mob);
+  }
+}
+function onMouseUp(button) {
+  if (state) {
+    state.mup(button);
+  }
+}
+function onMouseMove() {
+  if (state) {
+    state.mmove();
+  }
+}
+
+function unwatch() {
+  game.unWatch();
+}
+
+function savegame() {
+  Application.systemMenu=null;
+  game.block("run");game.block("keys");game.block("scroll");
+
+  if (var file=JTDialogs.runsave()) {
+    var ar=new Archive();ar.wopen(file);
+    game.save(ar);
+    linesModule.savegame(ar);
+    ar.close();
+  }
+  Application.systemMenu=mainmenu;
+  game.unblock("run");game.unblock("keys");game.unblock("scroll");
+}
+
+function erasetrains() {
+  game.clearMobiles();
+}
+
+function dryall() {
+  game.dryAll();
+}
+
+function viewtype(type) {
+  game.viewType=type;
+}
+
+function cancel() {
+  state=null;
+}
+
+function showlines() {
+  linesModule.show();
+}
+
+function showtrains() {
+  trainsModule.show();
+}
+
+function oglopt() {
+  JTDialogs.oglopt();
+}
+
+function beop() {
+  JTDialogs.beop();
+}
+
+function terraintype() {
+  terrainTypeModule.show();
+}
+function railtype() {
+  railTypeModule.show();
+}
+function roadtype() {
+  roadTypeModule.show();
+}
+
+function newgame() {
+  if (newGameModule.show()) {
+    game=new Game(newGameModule.W,newGameModule.H);
+    wantdirs();
+    linesModule.newgame();
+    initgame();
+  }
+}
+
+function buildairport() {
+  airportBuildModule.show();
+}
+
+Application.addSearchPath(File.root/"data"/"bmps");
+Application.title="VlakoSim";
+Application.handler=this;
+
+for (tex in Application.options-/textures) Textures.define(tex->name,tex->file);
+
+startform=new Form();
+startwin=startform.loadWindow("jtycon.startwin");
+startform.handler=this;
+mainmenu.load(Application.findResource("jtycon.mainmenu"));
+
+startwin.show();
+Application.run();
+
+

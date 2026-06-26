@@ -1,0 +1,1390 @@
+;=========================
+interface XMLEditModule.module
+initproc=@init,32
+initproc=@registermodule,1
+initproc=@makeislist,3
+initproc=@createclasses,2
+autocreate=1
+begin
+;------------------------
+sub @registermodule 0 0
+code
+pushthis
+pushsys
+setprop XMLEditModule
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub @init 0 0
+code
+pushsys
+pushthis
+join
+polypop 2
+pushthis
+pushlocals
+join
+polypop 2
+pushnull
+pushthis
+initprop clipbrd
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub @makeislist 0 0
+code
+pushsys
+getprop XMLEditorSource
+pushsys
+cm createIsList 1
+pop
+pushsys
+getprop XMLEditor
+pushsys
+cm createIsList 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub @createclasses 0 0
+code
+co XMLEditorSource.class
+pushsys
+setprop XMLEditorSource
+pop
+pushthis
+xchg 1 2
+setprop @module
+xchg 1 2
+pop
+cm @createclasses 0
+pop
+pushstr "XMLEditorSource"
+pushsys
+getprop XMLEditorSource
+setprop @classname
+polypop 2
+pushstr "TreeSource"
+pushsys
+getprop XMLEditorSource
+setprop @supername
+polypop 2
+co XMLEditor.class
+pushsys
+setprop XMLEditor
+pop
+pushthis
+xchg 1 2
+setprop @module
+xchg 1 2
+pop
+cm @createclasses 0
+pop
+pushstr "XMLEditor"
+pushsys
+getprop XMLEditor
+setprop @classname
+polypop 2
+pushstr "Object"
+pushsys
+getprop XMLEditor
+setprop @supername
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub get:clipbrd 0 0
+code
+pushthis
+getprop clipbrd
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub set:clipbrd 1 1
+code
+pushparam 0
+pushthis
+setprop clipbrd
+pop
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub run 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop xml
+polypop 2
+pushlocals
+find 011 xml
+getprop xml
+pushnull
+pushnull
+pushlocals
+find 011 XMLEditor
+getprop XMLEditor
+cm op:new 3
+pushlocals
+initprop editor
+polypop 2
+pushlocals
+find 011 editor
+getprop editor
+cm showModal 0
+pop
+pushlocals
+find 011 editor
+getprop editor
+cm destroy 0
+pop
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+end
+;=========================
+interface XMLEditorSource.instance
+include=TreeSource.instance
+creatoras=TreeSource.instance
+begin
+;------------------------
+sub getClass 0 0
+code
+pushsys
+getprop XMLEditorSource
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub @init_instance:XMLEditorSource 0 0
+code
+pushthis
+xcm @init_instance:TreeSource 0
+jnx 1
+@1:
+pop
+pushthis
+pushlocals
+join
+polypop 2
+pushnull
+pushthis
+initprop xml
+polypop 2
+pushnull
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub get:xml 0 0
+code
+pushthis
+getprop xml
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub getCount 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 xml
+getprop xml
+cm get:count 0
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub getText 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 xml
+getprop xml
+cm get:name 0
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub getNodeAt 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop index
+polypop 2
+pushlocals
+find 011 index
+getprop index
+pushlocals
+find 011 xml
+getprop xml
+cm op:get:index 1
+pushlocals
+find 011 XMLEditorSource
+getprop XMLEditorSource
+cm op:new 1
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub @constructor 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm @init_instance:XMLEditorSource 0
+jnx 2
+@2:
+pop
+pushparam 0
+pushlocals
+initprop xml
+polypop 2
+pushlocals
+find 011 xml
+getprop xml
+pushthis
+setprop xml
+pop
+pop
+pushthis
+doret 1
+pushnull
+doret 1
+end
+end
+;=========================
+interface XMLEditorSource.class
+begin
+;------------------------
+sub @createclasses 0 0
+code
+pushnull
+doret 1
+end
+;------------------------
+sub op:new 1 1
+code
+co XMLEditorSource.instance
+dup 2
+getprop @module
+xchg 1 2
+join
+xchg 1 3
+polypop 2
+cm @constructor 1
+doret 1
+pushnull
+doret 1
+end
+end
+;=========================
+interface XMLEditor.instance
+include=Object.instance
+creatoras=Object.instance
+begin
+;------------------------
+sub getClass 0 0
+code
+pushsys
+getprop XMLEditor
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub @init_instance:XMLEditor 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushnull
+pushthis
+initprop form
+polypop 2
+pushnull
+pushthis
+initprop ctrl
+polypop 2
+pushnull
+pushthis
+initprop selectednode
+polypop 2
+pushnull
+pushthis
+initprop doc
+polypop 2
+pushnull
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub init 3 3
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop xml
+polypop 2
+pushparam 1
+pushlocals
+initprop ctrl
+polypop 2
+pushparam 2
+pushlocals
+initprop owner
+polypop 2
+pushlocals
+find 011 ctrl
+getprop ctrl
+pushthis
+setprop ctrl
+pop
+pop
+pushlocals
+find 011 xml
+getprop xml
+pushthis
+setprop doc
+pop
+pop
+pushnull
+pushthis
+setprop selectednode
+pop
+pop
+pushlocals
+find 011 owner
+getprop owner
+condnotjmp 3
+pushlocals
+find 011 owner
+getprop owner
+pushlocals
+find 011 Form
+getprop Form
+cm op:new 1
+pushthis
+setprop form
+pop
+pop
+jmp 4
+@3:
+pushlocals
+find 011 Form
+getprop Form
+cm op:new 0
+pushthis
+setprop form
+pop
+pop
+@4:
+pushlocals
+find 011 ctrl
+getprop ctrl
+condnotjmp 5
+pushstr "ctrl.xmleditor"
+pushlocals
+find 011 Application
+getprop Application
+cm findResource 1
+pushlocals
+find 011 form
+getprop form
+pushlocals
+find 011 ctrl
+getprop ctrl
+cm loadProps 2
+pop
+jmp 6
+@5:
+pushstr "form.xmleditor"
+pushlocals
+find 011 form
+getprop form
+cm loadWindow 1
+pushthis
+setprop ctrl
+pop
+pop
+@6:
+pushthis
+pushlocals
+find 011 form
+getprop form
+cm set:handler 1
+pop
+pushlocals
+find 011 xml
+getprop xml
+pushlocals
+find 011 XMLEditorSource
+getprop XMLEditorSource
+cm op:new 1
+pushstr "tree"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm set:source 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub showModal 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 ctrl
+getprop ctrl
+cm showModal 0
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub destroy 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 form
+getprop form
+cm destroy 0
+pop
+pushnull
+pushlocals
+find 011 form
+assignprop form
+pop
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub selected 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 selectednode
+getprop selectednode
+doret 1
+pushnull
+doret 1
+end
+;------------------------
+sub updateselectednode 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushstr "tree"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm get:active 0
+pushlocals
+initprop act
+polypop 2
+pushlocals
+find 011 act
+getprop act
+condnotjmp 7
+pushlocals
+find 011 act
+getprop act
+pushlocals
+find 011 doc
+getprop doc
+cm op:get:index 1
+pushlocals
+find 011 selectednode
+assignprop selectednode
+pop
+pop
+jmp 8
+@7:
+pushnull
+pushlocals
+find 011 selectednode
+assignprop selectednode
+pop
+pop
+@8:
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub copytoclipboard 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm selected 0
+jnx 9
+pop
+pushlocals
+find 011 selected
+getprop selected
+cm op:call 0
+@9:
+pushlocals
+initprop sel
+pop
+condnotjmp 10
+pushlocals
+find 011 sel
+getprop sel
+cm clone 0
+pushlocals
+find 011 XMLEditModule
+getprop XMLEditModule
+cm set:clipbrd 1
+pop
+@10:
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub pastefromclipboard 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm selected 0
+jnx 11
+pop
+pushlocals
+find 011 selected
+getprop selected
+cm op:call 0
+@11:
+pushlocals
+initprop sel
+pop
+condnotjmp 12
+pushlocals
+find 011 XMLEditModule
+getprop XMLEditModule
+cm get:clipbrd 0
+condnotjmp 13
+pushlocals
+find 011 XMLEditModule
+getprop XMLEditModule
+cm get:clipbrd 0
+pushlocals
+find 011 sel
+getprop sel
+cm add 0
+cm assign 1
+pop
+@13:
+pushthis
+xcm updatetree 0
+jnx 14
+pop
+pushlocals
+find 011 updatetree
+getprop updatetree
+cm op:call 0
+@14:
+pop
+pushthis
+xcm onchange 0
+jnx 15
+pop
+pushlocals
+find 011 onchange
+getprop onchange
+cm op:call 0
+@15:
+pop
+@12:
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub insattr 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm selected 0
+jnx 16
+pop
+pushlocals
+find 011 selected
+getprop selected
+cm op:call 0
+@16:
+pushlocals
+initprop sel
+pop
+condnotjmp 17
+pushstr "Dotaz"
+pushstr "Jméno atributu(musí být identifikátor)?"
+pushstr "Nove_jmeno"
+pushlocals
+find 011 Window
+getprop Window
+cm inputBox 3
+pushlocals
+initprop name
+pop
+condnotjmp 18
+pushthis
+xcm savevars 0
+jnx 19
+pop
+pushlocals
+find 011 savevars
+getprop savevars
+cm op:call 0
+@19:
+pop
+pushlocals
+find 011 name
+getprop name
+pushstr ""
+pushlocals
+find 011 sel
+getprop sel
+cm setVar 2
+pop
+pushthis
+xcm loadvars 0
+jnx 20
+pop
+pushlocals
+find 011 loadvars
+getprop loadvars
+cm op:call 0
+@20:
+pop
+pushthis
+xcm onchange 0
+jnx 21
+pop
+pushlocals
+find 011 onchange
+getprop onchange
+cm op:call 0
+@21:
+pop
+@18:
+pushlocals
+deleteprops 1
+pop
+@17:
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub eraseattr 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushstr "props"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm eraseVar 0
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub savevars 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm selected 0
+jnx 22
+pop
+pushlocals
+find 011 selected
+getprop selected
+cm op:call 0
+@22:
+pushlocals
+initprop sel
+pop
+condnotjmp 23
+pushlocals
+find 011 VarList
+getprop VarList
+cm op:new 0
+pushlocals
+initprop v
+polypop 2
+pushlocals
+find 011 v
+getprop v
+pushstr "props"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm save 1
+pop
+pushlocals
+find 011 v
+getprop v
+pushlocals
+find 011 sel
+getprop sel
+cm loadVars 1
+pop
+pushthis
+xcm onchange 0
+jnx 24
+pop
+pushlocals
+find 011 onchange
+getprop onchange
+cm op:call 0
+@24:
+pop
+pushlocals
+deleteprops 1
+pop
+@23:
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub loadvars 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm selected 0
+jnx 25
+pop
+pushlocals
+find 011 selected
+getprop selected
+cm op:call 0
+@25:
+pushlocals
+initprop sel
+pop
+condnotjmp 26
+pushlocals
+find 011 VarList
+getprop VarList
+cm op:new 0
+pushlocals
+initprop v
+polypop 2
+pushlocals
+find 011 v
+getprop v
+pushlocals
+find 011 sel
+getprop sel
+cm saveVars 1
+pop
+pushlocals
+find 011 v
+getprop v
+pushstr "props"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm load 1
+pop
+pushlocals
+deleteprops 1
+pop
+@26:
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub findnode 1 1
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushparam 0
+pushlocals
+initprop name
+polypop 2
+pushlocals
+find 011 name
+getprop name
+pushlocals
+find 011 XMLPath
+getprop XMLPath
+cm op:new 1
+pushlocals
+initprop path
+polypop 2
+pushlocals
+find 011 path
+getprop path
+pushlocals
+find 011 doc
+getprop doc
+cm exists 1
+condnotjmp 27
+pushlocals
+find 011 path
+getprop path
+pushlocals
+find 011 doc
+getprop doc
+cm op:get:index 1
+doret 1
+@27:
+pushnull
+doret 1
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub clearchilds 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm savevars 0
+jnx 28
+pop
+pushlocals
+find 011 savevars
+getprop savevars
+cm op:call 0
+@28:
+pop
+pushthis
+xcm selected 0
+jnx 29
+pop
+pushlocals
+find 011 selected
+getprop selected
+cm op:call 0
+@29:
+pushlocals
+initprop sel
+pop
+condnotjmp 30
+pushlocals
+find 011 sel
+getprop sel
+cm clearSubs 0
+pop
+pushthis
+xcm updatetree 0
+jnx 31
+pop
+pushlocals
+find 011 updatetree
+getprop updatetree
+cm op:call 0
+@31:
+pop
+@30:
+pushlocals
+deleteprops 1
+pop
+pushthis
+xcm loadvars 0
+jnx 32
+pop
+pushlocals
+find 011 loadvars
+getprop loadvars
+cm op:call 0
+@32:
+pop
+pushthis
+xcm onchange 0
+jnx 33
+pop
+pushlocals
+find 011 onchange
+getprop onchange
+cm op:call 0
+@33:
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub treeclick 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm savevars 0
+jnx 34
+pop
+pushlocals
+find 011 savevars
+getprop savevars
+cm op:call 0
+@34:
+pop
+pushthis
+xcm updateselectednode 0
+jnx 35
+pop
+pushlocals
+find 011 updateselectednode
+getprop updateselectednode
+cm op:call 0
+@35:
+pop
+pushthis
+xcm loadvars 0
+jnx 36
+pop
+pushlocals
+find 011 loadvars
+getprop loadvars
+cm op:call 0
+@36:
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub updatetree 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushstr "tree"
+pushlocals
+find 011 form
+getprop form
+cm op:get:prop 1
+cm update 0
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub clear 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushlocals
+find 011 doc
+getprop doc
+cm clear 0
+pop
+pushstr "empty"
+pushlocals
+find 011 doc
+getprop doc
+cm set:name 1
+pop
+pushthis
+xcm updatetree 0
+jnx 37
+pop
+pushlocals
+find 011 updatetree
+getprop updatetree
+cm op:call 0
+@37:
+pop
+pushthis
+xcm onchange 0
+jnx 38
+pop
+pushlocals
+find 011 onchange
+getprop onchange
+cm op:call 0
+@38:
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub erase 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm selected 0
+jnx 39
+pop
+pushlocals
+find 011 selected
+getprop selected
+cm op:call 0
+@39:
+pushlocals
+initprop sel
+pop
+condnotjmp 40
+pushlocals
+find 011 doc
+getprop doc
+pushlocals
+find 011 sel
+getprop sel
+cm op:neq 1
+condnotjmp 41
+pushlocals
+find 011 sel
+getprop sel
+cm remove 0
+pop
+@41:
+pushthis
+xcm updatetree 0
+jnx 42
+pop
+pushlocals
+find 011 updatetree
+getprop updatetree
+cm op:call 0
+@42:
+pop
+pushthis
+xcm onchange 0
+jnx 43
+pop
+pushlocals
+find 011 onchange
+getprop onchange
+cm op:call 0
+@43:
+pop
+@40:
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub rename 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm selected 0
+jnx 44
+pop
+pushlocals
+find 011 selected
+getprop selected
+cm op:call 0
+@44:
+pushlocals
+initprop sel
+pop
+condnotjmp 45
+pushstr "Dotaz"
+pushstr "Nové jméno, bez háèkù, èárek a mezer?"
+pushlocals
+find 011 sel
+getprop sel
+cm get:name 0
+pushlocals
+find 011 Window
+getprop Window
+cm inputBox 3
+pushlocals
+initprop text
+pop
+condnotjmp 46
+pushlocals
+find 011 text
+getprop text
+pushlocals
+find 011 sel
+getprop sel
+cm set:name 1
+pop
+@46:
+pushlocals
+deleteprops 1
+pop
+pushthis
+xcm updatetree 0
+jnx 47
+pop
+pushlocals
+find 011 updatetree
+getprop updatetree
+cm op:call 0
+@47:
+pop
+pushthis
+xcm onchange 0
+jnx 48
+pop
+pushlocals
+find 011 onchange
+getprop onchange
+cm op:call 0
+@48:
+pop
+@45:
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub mkdir 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm selected 0
+jnx 49
+pop
+pushlocals
+find 011 selected
+getprop selected
+cm op:call 0
+@49:
+pushlocals
+initprop sel
+pop
+condnotjmp 50
+pushstr "Dotaz"
+pushstr "Jméno, bez háèkù, èárek a mezer?"
+pushstr "name"
+pushlocals
+find 011 Window
+getprop Window
+cm inputBox 3
+pushlocals
+initprop text
+pop
+condnotjmp 51
+pushlocals
+find 011 sel
+getprop sel
+cm add 0
+pushlocals
+initprop xml
+polypop 2
+pushlocals
+find 011 text
+getprop text
+pushlocals
+find 011 xml
+getprop xml
+cm set:name 1
+pop
+pushthis
+xcm updatetree 0
+jnx 52
+pop
+pushlocals
+find 011 updatetree
+getprop updatetree
+cm op:call 0
+@52:
+pop
+pushlocals
+deleteprops 1
+pop
+@51:
+pushlocals
+deleteprops 1
+pop
+@50:
+pushlocals
+deleteprops 1
+pop
+pushnull
+doret 1
+end
+;------------------------
+sub onchange 0 0
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushnull
+doret 1
+end
+;------------------------
+sub @constructor 3 3
+code
+pushthis
+pushlocals
+join
+polypop 2
+pushthis
+xcm @init_instance:XMLEditor 0
+jnx 53
+@53:
+pop
+pushparam 0
+pushlocals
+initprop xml
+polypop 2
+pushparam 1
+pushlocals
+initprop ctrl
+polypop 2
+pushparam 2
+pushlocals
+initprop owner
+polypop 2
+pushlocals
+find 011 xml
+getprop xml
+pushlocals
+find 011 ctrl
+getprop ctrl
+pushlocals
+find 011 owner
+getprop owner
+pushthis
+xcm init 3
+jnx 54
+pop
+pushlocals
+find 011 init
+getprop init
+cm op:call 3
+@54:
+pop
+pushthis
+doret 1
+pushnull
+doret 1
+end
+end
+;=========================
+interface XMLEditor.class
+begin
+;------------------------
+sub @createclasses 0 0
+code
+pushnull
+doret 1
+end
+;------------------------
+sub op:new 3 3
+code
+co XMLEditor.instance
+dup 2
+getprop @module
+xchg 1 2
+join
+xchg 1 3
+polypop 2
+cm @constructor 3
+doret 1
+pushnull
+doret 1
+end
+end

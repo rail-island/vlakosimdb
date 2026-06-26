@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<help_data>
+<class name="TactElemData" comment1="has all of data of TactElem (notes, clefs...)" >
+<property get="1" set="1" name="doctava"  type="string"/><property get="1" set="1" name="cleftype"  type="string"/><property get="1" set="1" name="pr"  type="string"/><property get="1" set="1" name="velocity"  type="string"/><property get="1" set="1" name="pedal"  type="string"/>
+<function name="clear" comment1="clears all data in TactElem"  type="void"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="TactElem" >
+<property get="1" set="0" name="doctavaActive"  type="int"/><property get="1" set="0" name="cleftypeActive"  type="string"/><property get="1" set="0" name="prActive"  type="int"/><property get="1" set="1" name="doctava"  type="string"/><property get="1" set="1" name="cleftype"  type="string"/><property get="1" set="1" name="pr"  type="string"/><property get="1" set="1" name="velocity"  type="string"/><property get="1" set="1" name="pedal"  type="string"/>
+<function name="clear" comment1="clears all data in TactElem"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="saveData"  type="TactElemData"><pars>
+
+</pars>
+
+</function>
+
+<function name="loadData"  type="void"><pars>
+<param name="data" type="TactElemData"/>
+
+</pars>
+
+</function>
+</class>
+<class name="NoteItem" >
+<property get="1" set="0" name="tactElem"  type="TactElem"/><property get="1" set="1" name="ligatura"  type="bool"/><property get="1" set="1" name="start"  type="int"/><property get="1" set="1" name="tone"  type="Object"/><property get="1" set="1" name="len"  type="int"/></class>
+<class name="PauseItem" >
+<property get="1" set="0" name="tactElem"  type="TactElem"/><property get="1" set="1" name="start"  type="int"/><property get="1" set="1" name="len"  type="int"/></class>
+<class name="MusicLine" >
+<property get="1" set="1" name="instrument"  type="int"/></class>
+<class name="MusicTact" >
+<property get="1" set="1" name="type"  type="string"/><property get="1" set="1" name="tempo"  type="int"/></class>
+<class name="Notepart" >
+
+<function name="save"  type="void"><pars>
+<param name="xml" type="XMLNode"/>
+
+</pars>
+
+</function>
+
+<function name="load"  type="void"><pars>
+<param name="xml" type="XMLNode"/>
+
+</pars>
+
+</function>
+
+<function name="clear"  type="void"><pars>
+
+</pars>
+
+</function>
+<operator get="1" set="0" name="[]"  type="TactElem"/>
+<function name="insertLine"  type="void"><pars>
+<param name="pos" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="insertTact"  type="void"><pars>
+<param name="pos" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="getTact"  type="MusicTact"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="getLine"  type="MusicLine"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="saveMidi"  type="void"><pars>
+<param name="midi" type="MidiStream"/>
+<param name="beginTact" type="int"/>
+<param name="endTact" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="saveMidi"  type="void"><pars>
+<param name="midi" type="MidiStream"/>
+
+</pars>
+
+</function>
+<property get="1" set="1" name="modified"  type="bool"/><property get="1" set="0" name="lineCount"  type="int"/><property get="1" set="0" name="tactCount"  type="int"/>
+<function name="moveTact"  type="void"><pars>
+<param name="line" type="int"/>
+<param name="source" type="int"/>
+<param name="target" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="moveTact"  type="void"><pars>
+<param name="source" type="int"/>
+<param name="target" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="moveLine"  type="void"><pars>
+<param name="source" type="int"/>
+<param name="target" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="deleteLine"  type="void"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="deleteTact"  type="void"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="print"  type="void"><pars>
+<param name="prn" type="Printer"/>
+
+</pars>
+
+</function>
+
+<constructor name="op:new"  type=""><pars>
+
+</pars>
+
+</constructor>
+</class>
+<class name="ConfigureData" >
+<property get="1" set="0" name="line"  type="int"/><property get="1" set="0" name="tact"  type="int"/><property get="1" set="0" name="button"  type="string"/><property get="1" set="0" name="shift"  type="bool"/><property get="1" set="0" name="ctrl"  type="bool"/></class>
+<class name="NoteEditor" >
+
+<function name="insertNote"  type="void"><pars>
+<param name="len" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="insertPause"  type="void"><pars>
+<param name="len" type="int"/>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="configureData"  type="ConfigureData"/>
+<function name="changePt" comment1="mod pridavani/ubirani tecky za notou mysi"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="changePr" comment1="mod pridavani/ubirani predznamenani mysi"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="changeLig" comment1="mod pridavani/ubirani ligatury mysi"  type="void"><pars>
+
+</pars>
+
+</function>
+<property get="1" set="1" name="notepart"  type="Notepart"/><property get="1" set="1" name="mode"  type="string"/><property get="1" set="1" name="chordMode"  type="bool"/>
+<function name="kbInsertNote"  type="NoteItem"><pars>
+<param name="hi" type="int"/>
+<param name="len" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="kbInsertPause"  type="PauseItem"><pars>
+<param name="len" type="int"/>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="kbElem"  type="TactElem"/></class>
+<class name="Tone" >
+
+<constructor name="op:new"  type=""><pars>
+<param name="midihi" type="int"/>
+
+</pars>
+
+</constructor>
+
+<function name="fromString" static="1"  type="Object"><pars>
+<param name="s" type="string"/>
+
+</pars>
+
+</function>
+
+<constructor name="op:new"  type=""><pars>
+<param name="note" type="string"/>
+<param name="octava" type="int"/>
+
+</pars>
+
+</constructor>
+<property get="1" set="0" name="note"  type="string"/><property get="1" set="0" name="octava"  type="int"/><property get="1" set="0" name="noteIndex"  type="int"/><property get="1" set="0" name="noteSmallIndex"  type="int"/><operator name="+"  type="Tone"/><operator name="-"  type="Tone"/><operator name="++"  type="Tone"/><operator name="--"  type="Tone"/></class>
+<class name="OrganizerSelection" >
+<property get="1" set="0" name="line"  type="int"/><property get="1" set="0" name="start"  type="int"/><property get="1" set="0" name="stop"  type="int"/></class>
+<class name="NoteOrganizer" >
+<property get="1" set="1" name="notepart"  type="Notepart"/><property get="1" set="0" name="selection"  type="OrganizerSelection"/><property get="1" set="1" name="frame"  type="Object"/></class>
+<class name="MidiPlayer" >
+<property get="1" set="0" name="delay"  type="float"/>
+<function name="play" comment1="plays event at current position and moves position"  type="void"><pars>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="hasNext"  type="bool"/>
+<function name="stop" comment1="stops playing and frees system resources"  type="void"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="MidiStream" >
+
+<constructor name="op:new"  type=""><pars>
+
+</pars>
+
+</constructor>
+
+<function name="save"  type="void"><pars>
+<param name="file" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="play"  type="MidiPlayer"><pars>
+
+</pars>
+
+</function>
+</class>
+</help_data>

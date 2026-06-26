@@ -1,0 +1,797 @@
+module simpleEditModule;
+
+include module simpleEditInlinesModule;
+include module simpleEditMaterialsModule;
+include module simpleEditStampsModule;
+include module bitmapEditBaseModule;
+
+var window;
+var form;
+var dx=0,dy=0,scale=1,scalex=1,scaley=1,scalecur=0;
+var ismoving;
+var lastmx=0,lastmy=0;
+var csize2=4;
+var selpt;
+var selline;
+var ptdist=0;
+var movingpt;
+var maxdeletedist=5;
+var maxmovedist=5;
+var jumpx=0.01;
+var jumpy=0.01;
+//var picture;
+var picfile;//soubor, ze ktereho obrazek je
+var pichflip,picvflip;//zda byl obraz pretocen
+var picmodified=false;
+//var bakpicture;
+var picx0,picy0;
+var picw,pich;
+var penpt0;//bod, odkud se kreslilo tuzkou
+var rectpt0;//bod, odkud se kreslil obdelnik
+var selpt0,selpt1,selecting;//bod, odkud (resp. kam) se kresli obdelnik vyberu
+var selpic;//Picture, !=null:obsahuje vybrany picture
+var blitpic;//obrazek, ktery se kresli na picture
+var blitx,blity,blitw,blith;
+var blitpt0;
+var blitsizing;
+var inlinept0;
+var inlinesizing;
+var modelview;
+
+var smodel;//model (argument run)
+var zipobj;//objekt, ktery se edituje
+var curalong;//dite smodel (alongx/alongy/alongz)
+var polygon;//polygon, ktery se prave edituje
+var colorize;//ukazuje na colordec nebo colorinc
+
+function loadPicture(pic,file) {
+  var path=zipobj.getFile(file);
+  pic.load(path);
+  zipobj.closedGetFile(path,file);
+}
+
+function savePicture(pic,file) {
+  var path=zipobj.setFile(file);
+  pic.save(path);
+  zipobj.closedSetFile(path,file);
+}
+
+function render() {
+  savepic();
+  Textures.clear();
+  simpleObjectModule.recount(smodel,zipobj);
+  modelview.load(smodel-/model,zipobj);
+  form->pager.cur=1;
+}
+
+function close() {
+  if (form->pager.cur>0) form->pager.cur=0;
+  else window.close();
+}
+
+function run(xml,obj) {
+  var opt=Application.options.forceSub("edpoly");
+  this.smodel=xml;
+  this.zipobj=obj;
+  
+  form=new Form();
+  form.handler=this;
+  window=form.loadWindow("model.simpleedfrm");
+  modelview=new ModelView(form->modelview);
+  curalong=null;
+  polygon=null;
+  picture=null;
+  picmodified=false;
+  
+  form->along.cur=xml->edit_along;
+  
+  alongchange();
+  colorizechange();
+  
+  initinlinepage();
+  initmaterialpage();
+  initstamppage();
+  
+  updateinlines();
+  
+  fillcolors(form->colortable);
+  form->crookmemo.text=smodel.forceSub("crook").text;  
+  var fnt=new Font();fnt.name="Courier New";fnt.size="12";
+  form->crookmemo.font=fnt;
+  
+  window.showModal();
+  
+  doneinlinepage();
+  donematerialpage();
+  donestamppage();
+  
+  saveeditprops();
+  savepic();  
+  
+  xml->edit_along=form->along.cur;
+
+  smodel.forceSub("crook").text=form->crookmemo.text;
+  
+  form.destroy();
+  
+  Textures.clear();
+  
+  modelview.destroy();
+  modelview=null;
+  xml=null;
+  form=null;
+  window=null;
+}
+
+function ltopx(l) {directly return (l+1)*form->pp.W/2*scalex+dx;}
+function ltopy(l) {directly return (1-l)*form->pp.H/2*scaley+dy;}
+function ptolx(p) {directly return (p-dx)*2/form->pp.W/scalex-1;}
+function ptoly(p) {directly return 1-(p-dy)*2/form->pp.H/scaley;}
+function ptolbmpx(p) {if (!picture) return 0;directly return (picture.W*(ptolx(p)-picx0)/picw-0.5).round();}
+function ptolbmpy(p) {if (!picture) return 0;directly return (picture.H*(1-(ptoly(p)-picy0)/pich)-0.5).round();}
+//function ltopbmpx(l) {if (!picture) return 0;directly return ltopx( (l+0.5)*picw/picture.W+picx0 );}
+//function ltopbmpy(l) {if (!picture) return 0;directly return ltopy( ((l+0.5)/picture.H-1)*(0-pich)+picy0 );}
+
+function inl_gettx(xml) {return new Number(xml.getVar(["tz","tx","tx"][form->along.cur]));}
+function inl_getty(xml) {return new Number(xml.getVar(["ty","tz","ty"][form->along.cur]));}
+function inl_getsx(xml) {return new Number(xml.getVar(["sz","sx","sx"][form->along.cur]));}
+function inl_getsy(xml) {return new Number(xml.getVar(["sy","sz","sy"][form->along.cur]));}
+
+function inl_settx(xml,v) {xml.setVar(["tz","tx","tx"][form->along.cur],v);}
+function inl_setty(xml,v) {xml.setVar(["ty","tz","ty"][form->along.cur],v);}
+function inl_setsx(xml,v) {xml.setVar(["sz","sx","sx"][form->along.cur],v);}
+function inl_setsy(xml,v) {xml.setVar(["sy","sz","sy"][form->along.cur],v);}
+
+
+function selpichflip() {if (selpic) selpic.hflip();}
+function selpicvflip() {if (selpic) selpic.vflip();}
+
+function selresize() {
+  if (selpic) {
+    var data=new XMLNode();
+    data->x=100;data->y=100;
+    if (Application.runXMLDialog(Application.findResource("model.selresizefrm"),data)) {
+      var p2=new Picture();
+      directly p2.W=selpic.W*data->x/100;
+      directly p2.H=selpic.H*data->y/100;
+      selpic.stretch(0,0,p2.W,p2.H,p2.canvas);
+      selpic=p2;
+    }
+  }
+}
+function selpicvflip() {if (selpic) selpic.vflip();}
+
+function updateinlines() {
+  var items=smodel.forceSub("inlines").childs.join({value->name&"("&value->comment&")"},"\n");
+  form->inlinelist.items=items;
+  form->inlines.items=items;
+}
+
+function actinline() {
+  if (form->inlines.cur>=0) return smodel-/inlines[form->inlines.cur];
+  return null;
+}
+
+function changeinline() {
+  changeview();
+}
+
+function copybmp() {
+  var a=selpt0,b=selpt1;
+  if (selpt0 && selpt1 && b->x>=a->x && b->y>=a->y) {
+    undrawselect();
+    selpic=new Picture();
+    selpic.W=b->x-a->x+1;
+    selpic.H=b->y-a->y+1;
+    picture.stretchRectangle(0,0,selpic.W,selpic.H,a->x,a->y,selpic.W,selpic.H,selpic.canvas);
+    changeview();
+  } else Window.alert("$Nothing-is-selected");
+}
+
+function loadbmp() {
+  var o=new OpenDialog();
+  o.initialDir=File.root/"data"/"textures";
+  o.filter="$Bitmaps|*.bmp";
+  if (o.execute()) {
+    selpic=new Picture();
+    selpic.load(o.file);
+  }
+}
+
+function colorizechange() {
+  savepic();
+  colorize=null;picture=null;bakpicture=null;
+  if (!curalong) return;
+  var cur=["colorinc","colordec"][form->colorize.cur];
+  if (curalong.isSub(cur)) colorize=curalong.getSub(cur);
+  actpic();
+}
+
+function togglenextpolygon() {
+  nextpolygon();
+  changeview();
+}
+
+function nextpolygon() {
+  var last=polygon;
+  polygon=null;
+  if (!curalong) return;
+  var clip=curalong-/clip;
+  if (clip.count==0) return;
+  if (!last) {polygon=clip[0];return;}
+  var idx=-1;
+  for(var i=0;i<clip.count;i++) if (clip[i]==last) idx=i;
+  idx++;
+  if (idx>=clip.count) idx=0;
+  polygon=clip[idx];
+}
+
+function addpoly() {
+  if (!curalong) return;
+  var clip=curalong-/clip;
+  polygon=clip.add();polygon.name="polygon";
+  clearpolygon();
+}
+
+function erasepoly() {
+  if (polygon) {
+    polygon.remove();
+    polygon=null;
+    nextpolygon();
+    changeview();
+  }
+}
+
+function clearpolygon() {
+  if (!polygon) return;
+  selpt=null;selline=null;
+  polygon.clearSubs();
+  addpt(0,0);addpt(0,1);addpt(1,1);addpt(1,0);
+  changeview();
+}
+
+
+function alongchange() {
+  savepic();
+  saveeditprops();
+  curalong=smodel.getSub( ["alongx","alongy","alongz"] [form->along.cur] );
+  polygon=null;
+  nextpolygon();
+  loadeditprops();
+  colorizechange();
+  changeview();
+}
+
+function roundx(x) {
+  if (jumpx>0) directly return ((x/jumpx).round())*jumpx;
+  return new Number(x);
+}
+function roundy(y) {
+  if (jumpy>0) directly return ((y/jumpy).round())*jumpy;
+  return new Number(y);
+}
+
+function savepic() {
+  if (picmodified && picture) {
+    undrawselect();
+    if (picvflip) picture.vflip();
+    if (pichflip) picture.hflip();
+    savePicture(picture,picfile);
+//    picture.save(picfile);
+  }
+}
+
+function actpic() {
+  savepic();
+  var xml=colorize;
+  picture=null;bakpicture=null;picmodified=false;
+  if (!xml) return;
+  var file=Textures.textureFile(xml->texture);
+//  var file=xml->texture;
+//  if (file && file.isFile()) {
+  if (file!="") {
+    picfile=file;pichflip=false;picvflip=false;
+    picture=new Picture();
+    loadPicture(picture,file);
+//    picture.load(file);
+    var x1=new Number(xml->texx1);
+    var x2=new Number(xml->texx2);
+    var y1=new Number(xml->texy1);
+    var y2=new Number(xml->texy2);
+    if (x1>x2) {pichflip=true;picture.hflip();}
+    if (y1>y2) {picvflip=true;picture.vflip();}
+    picx0=x1;if (x2<picx0) picx0=x2;
+    picy0=y1;if (y2<picy0) picy0=y2;
+    picw=(x1-x2).abs();
+    pich=(y1-y2).abs();
+    bakpicture=picture.clone();
+  }
+}
+
+/*
+function setdrawmode() {
+  undrawselect();
+  if (form->drawmode.cur>=0) form->mode.cur=-1;
+  if (form->drawmode.cur==4) {
+    if (selpic) {
+      blitpic=selpic;
+      blitx=0;blity=0;blitw=picture.W;blith=picture.H;
+      if (selpic.W<blitw) blitw=selpic.W;
+      if (selpic.H<blith) blith=selpic.H;
+      bakpicture=picture.clone();
+      blitpic.stretch(blitx,blity,blitw,blith,picture.canvas);
+      blitpt0=null;
+    } else {
+      Window.alert("$In-clipboard-is-not-picture");
+      form->drawmode.cur=3;
+    }
+  } else blitpic=null;
+  changeview();
+}
+*/
+
+function drawmodeset() {
+  form->mode.cur=-1;
+  changeview();
+}
+
+function setmode() {
+  undrawselect();
+  if (form->mode.cur>=0) form->drawmode.cur=-1;
+  if (form->mode.cur==3) {
+    if (!actinline()) {
+      Window.alert("$Inline-object-is-not-active");
+      form->mode.cur=-1;
+    }
+  }
+}
+
+function okblit() {
+  if (blitpic) {
+    bakpicture=picture.clone();
+    blitpic.stretch(blitx,blity,blitw,blith,picture.canvas);
+    bakpicture=picture.clone();
+    blitpic=null;blitpt0=null;
+    form->drawmode.cur=-1;
+  } else Window.alert("$Picture-is-not-placed");
+}
+
+function loadeditprops() {
+  if (!curalong) return;
+  var xml=curalong;
+  dx=new Number(xml->edit_dx);dy=new Number(xml->edit_dy);
+  scalecur=xml->edit_scale;
+  form->scale.cur=scalecur;
+  jumpx=xml->edit_jumpx;jumpy=xml->edit_jumpy;
+  if (jumpx<=0) jumpx=0.01;if (jumpy<=0) jumpy=0.01;
+  form->jumpx.text=jumpx;form->jumpy.text=jumpy;
+  form->colorize.cur=xml->edit_incdec;
+//  form->pencolor.text=xml->edit_pencolor;
+}
+
+function saveeditprops() {
+  if (!curalong) return;
+  var xml=curalong;
+  xml->edit_dx=dx;xml->edit_dy=dy;
+  xml->edit_scale=scalecur;
+  xml->edit_jumpx=jumpx;xml->edit_jumpy=jumpy;
+  xml->edit_incdec=form->colorize.cur;
+//  xml->edit_pencolor=form->pencolor.text;
+}
+
+function setimage() {
+  if (!colorize) return;
+  Application.runXMLDialog(Application.findResource("model.colorizefrm"),colorize);
+  actpic();
+  changeview();
+}
+
+function changescale() {
+  scalecur=form->scale.cur;
+  changeview();
+}
+
+function changeview() {
+  scale=0.01*(1.1).power(scalecur);
+  var w=form->pp.W,h=form->pp.H;
+  if (w>h) {
+    scaley=scale;
+    scalex=scale*h/w;
+  } else {
+    scalex=scale;
+    scaley=scale*w/h;
+  }
+  form->pp.repaint();
+}
+
+function changejump() {
+  jumpx=new Number(form->jumpx.text);
+  jumpy=new Number(form->jumpy.text);
+  if (jumpx<=0) jumpx=0.01;if (jumpy<=0) jumpy=0.01;
+}
+
+function addpt(x,y) {
+  var a=polygon.add();a.name="point";
+  a->x=x;a->y=y;
+  return a;
+}
+
+function undoimage() {
+  var p=bakpicture;bakpicture=picture;picture=p;
+  changeview();
+}
+
+function mdown(x,y,button,shift) {
+  x=new Number(x);y=new Number(y);
+  lastmx=x;lastmy=y;
+  if (button=="left") {
+    select (form->mode.cur) {
+      -1:if (picture) {
+        if (!blitpic) {
+          undrawselect();
+          bakpicture=picture.clone();
+        }
+        picmodified=true;
+        var pt0=new (x=ptolbmpx(x),y=ptolbmpy(y));
+        select (form->drawmode.cur) {
+          0:{penpt0=pt0;picture.canvas[pt0->x,pt0->y]=form->color.color;}
+          1:form->color.color=picture.canvas[pt0->x,pt0->y];
+          2:rectpt0=pt0;
+          3:{selpt0=pt0;selecting=true;}
+          5:rectpt0=pt0;
+        }
+        if (blitpic) {
+          blitpt0=pt0;
+          blitsizing=shift.ctrl;
+        }
+//        picture.canvas.fg(form->color.color).rect(pt0->x,
+      }
+      0:{
+        if (selline) {
+          var pt=polygon.insert(selline+1);
+          pt->x=roundx(ptolx(x));pt->y=roundy(ptoly(y));
+          pt.name="point";
+          selline=null;
+        }
+      }
+      1:{
+        if (selpt && ptdist<maxdeletedist) {
+          polygon[selpt].remove();
+          selpt=null;
+          changeview();
+          return;
+        }
+      }
+      2:{
+        if (selpt && ptdist<maxmovedist) {
+          movingpt=polygon[selpt];
+          var movx0=roundx(ptolx(x)),movy0=roundy(ptoly(y));
+          movingpt->x=movx0;
+          movingpt->y=movy0;
+          return;    
+        }
+      }
+      3:if (actinline()) {
+        inlinept0=new (x=ptolx(x),y=ptoly(y));
+        inlinesizing=shift.ctrl;
+      }
+    }
+  } else {
+    ismoving=true;
+  }
+}
+function mmove(x,y) {
+  x=new Number(x);y=new Number(y);
+  if (form->mode.cur<0) {
+    form->position.text="X="+ptolbmpx(x).round()+";Y="+ptolbmpy(y).round();
+  } else {
+    form->position.text="X="+roundx(ptolx(x))+";Y="+roundy(ptoly(y));
+  }
+  if (ismoving) {
+    dx+=x-lastmx;
+    dy+=y-lastmy;
+    lastmx=x;lastmy=y;
+    changeview();
+  } else if (movingpt)  {
+    option directly;
+    var actx=roundx(ptolx(x)),acty=roundy(ptoly(y));
+    movingpt->x=actx;
+    movingpt->y=acty;
+    lastmx=x;lastmy=y;
+    changeview();
+  } else if (penpt0) {
+    var pt=new (x=ptolbmpx(x),y=ptolbmpy(y));
+    var cnv=picture.canvas;
+    if (picture && (pt->x!=penpt0->x || pt->y!=penpt0->y)) {
+      cnv.fg(form->color.color);
+      cnv.line(penpt0->x,penpt0->y,pt->x,pt->y);
+      penpt0=pt;
+      changeview();
+    }
+    cnv[pt->x,pt->y]=form->color.color;
+  } else if (rectpt0) {
+    var pt=new (x=ptolbmpx(x),y=ptolbmpy(y));
+    if (picture) {
+      picture=bakpicture.clone();
+      var cnv=picture.canvas;
+      if (form->drawmode.cur==2) {
+        cnv.bg(form->color.color).fg("none");
+        cnv.rectangle(rectpt0->x,rectpt0->y,pt->x,pt->y);
+      } else {
+        if (selpic) cnv.drawSelection(rectpt0->x,rectpt0->y,pt->x,pt->y);
+      }      
+      changeview();
+    }
+  } else if (selecting) {
+    var pt=new (x=ptolbmpx(x),y=ptolbmpy(y));
+    selpt1=pt;
+    if (picture) {
+      picture=bakpicture.clone();
+      var cnv=picture.canvas;
+      cnv.drawSelection(selpt0->x,selpt0->y,selpt1->x,selpt1->y);
+      changeview();
+    }
+  } else if (blitpic && blitpt0) {
+    var pt=new (x=ptolbmpx(x),y=ptolbmpy(y));
+    if (blitsizing) {
+      blitw+=(pt->x-blitpt0->x);
+      blith+=(pt->y-blitpt0->y);
+    } else {
+      blitx+=(pt->x-blitpt0->x);
+      blity+=(pt->y-blitpt0->y);
+    }
+    if (blitw<1) blitw=1;
+    if (blith<1) blith=1;
+    picture=bakpicture.clone();
+    blitpic.stretch(blitx,blity,blitw,blith,picture.canvas);
+    blitpt0=pt;
+    changeview();
+  } else if (inlinept0) {
+    if (var inl=actinline()) {
+      option directly;
+      var pt=new (x=ptolx(x),y=ptoly(y));
+      if (inlinesizing) {
+        inl_setsx(inl,inl_getsx(inl)+pt->x-inlinept0->x);
+        inl_setsy(inl,inl_getsy(inl)+pt->y-inlinept0->y);
+      } else {
+        inl_settx(inl,inl_gettx(inl)+pt->x-inlinept0->x);
+        inl_setty(inl,inl_getty(inl)+pt->y-inlinept0->y);
+      }
+      inlinept0=pt;
+      changeview();
+    }
+  } else if (polygon) {
+    selpt=nearestpt(x,y);
+    selline=nearestline(x,y);
+    changeview();
+  }
+}
+function mup(x,y,button) {
+  select (button) {
+    "right":{
+      ismoving=false;
+    }
+    "left":{
+      if (form->drawmode.cur==5) {
+        picture=bakpicture.clone();
+        var cnv=picture.canvas;
+        var pt=new (x=ptolbmpx(x),y=ptolbmpy(y));
+        if (selpic) ModelProcs.fillPattern(cnv,rectpt0->x,rectpt0->y,pt->x,pt->y,selpic);
+      }
+      movingpt=null;
+      penpt0=null;
+      rectpt0=null;
+      selecting=false;
+      blitpt0=null;
+      blitsizing=false;
+      inlinept0=null;
+      inlinesizing=false;
+    }
+  }
+}
+
+function pmdist(ptxml,mx,my) {
+  option directly;
+  var dx=ltopx(ptxml->x)-mx,dy=ltopy(ptxml->y)-my;
+  return (dx*dx+dy*dy).power(0.5);
+}
+
+function dist(x1,y1,x2,y2) {
+  option directly;
+  var dx=x1-x2,dy=y1-y2;
+  return (dx*dx+dy*dy).power(0.5);
+}
+
+//vrati index bodu nejblizsiho ke kurzoru mysi
+function nearestpt(mx,my) {
+  if (polygon.count==0) return null;
+  var mini=0,mindist=pmdist(polygon[0],mx,my);
+  directly for(var i=1;i<polygon.count;i++) {
+    var actdist=pmdist(polygon[i],mx,my);
+    if (actdist<mindist) {
+      mini=i;
+      mindist=actdist;
+    }
+  }
+  ptdist=mindist;
+  return mini;
+}
+
+//vzdalenost bodu od usecky a,b - priblizne, jen pro ucely porovnani
+function linedist(a,b,x,y) {
+  var ax=ltopx(a->x),ay=ltopy(a->y),bx=ltopx(b->x),by=ltopy(b->y);
+  return dist(ax,ay,x,y)+dist(bx,by,x,y)-dist(ax,ay,bx,by);
+}
+
+//vrati index bodu nejblizsiho ke kurzoru mysi
+function nearestline(mx,my) {
+  if (polygon.count<=1) return null;
+  var mini=0,mindist=linedist(polygon[0],polygon[1],mx,my);
+  directly for(var i=1;i<polygon.count;i++) {
+    var p1=polygon[i],p2=polygon[(i+1)%polygon.count];
+    var actdist=linedist(p1,p2,mx,my);
+    if (actdist<mindist) {
+      mini=i;
+      mindist=actdist;
+    }
+  }
+  return mini;
+}
+
+/*
+function getpencolor() {
+  return form->pencolor.text;
+}
+*/
+
+function undrawselect() {
+  if (selpt0) {
+    var p=bakpicture;bakpicture=picture;picture=p;
+    selpt0=null;selpt1=null;
+  }
+  if (blitpic) {
+    var p=bakpicture;bakpicture=picture;picture=p;
+    blitpic=null;
+  }
+}
+
+function drawpolygon(cnv,p,vline) {
+  directly for(var i=0;i<p.count;i++) {
+    var p1=p[i],p2=p[(i+1)%p.count];
+    var x1=ltopx(p1->x),y1=ltopy(p1->y),x2=ltopx(p2->x),y2=ltopy(p2->y);
+    if (vline) {
+      if (vline==i) cnv.randomLine(x1,y1,x2,y2);
+    } else cnv.randomLine(x1,y1,x2,y2);
+  }
+}
+
+function drawinline(cnv,inl) {
+  var zip=zipobj.openChildPath(inl->name);
+  var xml=new XMLNode();
+  zip.loadXML("index.xml",xml);
+  var model=new Model();
+  model.load(xml);
+  var kx=(ltopx(100)-ltopx(0))/100,ky=(ltopy(100)-ltopy(0))/100;
+  model.drawProjection(cnv,form->along.cur,
+    inl_getsx(inl)*kx,inl_getsy(inl)*ky,
+    inl_gettx(inl)*kx+ltopx(0),inl_getty(inl)*ky+ltopy(0)
+  );
+}
+
+function moveclip() {
+  if (curalong) {
+    var xml=new XMLNode();
+    if (Application.runXMLDialog(Application.findResource("form.getxyz"),xml)) {
+      option directly;
+      for (polygon in curalong-/clip) {
+        for (pt in polygon) {
+          pt->x+=xml->x;pt->y+=xml->y;
+        }
+      }
+      changeview();
+    }
+  }
+}
+
+function movepolygon() {
+  if (polygon) {
+    var xml=new XMLNode();
+    if (Application.runXMLDialog(Application.findResource("form.getxyz"),xml)) {
+      option directly;
+      for (pt in polygon) {
+        pt->x+=xml->x;pt->y+=xml->y;
+      }
+      changeview();
+    }
+  }
+}
+
+function paint(cnv) {
+  if (picture) {
+    var w=picw*scalex*form->pp.W/2,h=pich*scaley*form->pp.H/2;
+    picture.stretch(ltopx(picx0),ltopy(picy0)-h,w,h,cnv);
+  }
+
+/*  
+  if (selpt0 && selpt1) {
+    var x1=ltopbmpx(selpt0->x),y1=ltopbmpy(selpt0->y);
+    var x2=ltopbmpx(selpt1->x),y2=ltopbmpy(selpt1->y);
+    window.text=x1;
+    cnv.bg("none").penwi(1);
+    cnv.fg("red");
+    cnv.rectangle(x1,y1,x2,y2);
+    cnv.fg("lime");
+    cnv.rectangle(x1+1,y1+1,x2-1,y2-1);
+    cnv.fg("blue");
+    cnv.rectangle(x1+2,y1+2,x2-2,y2-2);
+  }
+*/
+
+  //osy
+  cnv.fg("blue").penwi(1);
+  cnv.line(0,ltopy(0),form->pp.W,ltopy(0));
+  cnv.line(ltopx(0),0,ltopx(0),form->pp.H);
+
+  if (form->mode.cur==3) {
+    cnv.fg("blue");
+    for (inl in smodel-/inlines) drawinline(cnv,inl);
+    cnv.fg("red");
+    if (var inl=actinline()) drawinline(cnv,inl);
+/*      if (var shape=modelModule.getshape(modelModule.findnode(inl->name))) {
+        cnv.fg("blue").bg("red");
+        var kx=(ltopx(100)-ltopx(0))/100,ky=(ltopy(100)-ltopy(0))/100;
+        ModelProcs.drawProjection(cnv,shape,form->along.cur,
+          inl_getsx(inl)*kx,inl_getsy(inl)*ky,
+		      inl_gettx(inl)*kx+ltopx(0),inl_getty(inl)*ky+ltopy(0)
+        );
+        cnv.bg("none");
+      }*/
+/*      if (var shape=modelModule.getshape(modelModule.findnode(inl->name))) {
+        cnv.fg("blue").bg("red");
+        var kx=(ltopx(100)-ltopx(0))/100,ky=(ltopy(100)-ltopy(0))/100;
+        ModelProcs.drawProjection(cnv,shape,form->along.cur,
+          inl_getsx(inl)*kx,inl_getsy(inl)*ky,
+		      inl_gettx(inl)*kx+ltopx(0),inl_getty(inl)*ky+ltopy(0)
+        );
+        cnv.bg("none");
+      }*/
+  }
+
+  if (var clip=curalong-/clip) for (p in clip) {
+    var vline=null;
+    if (p==polygon && form->mode.cur==0) vline=selline;
+    drawpolygon(cnv,p,vline);
+  }
+/*
+  //polygon
+  directly for(var i=0;i<polygon.count;i++) {
+    var p1=polygon[i],p2=polygon[(i+1)%polygon.count];
+    var x1=ltopx(p1->x),y1=ltopy(p1->y),x2=ltopx(p2->x),y2=ltopy(p2->y);
+//    if (selline && selline==i && form->mode.cur==0) cnv.fg("green").penwi(3);else cnv.fg(getpencolor()).penwi(1);
+    if (form->mode.cur==0) {
+      if (selline && selline==i) cnv.randomLine(x1,y1,x2,y2);
+    } else {
+      cnv.randomLine(x1,y1,x2,y2);
+    }
+  }
+  cnv.penwi(1);
+*/
+ 
+  //krouzky kolem bodu
+  directly for(var i=0;i<polygon.count;i++) {
+    var p=polygon[i];
+    var x=ltopx(p->x),y=ltopy(p->y);
+    cnv.fg("green").penwi(1);
+    if (selpt && selpt==i) {
+      if (form->mode.cur==1 && ptdist<maxdeletedist) cnv.penwi(3).fg("red");
+      if (form->mode.cur==2 && ptdist<maxmovedist) cnv.penwi(2).fg("blue");
+    }
+    cnv.ellipse(x-csize2,y-csize2,x+csize2,y+csize2);
+  }
+  cnv.penwi(1);
+}
+
+function doclose() {
+  window.close();
+}
+

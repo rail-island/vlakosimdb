@@ -1,0 +1,20 @@
+#pragma hdrstop
+USEUNIT("..\jlib\zlib\zutil.c");
+USEUNIT("..\jlib\zlib\compress.c");
+USEUNIT("..\jlib\zlib\crc32.c");
+USEUNIT("..\jlib\zlib\deflate.c");
+USEUNIT("..\jlib\zlib\gzio.c");
+USEUNIT("..\jlib\zlib\infblock.c");
+USEUNIT("..\jlib\zlib\infcodes.c");
+USEUNIT("..\jlib\zlib\inffast.c");
+USEUNIT("..\jlib\zlib\inflate.c");
+USEUNIT("..\jlib\zlib\inftrees.c");
+USEUNIT("..\jlib\zlib\infutil.c");
+USEUNIT("..\jlib\zlib\trees.c");
+USEUNIT("..\jlib\zlib\uncompr.c");
+USEUNIT("..\jlib\zlib\adler32.c");
+//---------------------------------------------------------------------------
+#define Library
+
+// To add a file to the library use the Project menu 'Add to Project'.
+

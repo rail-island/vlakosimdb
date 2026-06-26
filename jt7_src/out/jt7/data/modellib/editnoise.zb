@@ -1,0 +1,99 @@
+includable module editNoiseModule;
+
+var actnoise;
+var noisebmpfiles=[];
+
+function saveactnoise() {
+  if (actnoise) {
+    form->noisepage.saveData(actnoise);
+  }   
+}
+
+function loadactnoise() {
+  if (actnoise) {
+    form->noisepage.loadData(actnoise);
+    form->noiseimages.items=actnoise->files.split(";").join("\n");
+  }   
+}
+
+function addnoiseimage() {
+  if (actnoise) {
+    if (var file=noisebmpfiles[form->noiseallimages.cur]) {
+      if (actnoise->files.split(";").searchString(file)<0) {
+        actnoise->files=actnoise->files&";"&file;
+        form->noiseimages.items=actnoise->files.split(";").join("\n");
+      }
+    }
+  }
+}
+
+function erasenoiseimage() {
+  if (actnoise) {
+    var array=actnoise->files.split(";");
+    if (form->noiseimages.cur>=0 && form->noiseimages.cur<array.count) array.erase(form->noiseimages.cur);
+    actnoise->files=array.join(";");
+    form->noiseimages.items=array.join("\n");
+  }
+}
+
+function initnoisepage() {
+  actnoise=null;
+  updatenoisepage();
+  updatenoiselist();
+}
+
+function updatenoisepage() {
+  noisebmpfiles=[];
+  for (f in zipobj.listFiles().split("\n")) {
+    var file=new File(f);
+    if (file.hasExt("bmp")) noisebmpfiles.push(f);
+  }  
+  form->noiseallimages.items=noisebmpfiles.join("\n");
+  loadactnoise();
+  updatecolor();
+}
+
+function updatecolor() {
+  form->noisecolor.text="R:"&form->rad_r.cur&";G:"&form->rad_g.cur&";B:"&form->rad_b.cur;
+}
+
+function donenoisepage() {
+  saveactnoise();
+  actnoise=null;
+  bitmappicture=null;
+}
+
+function updatenoiselist() {
+  form->noiselist.items=smodel.forceSub("noise").childs.join({value->name},"\n");
+  form->noiselist.cur=-1;
+}
+
+function addnoise() {
+  saveactnoise();
+  var s=smodel-/noise.add("noise");
+  s->name="noise";
+  updatenoiselist();
+  actnoise=null;
+  form->noiselist.cur=smodel-/noises.count-1;
+  actnoise=s;
+  loadactnoise();  
+}
+
+function erasenoise() {
+  if (actnoise) {
+    actnoise.remove();
+    actnoise=null;
+    updatenoiselist();
+  }
+}
+
+function changenoiselist() {
+  saveactnoise();
+  actnoise=smodel-/noise.childs[form->noiselist.cur];
+  loadactnoise();
+}
+
+function getnoisecolor() {
+  form->noisecoloredit.text=form->color.color;
+}
+

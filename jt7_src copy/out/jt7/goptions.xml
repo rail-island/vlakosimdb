@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<options lang="gen" langid="en" font_sizes="font_sizes.xml" font_images="font_images.bmp">
+<opengl sunangle="-45" sunydir="-1" ambient="2" diffuse="1" specular="0" lighting="1" perspective.maxdist="30" heightlines="0" drawtrees="1"/>
+<behavior ptcursorsize2="8" train_hi="1" train_speed_koef="0.05" motocar_speed_koef="0.03" train_mez="0.08" max_train_click_distance="1" max_motocar_click_distance="1" semaphore_dir_0_penalty="10" min_train_speed="0.3" train_F_t="0.0000005" train_break_koef="20" min_motocar_speed="0.3" motocar_F_t="0" motocar_max_block_time="8" aircraft_speed_koef="0.02" max_aircraft_click_distance="1" right_sided_semaphores="1" train_air_koef_a="0" train_air_koef_b="0" BSF="0.1" MSF="0.08" ASF="0.05" CSF="0.08" train_force_koef="0.5" motocar_force_koef="1"/>
+<map_colors h1="0.5" r0="0" g0="0.5" b0="0" r1="0.7" g1="0.7" b1="0.2" r2="1" g2="0.5" b2="0"/>
+<RRtemplates>
+<template w="9" h="7" name="tpl4">
+<ritem x="1" y="0" flags="8192">
+<semaphore type="sem1" dir="-1" tt="14"/>
+</ritem>
+<ritem x="2" y="0" flags="2">
+<semaphore type="sem1" dir="-1" tt="2"/>
+</ritem>
+<ritem x="3" y="0" flags="2048">
+<semaphore type="sem1" dir="1" tt="12"/>
+</ritem>
+<ritem x="0" y="1" flags="256">
+<semaphore type="sem1" dir="1" tt="9"/>
+</ritem>
+<ritem x="4" y="1" flags="512">
+<semaphore type="sem1" dir="-1" tt="10"/>
+</ritem>
+<ritem x="7" y="1" flags="65536">
+<semaphore type="sem1" dir="1" tt="17"/>
+</ritem>
+<ritem x="0" y="2" flags="1">
+<semaphore type="sem1" dir="1" tt="1"/>
+</ritem>
+<ritem x="4" y="2" flags="1">
+<semaphore type="sem1" dir="-1" tt="1"/>
+</ritem>
+<ritem x="6" y="2" flags="131072">
+<semaphore type="sem1" dir="-1" tt="18"/>
+</ritem>
+<ritem x="8" y="2" flags="524288">
+<semaphore type="sem1" dir="1" tt="20"/>
+</ritem>
+<ritem x="0" y="3" flags="32768">
+<semaphore type="sem1" dir="-1" tt="16"/>
+</ritem>
+<ritem x="4" y="3" flags="16384">
+<semaphore type="sem1" dir="1" tt="15"/>
+</ritem>
+<ritem x="7" y="3" flags="262144">
+<semaphore type="sem1" dir="-1" tt="19"/>
+</ritem>
+<ritem x="1" y="4" flags="4096">
+<semaphore type="sem1" dir="1" tt="13"/>
+</ritem>
+<ritem x="2" y="4" flags="2">
+<semaphore type="sem1" dir="1" tt="2"/>
+</ritem>
+<ritem x="3" y="4" flags="1024">
+<semaphore type="sem1" dir="-1" tt="11"/>
+</ritem>
+<ritem x="5" y="5" flags="4">
+<semaphore type="sem1" dir="1" tt="3"/>
+</ritem>
+<ritem x="6" y="5" flags="8">
+<semaphore type="sem1" dir="-1" tt="4"/>
+</ritem>
+<ritem x="5" y="6" flags="32">
+<semaphore type="sem1" dir="-1" tt="6"/>
+</ritem>
+<ritem x="6" y="6" flags="16">
+<semaphore type="sem1" dir="1" tt="5"/>
+</ritem>
+</template>
+<template w="4" h="4" name="rst4dbl">
+<ritem x="3" y="0" flags="8192">
+<semaphore type="sem1" dir="0" tt="14"/>
+</ritem>
+<ritem x="0" y="1" flags="2">
+<semaphore type="sem1" dir="-1" tt="2"/>
+</ritem>
+<ritem x="1" y="1" flags="2050"/>
+<ritem x="2" y="1" flags="9282"/>
+<ritem x="3" y="1" flags="2">
+<semaphore type="sem1" dir="0" tt="2"/>
+</ritem>
+<ritem x="0" y="2" flags="2">
+<semaphore type="sem1" dir="1" tt="2"/>
+</ritem>
+<ritem x="1" y="2" flags="1026"/>
+<ritem x="2" y="2" flags="6274"/>
+<ritem x="3" y="2" flags="2">
+<semaphore type="sem1" dir="0" tt="2"/>
+</ritem>
+<ritem x="3" y="3" flags="4096">
+<semaphore type="sem1" dir="0" tt="13"/>
+</ritem>
+</template>
+<template w="5" h="6" name="rst6dbl">
+<ritem x="4" y="0" flags="8192">
+<semaphore type="sem1" dir="0" tt="14"/>
+</ritem>
+<ritem x="3" y="1" flags="64"/>
+<ritem x="4" y="1" flags="8192">
+<semaphore type="sem1" dir="0" tt="14"/>
+</ritem>
+<ritem x="0" y="2" flags="2">
+<semaphore type="sem1" dir="-1" tt="2"/>
+</ritem>
+<ritem x="1" y="2" flags="2050"/>
+<ritem x="2" y="2" flags="9282"/>
+<ritem x="3" y="2" flags="1026"/>
+<ritem x="4" y="2" flags="2">
+<semaphore type="sem1" dir="0" tt="2"/>
+</ritem>
+<ritem x="0" y="3" flags="2">
+<semaphore type="sem1" dir="1" tt="2"/>
+</ritem>
+<ritem x="1" y="3" flags="1026"/>
+<ritem x="2" y="3" flags="6274"/>
+<ritem x="3" y="3" flags="2050"/>
+<ritem x="4" y="3" flags="2">
+<semaphore type="sem1" dir="0" tt="2"/>
+</ritem>
+<ritem x="3" y="4" flags="128"/>
+<ritem x="4" y="4" flags="4096">
+<semaphore type="sem1" dir="0" tt="13"/>
+</ritem>
+<ritem x="4" y="5" flags="4096">
+<semaphore type="sem1" dir="0" tt="13"/>
+</ritem>
+</template>
+<template w="5" h="8" name="rst8dbl">
+<ritem x="4" y="0" flags="8192">
+<semaphore type="sem1" dir="0" tt="14"/>
+</ritem>
+<ritem x="3" y="1" flags="256"/>
+<ritem x="4" y="1" flags="8192">
+<semaphore type="sem1" dir="0" tt="14"/>
+</ritem>
+<ritem x="3" y="2" flags="24640"/>
+<ritem x="4" y="2" flags="2">
+<semaphore type="sem1" dir="0" tt="2"/>
+</ritem>
+<ritem x="0" y="3" flags="2">
+<semaphore type="sem1" dir="-1" tt="2"/>
+</ritem>
+<ritem x="1" y="3" flags="2050"/>
+<ritem x="2" y="3" flags="9282"/>
+<ritem x="3" y="3" flags="2"/>
+<ritem x="4" y="3" flags="2">
+<semaphore type="sem1" dir="0" tt="2"/>
+</ritem>
+<ritem x="0" y="4" flags="2">
+<semaphore type="sem1" dir="1" tt="2"/>
+</ritem>
+<ritem x="1" y="4" flags="1026"/>
+<ritem x="2" y="4" flags="6274"/>
+<ritem x="3" y="4" flags="2"/>
+<ritem x="4" y="4" flags="2">
+<semaphore type="sem1" dir="0" tt="2"/>
+</ritem>
+<ritem x="3" y="5" flags="4736"/>
+<ritem x="4" y="5" flags="2">
+<semaphore type="sem1" dir="0" tt="2"/>
+</ritem>
+<ritem x="3" y="6" flags="32768"/>
+<ritem x="4" y="6" flags="4096">
+<semaphore type="sem1" dir="0" tt="13"/>
+</ritem>
+<ritem x="4" y="7" flags="4096">
+<semaphore type="sem1" dir="0" tt="13"/>
+</ritem>
+</template>
+</RRtemplates>
+</options>

@@ -1,0 +1,7 @@
+c:\jena\cuziv\out\abaz\runlib
+c:\jena\cuziv\out\zp4\data\lib
+c:\jena\cuziv\out\notedit\data\lib
+c:\jena\cuziv\out\abaz\cmplib
+c:\jena\cuziv\out\jt7\data\lib
+c:\jena\cuziv\out\jt7\data\modellib
+

@@ -1,0 +1,62 @@
+#[define header]
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1250">
+</head>
+<body background="../dbbg.jpg">
+#[enddef]
+#[define footer]
+</body>
+</html>                      
+#[enddef]
+
+@[header]
+<h1>$$Locomotives</h1>
+#[for x in $locos]
+<h2>$$[x.$title]</h2>
+[<a href="$[x.$zipname]">Stáhnout</a>] <a href="$[x.$name].wrz" target="vrml">[3D objekt]</a><br>
+#[if x.$image]
+<img src="$[x.$image]"/><br>
+#[endif]
+<b>$$Name</b> : $$[x.$title]<br>
+<b>Id</b> : $[x.$name]<br>
+<b>$$Authors-email</b> : <a href="mailto:$[x.$email]">$[x.$email]</a><br>
+<b>$$Author</b> : $[x.$author]<br>
+<b>$$Max-speed</b> : $[x.$maxspeed] km/h<br>
+<b>$$Power</b> : $[x.$power] kW<br>
+<b>$$Weight</b> : $[x.$weight] t<br>
+<hr>
+#[endfor]
+@[footer]
+&[save $outputdir&"/locos.html"]
+
+#[define baseobj xml,file,caption]
+&[rewrite]
+@[header]
+<h1>$[caption]</h1>
+
+#[for x in xml]
+<h2>$$[x.$title]</h2>
+[<a href="$[x.$zipname]">$$Download</a>] <br>
+#[if x.$image]
+<img src="$[x.$image]"/><br>
+#[endif]
+<b>$$Name</b> : $$[x.$title]<br>
+<b>Id</b> : $[x.$name]<br>
+<b>$$Author</b> : $[x.$author]<br>
+<hr>
+
+#[endfor]
+@[footer]
+&[save $outputdir&"/"&file]
+#[enddef]
+
+@[baseobj $depos,"depos.html","$$Depos"]
+@[baseobj $bridges,"bridges.html","$$Bridges"]
+@[baseobj $tunnels,"tunnels.html","$$Tunnels"]
+@[baseobj $rsts,"rsts.html","$$Railway-stations"]
+@[baseobj $sems,"sems.html","$$Semaphores"]
+@[baseobj $trees,"trees.html","$$Tree-colections"]
+@[baseobj $blds,"blds.html","$$Buildings"]
+

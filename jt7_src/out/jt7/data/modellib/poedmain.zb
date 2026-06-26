@@ -1,0 +1,263 @@
+program module poedMain;
+
+var form,win;
+var directory=new PersistentObject(File.root/"objects");
+var parobj=directory;//parent obj
+var actobj=null;
+var index=new XMLNode();
+var actform=null;
+//var resnames=new ("loco"="poed.locofrm","shape3d"="poed.shape3dfrm","simplemodel"="poed.simplemodelfrm","semaphore"="poed.semfrm");
+//var hasdata=["loco","semaphore"];
+var panel;
+//var objstack=[directory];
+var curlist=[];//childs currectly visible
+
+function saveactnoclose() {
+  if (poedTypes.hasdata(index)) panel.saveData(index);
+  poedTypes.savedata(index,actobj);  
+  actobj.saveXML("index.xml",index);
+}
+
+function editbitmaps() {
+  if (actobj) editBitmapsModule.run(actobj);
+}
+
+function generate_font() {
+  makeFontModule.run();
+}
+
+function saveact() {
+  if (actobj) {
+    saveactnoclose();
+  }
+  actobj=null;
+}
+
+function delform() {
+  if (actform) actform.destroy();
+  actform=new Form();
+}
+
+function loadobj(obj) {
+  if (actobj) poedTypes.unload(index,actobj);
+  index=new XMLNode();
+  obj.loadXML("index.xml",index);
+  delform();
+  panel.clearChilds();
+//  var resname=resnames[index.name];
+  if (var resname=poedTypes.resname(index)) panel.loadProps(Application.findResource(resname),actform);
+  if (poedTypes.hasdata(index)) panel.loadData(index);
+  poedTypes.loaded(index,actobj,panel,actform);
+}
+
+function loadact() {
+  saveact();
+//  if (var name=parobj.listChilds().split("\n")[form->objelems.cur]) {
+  if (var name=curlist[form->objelems.cur]) {
+    actobj=parobj.openChild(name);
+    loadobj(actobj);
+  }
+  changedpath();
+}
+
+function onclose() {
+  saveact();
+}
+
+function changedobj() {
+  loadact();
+}
+
+function btok() {
+  saveact();loadact();
+}
+function btcancel() {
+  if (actobj) actobj=null;
+  loadact();
+}
+function btin() {
+  if (actobj) {
+//    objstack.push(actobj);
+    parobj=actobj;
+    saveactnoclose();
+    actobj=null;
+    delform();
+    listchanged();
+    changedpath();
+  }
+}
+function btout() {
+  if (var p=parobj.parent) {
+    saveact();
+    parobj=p;
+    delform();
+//    objstack.pop();
+    listchanged();
+    changedpath();
+  }
+}
+function filterchanged() {
+  listchanged();
+}
+function listchanged() {
+  curlist=[];
+  var flt;
+  var types=form->filter.tag.split(";");
+  if (form->filter.cur>0) {
+    flt=types[form->filter.cur];
+    if (flt=="all") flt=null;
+  }
+  var array=parobj.listChilds().split("\n");
+  for (f in array) {
+    if (flt) {
+      var child=parobj.openChild(f);
+      var xml=new XMLNode();
+      child.loadXML("index.xml",xml);
+      if (xml.name==flt) curlist.push(f);
+      else if (flt=="other" && types.searchString(xml.name)<0) curlist.push(f);
+    } else curlist.push(f);
+  }
+  curlist.sort();
+  form->objelems.items=curlist;
+}
+function quit() {
+  Application.exit();
+}
+/*
+function newobject(type) {
+  var xml=Application.findResource("emptyobj."&type).clone();
+  if (poedTypes.creating(type,xml)) {
+    if (parobj.hasChild(xml->name&".zip")) {
+      Window.alert("$Object "&xml->name&".zip $object-exists-msg");
+      return;
+    }
+    saveact();
+    actobj=parobj.openChild(xml->name&".zip");
+    poedTypes.created(type,xml,actobj);
+    actobj.saveXML("index.xml",xml);
+    directory.flush();
+    actobj=null;
+    listchanged();
+    form->objelems.cur=form->objelems.items.split("\n").count-1;
+    loadact();
+  }
+}
+*/
+function changedpath() {
+  var res="";
+  var act=actobj;
+  if (act) res=act.name;else res="???";
+  act=parobj;
+  while (act) {
+    res=act.name&"/"&res;
+    act=act.parent;
+  }    
+  form->path.text=res;
+}
+function flushall() {
+  directory.flush();
+}
+function edit() {
+  if (actobj) {
+    saveactnoclose();
+    poedTypes.edit(index,actobj);
+    loadact();
+  }
+}
+function editxml() {
+  if (actobj) {
+    saveactnoclose();
+    XMLEditModule.run(index);
+    loadact();
+  }
+}
+function eraseobj() {
+  if (actobj) {
+    actobj.remove();
+    actobj=null;
+    listchanged();
+    changedpath();
+  }
+}
+function onidle() {
+  poedTypes.makeIdle();
+  smokeEditModule.makeIdle();
+}
+function makehtml() {
+  HTMLExportModule.run(directory);
+}
+
+function newobject() {
+  if (newObjectModule.run(parobj)) {
+    saveact();
+    directory.flush();
+    listchanged();
+    actobj=null;
+    loadact();
+  }
+/*
+  if (var type=newObjectModule.run()) {
+    if (var newobj=type.create(parobj)) {
+      saveact();
+      directory.flush();
+      listchanged();
+      actobj=null;
+      loadact();
+    }
+  }
+*/
+}
+
+function storetorepositary() {
+  if (actobj) {
+    var path=actobj.parent.getFile(actobj.name);
+    var dir=File.root/"data"/"templates"/index.name;
+    dir.mkdirs();
+    
+    if (var name=Window.inputBox("$Question","$Name",(new File(actobj.name))%"")) {
+      var file=dir/(name&".zip");
+      if (file.isFile()) {
+        if (Window.msgwin("POEdit","$Overwrite-prompt","$Yes;$No")!=0) return;
+      }
+      directory.flush();
+      (new File(path)).copyTo(file);
+      var xml=new XMLNode();
+      var po=new PersistentObject(file);
+      po.loadXML("index.xml",xml);
+      xml->name=name;
+      po.saveXML("index.xml",xml);
+      po.flush();
+    }
+  }
+}
+
+function edittcomment() {
+  if (!actobj) return;
+  if (var lid=Window.inputBox("$Question","lang-id","en")) {
+    var text="";
+    if (actobj.hasFile("tcomment."&lid)) text=actobj.loadText("tcomment."&lid);
+    if (var newtext=winTools.editText(text)) {
+      actobj.saveText("tcomment."&lid,newtext);
+    }
+  }
+}
+
+Application.addSearchPath(File.root/"data"/"bmps");
+Application.title="POEdit";
+  
+form=new Form();
+win=form.loadWindow("poed.mainwin");
+form.handler=this;
+
+listchanged();
+win.show();
+
+
+panel=form->objpanel;
+
+Application.onIdle="onidle()";
+Application.handler=this;
+Application.run();
+
+directory.flush();
+//for (s in objstack) s.close();

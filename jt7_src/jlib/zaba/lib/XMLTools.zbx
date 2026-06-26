@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<module option="explicit" initlevel="32" name="XMLTools" label_count="0">
+<function help="1" static="0" name="combine">
+<pars>
+<param name="anc"/>
+<param name="dif"/>
+</pars>
+<code>
+<block>
+<command>
+<defvar name="res">
+<cm name="clone">
+<variable name="anc"/>
+</cm>
+</defvar>
+<expr>
+<call>
+<params>
+<variable name="res"/>
+<variable name="dif"/>
+</params>
+<variable name="combine_res"/>
+</call>
+</expr>
+<return>
+<variable name="res"/>
+</return>
+</command>
+</block>
+</code>
+</function>
+<function help="1" static="0" name="combine_res">
+<pars>
+<param name="res"/>
+<param name="dif"/>
+</pars>
+<code>
+<block>
+<command>
+<for>
+<command>
+<defvar name="i">
+<pushnum value="0"/>
+</defvar>
+</command>
+<cm name="op:lt">
+<defer name="varCount">
+<variable name="dif"/>
+</defer>
+<variable name="i"/>
+</cm>
+<postun type="inc">
+<variable name="i"/>
+</postun>
+<expr>
+<cm name="setVar">
+<cm name="varNameAt">
+<variable name="i"/>
+<variable name="dif"/>
+</cm>
+<cm name="varAt">
+<variable name="i"/>
+<variable name="dif"/>
+</cm>
+<variable name="res"/>
+</cm>
+</expr>
+</for>
+<foreach var="child">
+<variable name="dif"/>
+<block>
+<command>
+<ifelse>
+<cond>
+<cm name="isSub">
+<defer name="name">
+<variable name="child"/>
+</defer>
+<variable name="res"/>
+</cm>
+</cond>
+<block>
+<command>
+<defvar name="my">
+<cm name="getSub">
+<defer name="name">
+<variable name="child"/>
+</defer>
+<variable name="res"/>
+</cm>
+</defvar>
+<expr>
+<call>
+<params>
+<variable name="my"/>
+<variable name="child"/>
+</params>
+<variable name="combine_res"/>
+</call>
+</expr>
+</command>
+</block>
+<block>
+<command>
+<expr>
+<cm name="assign">
+<variable name="child"/>
+<cm name="add">
+<variable name="res"/>
+</cm>
+</cm>
+</expr>
+</command>
+</block>
+</ifelse>
+</command>
+</block>
+</foreach>
+</command>
+</block>
+</code>
+</function>
+<function help="1" static="0" name="difference">
+<pars>
+<param name="des"/>
+<param name="anc"/>
+</pars>
+<code>
+<block>
+<command>
+<defvar name="res">
+<callnew>
+<params/>
+<variable name="XMLNode"/>
+</callnew>
+</defvar>
+<expr>
+<call>
+<params>
+<variable name="res"/>
+<variable name="des"/>
+<variable name="anc"/>
+</params>
+<variable name="difference_res"/>
+</call>
+</expr>
+<return>
+<variable name="res"/>
+</return>
+</command>
+</block>
+</code>
+</function>
+<function help="1" static="0" name="difference_res">
+<pars>
+<param name="res"/>
+<param name="des"/>
+<param name="anc"/>
+</pars>
+<code>
+<block>
+<command>
+<expr>
+<assign>
+<defer name="name">
+<variable name="res"/>
+</defer>
+<defer name="name">
+<variable name="des"/>
+</defer>
+</assign>
+</expr>
+<for>
+<command>
+<defvar name="i">
+<pushnum value="0"/>
+</defvar>
+</command>
+<cm name="op:lt">
+<defer name="varCount">
+<variable name="des"/>
+</defer>
+<variable name="i"/>
+</cm>
+<postun type="inc">
+<variable name="i"/>
+</postun>
+<if>
+<cond>
+<cm name="op:neq">
+<cm name="getVar">
+<cm name="varNameAt">
+<variable name="i"/>
+<variable name="des"/>
+</cm>
+<variable name="anc"/>
+</cm>
+<cm name="varAt">
+<variable name="i"/>
+<variable name="des"/>
+</cm>
+</cm>
+</cond>
+<expr>
+<cm name="setVar">
+<cm name="varNameAt">
+<variable name="i"/>
+<variable name="des"/>
+</cm>
+<cm name="varAt">
+<variable name="i"/>
+<variable name="des"/>
+</cm>
+<variable name="res"/>
+</cm>
+</expr>
+</if>
+</for>
+<foreach var="child">
+<variable name="des"/>
+<block>
+<command>
+<if>
+<cond>
+<not>
+<cm name="weekEqualTo">
+<cm name="getSub">
+<defer name="name">
+<variable name="child"/>
+</defer>
+<variable name="anc"/>
+</cm>
+<variable name="child"/>
+</cm>
+</not>
+</cond>
+<expr>
+<call>
+<params>
+<cm name="add">
+<variable name="res"/>
+</cm>
+<variable name="child"/>
+<cm name="getSub">
+<defer name="name">
+<variable name="child"/>
+</defer>
+<variable name="anc"/>
+</cm>
+</params>
+<variable name="difference_res"/>
+</call>
+</expr>
+</if>
+</command>
+</block>
+</foreach>
+</command>
+</block>
+</code>
+</function>
+</module>

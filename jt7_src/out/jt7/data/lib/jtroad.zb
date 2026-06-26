@@ -1,0 +1,99 @@
+module roadModule;
+
+include module trackBuildModule;
+
+var building;
+var bldstop;
+var lastx,lasty;
+var formname="jtycon.roadfrm";
+var tracktype="road";
+
+function build(x,y) {
+  var hm=gethimode();
+  if (Application.shiftState.ctrl) hm="plane";
+  if (building) game.buildRoad(x,y,0.2,hm);
+}
+
+function buildto(x,y) {
+  if (!building) return;
+  build(lastx,lasty);
+  while (lastx!=x || lasty!=y) {
+    if (lastx!=x) {
+      if (lastx<x) lastx++; 
+      if (lastx>x) lastx--; 
+    } else {
+      if (lasty<y) lasty++; 
+      if (lasty>y) lasty--; 
+    }
+    build(lastx,lasty);
+  }
+}
+
+function initwindow() {
+}
+
+function erase(x,y) {
+  game.eraseRoad(x,y);
+}
+
+function mdown(button) {
+  select (button) {
+    "left":{
+      if (trackmdown(button)) {
+      } else if (bldstop) {
+        game.buildBusStop(game.mapX,game.mapY);
+      } else {
+        lastx=game.mapX;
+        lasty=game.mapY;
+        building=true;
+        buildto(game.mapX,game.mapY);
+      }
+    }
+    "right":{
+      trackmdown(button);
+    }
+  }
+}
+
+function mup(button) {
+  select (button) {
+    "left":{
+      if (building) {
+        buildto(game.mapX,game.mapY);
+        building=false;
+      } else trackmup(button);
+    }
+    "right":{
+      trackmup(button);
+    }
+  }
+}
+
+function mmove() {
+  if (trackmmove()) {
+  } else buildto(game.mapX,game.mapY);
+}
+
+function onpaint() {
+  if (trackonpaint()) {
+  } else {
+    game.drawCustomCursor(game.mapX,game.mapY,Cursors.road,0);
+  }
+}
+
+function clear() {
+  trackclear();
+  bldstop=false;
+}
+
+function roadbuild() {
+  JTycon.state=this;
+  clear();
+}
+
+function bldbusstop() {
+  JTycon.state=this;
+  clear();
+  bldstop=true;
+}
+

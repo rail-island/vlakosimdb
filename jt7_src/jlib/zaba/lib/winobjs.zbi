@@ -1,0 +1,643 @@
+library module winobjs;
+
+class Component {
+}
+
+///Base class of all controls
+class Control extends Component {
+  native int property X get [link] set [link];
+  native int property Y get [link] set [link];
+  native int property W get [link] set [link];
+  native int property H get [link] set [link];
+  ///deletes control object
+  native void function destroy() [link];
+  native void function show() [calllink];
+  native void function hide() [calllink];
+  native bool property visible get [calllink] set;
+  native bool property enabled get [calllink] set [calllink];
+  native Control property parent get set;
+  native Font property font get set;
+  native void function loadProps(XMLNode xml,Form form) [calllink cmethod=loadprops cargs];
+  native void function saveData(XMLNode xml) [calllink cmethod=savedata cargs];
+  native void function loadData(XMLNode xml) [calllink cmethod=loaddata cargs];
+  native void function clearChilds() [calllink cmethod=clearchilds];
+  native string property tag get [calllink] set [calllink];
+}
+
+///represents any Window
+class Window extends Component {
+  ///shows simple message window
+  ///shows simple message window, every argument is on separate line
+  static native function alert(...) [cmethod=alert wantextra wantrt];
+  ///title bar of window
+  native string property text get [calllink] set [calllink];
+  native constructor () [cmethod=newwindow wantrt];
+  native void function showModal() [link];
+  native void function show() [link];
+  ///if this method is called during onclose event, window is not closed
+  native void function denyClose() [calllink cmethod=denyclose];
+  native void function close() [calllink];
+  native string property style get [calllink] set [calllink];
+  native int property X get [link] set [link];
+  native int property Y get [link] set [link];
+  native int property W get [link] set [link];
+  native int property H get [link] set [link];
+  ///shows messagebox, returns first char of pressed button in lowercase
+  /**
+  Buttons:ync:yes-no-cancel,arf:abort-retry-fail,o:ok,oc:ok-cancel,yn:yes-no
+  */
+  static native string function msgbox(string msg,string buttons) [cmethod=zbmsgbox wantir];
+  ///shows message window, buttons are ';' delimited button names, returns index of selected button or -1
+  static native int function msgwin(string title,string msg,string buttons) [cmethod=zbmsgwin];
+  ///returns inputed text of null, when cancel was pressed
+  static native function inputBox(string title,string msg,string def) [cmethod=zbinputbox wantrt];
+  //pixels per milimeter on screen
+  static native float property ppmmx get [cmethod=getppmmx];
+  //pixels per milimeter on screen
+  static native float property ppmmy get [cmethod=getppmmx];
+  
+  native void function loadData(XMLNode xml) [calllink cargs cmethod=loaddata];
+  native void function saveData(XMLNode xml) [calllink cargs cmethod=savedata];
+}
+
+///non-visible component, maintains event-calls, loading from XML ...
+class Form extends Component {
+  native function loadWindow(string name) [wantrt];
+  native constructor () [cmethod=newform wantrt];
+  native constructor (Component owner) [cmethod=newform wantrt];
+  native property handler get set;
+  native Component function search(string name) [cresult calllink];
+  native Component operator ->(string name) get [cresult calllink cmethod=search];
+  native void function destroy() [link];
+}
+
+///Button control
+class Button extends Control {
+  ///caption of button
+  native string property text get [calllink] set [calllink];
+  ///mouse or key click
+  native string property onclick get [link] set [link];
+}
+
+class RadioGroup extends Control {
+  native string property text get [calllink] set [calllink];
+  native string property items get [calllink] set [calllink];
+  native int property cur get [calllink] set [calllink];
+}
+
+class CheckBox extends Control {
+  native string property text get [calllink] set [calllink];
+  native bool property checked get [calllink] set [calllink];
+}
+
+///Button, can have image, cannot be selected by keyboard
+class SpeedButton extends Control {
+  ///caption of button
+  native string property text get [calllink] set [cargs calllink];
+  ///mouse click
+  native string property onclick get [link] set [cargs link];
+  ///image shown on this button
+  native Picture property image get [cresult calllink] set [cargs calllink];
+  native bool property switched get [calllink] set [calllink];
+  native constructor (Form form) [wantrt cmethod=newspeedbutton];
+  native string property color get set;
+}
+
+///group of ToolButtons
+class SpeedGroup extends Control {
+  native int property cur get set;
+} 
+
+///Button, can have image, cannot be selected by keyboard
+class ColorTable extends Control {
+  ///number of rows
+  native int property rows get [calllink] set [calllink];
+  ///number of columns
+  native int property cols get [calllink] set [calllink];
+  ///colors
+  native string operator [int row,int col] get [cmethod=getcolor] set [cmethod=setcolor];
+}
+
+
+///List of string values
+class ListBox extends Control {
+  native string property items get [calllink] set [calllink];
+  native int property cur get [calllink] set [calllink];
+  native bool property multiSelect get [calllink cmethod=getmultiselect] set [calllink cmethod=setmultiselect];
+  ///if multiSelect, selected is ';' separated indexes of selected items
+  native string property selected get [calllink] set [calllink];
+}
+
+///Packed list of string values
+class PackedList extends Control {
+  native string property items get [calllink] set [calllink];
+  native int property cur get [calllink] set [calllink];
+}
+
+///Single-line edit
+class Edit extends Control {
+  native string property text get [calllink] set [calllink];
+  native bool property modified get [calllink] set [calllink];
+}
+
+///Multi-line edit constrol
+class Memo extends Control {
+  native string property text get [calllink] set [calllink];
+  native bool property modified get [calllink] set [calllink];
+}
+
+///Static text constrol
+class Label extends Control {
+  native string property text get [calllink] set [calllink];
+}
+
+class WrapLabel extends Control {
+  native string property text get [calllink] set [calllink];
+}
+
+class TrackBar extends Control {
+  native int property min get [calllink] set [calllink];
+  native int property max get [calllink] set [calllink];
+  native int property cur get [calllink] set [calllink];
+  native int property frequency get [calllink] set [calllink];
+}
+
+class Table extends Control {
+  native TableModel property model set;
+  native int property selrow get [calllink] set [calllink];
+  native string property selcol get [calllink] set [calllink];
+//  native int property drawingLine get [calllink cmethod=getdrawingline];
+//  native string property lineColor set;
+  native void function repaint() [calllink];
+  native void function repaintLine(int line) [calllink cmethod=repaintline];
+  native void function update() [calllink];
+}
+
+class CheckList extends Control {
+  ///current position
+  native int property cur get [calllink] set [calllink];
+  ///items divided by '\n'
+  native string property items get [calllink] set [calllink];
+  ///0|1 divided by ';'
+  native string property checked get [calllink] set [calllink];
+}
+
+class TableCols {
+  ///adds new collumn with text type
+  native void function add(string fldid,string text);
+  ///adds new collumn, text="text"|"check"
+  native void function add(string fldid,string text,string type);
+}
+
+virtual class TableModel {
+  virtual int function getRowCount();
+  virtual string function getCellText(string fldid,int row);
+  virtual void function getCols(TableCols cols);
+}
+
+virtual class TreeSource {
+  virtual int function getCount();
+  virtual string function getText();
+  virtual TreeSource function getNodeAt(int index);
+  virtual bool function equalTo(TreeSource right);
+}
+
+///Tree view control, data retrieves from source
+class Tree extends Control {
+  native TreeSource property source set;
+  native void function update() [calllink];
+  ///returns path to active or null, when nothing is active
+  native MultiIndex property active get set;
+  native void function expand(MultiIndex item);
+  native void function collapse(MultiIndex item);
+//  native void function expandAll(MultiIndex item);
+//  native void function collapseAll(MultiIndex item);
+}
+
+/*
+class XMLTableModel {
+  native constructor (XMLNode xml) [cmethod=createxmltablemodel wantrt];
+  native void function clear();
+  native void function add(string name,string text,bool insub);
+  native XMLNode property xml get [cresult] set [cargs];
+}
+*/
+
+///Control, on which you can paint
+class PaintBox extends Control {
+  native String property onpaint get [cresult link] set [cargs link];
+  native void function repaint() [calllink];
+}
+
+///Control, on which you can paint
+class ScrolledPainter extends Control {
+  native String property onpaint get [cresult link] set [cargs link];
+  native void function setInSize(int w,int h) [link];
+  native void function repaint() [calllink];
+}
+
+//editable atribute list
+class PropertyList extends Control {
+  native void function save(VarList vars) [cargs];
+  native void function load(VarList vars) [cargs];
+  native void function addVar(string name) [link];
+  ///erases variable, where is cursor
+  native void function eraseVar();
+  native bool property modified get [calllink] set [calllink];
+}
+
+class Pager {
+  ///active page index
+  native int property cur get [calllink] set [calllink] ;
+}
+
+class Settings {
+  ///creates all subcontrols
+  native void function createAll() [calllink cmethod=createall];
+}
+
+class HTMLView extends Control {
+  ///HTML source to view
+  native string property text get [calllink] set [calllink];
+  ///call this function as answer to event onfindpicture
+  native void function searchedPicture(string src,Picture picture);
+}
+
+///when you paint, it is on this object 
+class Canvas {
+  ///draws line from [x1,y1] to [x2,y2]
+  native function line(int x1,int y1,int x2,int y2) [calllink retthis];
+  ///draws rectangle
+  native function rectangle(int x1,int y1,int x2,int y2) [calllink cargs retthis cmethod=rect];
+  ///draws ellipse enclosed in specified rectangle
+  native function ellipse(int x1,int y1,int x2,int y2) [calllink cargs retthis];
+  ///sets foreground color, used for lines and shapes, colors like in html
+  native function fg(string color) [link retthis];
+  ///sets background color, used for filling shapes, colors like in html
+  native function bg(string color) [link retthis];
+  ///draws text at [x,y], this is left-top corner of text
+  native function text(int x,int y,string str) [calllink retthis];
+  ///returns text width written with actua;l font
+  native int function textwi(string str) [calllink];
+  ///returns text height written with actua;l font
+  native int function texthi(string str) [calllink];
+  ///selects font for this canvas
+  native function font(Font font) [link retthis];
+  ///selects pen width, 0:minimal width
+  native function penwi(int wi) [calllink retthis];
+  ///draws frame around specified rectangle, type:"raised" | "sunken"
+  native function drawFrame(int x1,int y1,int x2,int y2,string type) [retthis];
+  ///draws text centered in rectangle, flags:bool centerx,centery,clip
+  native function centerText(int x1,int y1,int x2,int y2,string text,Store flags) [retthis];
+  native function centerText(int x1,int y1,int x2,int y2,string text) [retthis];
+  native Canvas function nextBand(int hi) [link];
+  ///type:"optional":if band is first or last on page, on can be omited
+  native Canvas function nextBand(int hi,string type) [link];
+  ///draws radio button centered to [x,y]
+  native function drawRadio(int x,int y,bool checked) [calllink retthis cmethod=drawradio];
+  ///draws check box centered to [x,y]
+  native function drawCheck(int x,int y,bool checked) [calllink retthis cmethod=drawcheck];
+  ///access to pixels
+  native string operator [int x,int y] get [cmethod=getpixel] set [cmethod=putpixel];
+  ///draws rectangle with random color
+  native void function drawSelection(int x1,int y1,int x2,int y2);
+  ///draws line with random color
+  native void function randomLine(int x1,int y1,int x2,int y2) [cmethod=randomline calllink];
+  ///mode="surface"|"border", color==border color
+  native void function floodFill(int x,int y,string mode,string color) [cmethod=floodfill];
+}
+
+class Font {
+  native string property name get [calllink] set [calllink];
+  native int property size get [calllink] set [calllink];
+  native bool property bold get [calllink] set [calllink];
+  native bool property underline get [calllink] set [calllink];
+  native bool property strikeout get [calllink] set [calllink];
+  native bool property italic get [calllink] set [calllink];
+  native bool function edit() [calllink];
+  native constructor () [cmethod=newfont wantrt];
+  native void function load(XMLNode xml) [calllink cargs];
+  native void function save(XMLNode xml) [calllink cargs];
+  native int function getHeight() [calllink cmethod=getheight];
+  native int function getWidth(string text) [calllink cmethod=getwidth];
+}
+
+///bitmap
+class Picture {
+  native void function load(string file) [safecall calllink];
+  native void function save(string file) [safecall calllink];
+  native Canvas property canvas get;
+  native void function draw(int x,int y,Canvas cnv) [cargs];
+  native void function stretch(int x,int y,int w,int h,Canvas cnv) [cargs];
+  native void function stretchRectangle(int x,int y,int w,int h,int srcx,int srcy,int srcw,int srch,Canvas cnv) [cargs];
+  native void function hflip() [calllink];
+  native void function vflip() [calllink];
+  native void function transp() [calllink];
+  native int property W get [calllink cmethod=getw] set [calllink cmethod=setw];
+  native int property H get [calllink cmethod=geth] set [calllink cmethod=seth];
+  native void function invert() [calllink];
+  native Picture function clone();
+  native constructor () [cmethod=newpicture wantrt];
+}
+
+///global methods
+class ApplicationClass {
+  ///runs application, can be called only once
+  native void function run() [cmethod=runapp wantir];
+  ///ends the message loop
+//  native void function exit() [cmethod=exitapp];
+  native void function exit() [calllink cmethod=quit];
+//  ///runs Auto-Design on xml
+//  static native void function runAD(XMLNode xml) [cmethod=runAD cargs];
+  ///loads resource XML with forms,menus ...;files are \n separated
+  native void function loadResource(string files) [cmethod=loadresource];
+  ///options XML-automatically saved and loaded, setOptionFile was called
+  native XMLNode property options get [cmethod=getopts cresult];
+  ///adds search path for images
+  native void function addSearchPath(string path) [cmethod=addSearchPath];
+  ///sets the option file and loads options, options are also automatically saved
+  native void function setOptionFile(string file) [cmethod=setOptionFile];
+  ///runs XML dialog, returns success
+  native bool function runXMLDialog(XMLNode dialog,XMLNode data) [cmethod=runxmldialog cargs];
+  ///finds resource, if doesn't exist, error
+  native XMLNode function findResource(string name) [cmethod=findresource wantir];
+  ///runs Settings dialog, returns success
+  native bool function runSettingsDialog(string dialog,XMLNode data) [cmethod=runsettingsdialog cargs];
+//  native string property title get [cmethod=getapptitle] set [cmethod=setapptitle];
+  native string property title get [calllink] set [calllink];
+  native property systemMenu get [cmethod=getsysmenu wantrt] set [cmethod=setsysmenu];//MenuItem|null
+//  static native WaitWindow property wait get [cmethod=getwaitwin];
+  native property handler get set;
+//  native property handler get [cmethod=getapphandler wantrt] set [cmethod=setapphandler wantrt];
+//  native string property onIdle get set;
+  native string property onIdle get [calllink cmethod=getidle] set [calllink cmethod=setidle];
+  native string property onDesktopMouseDown get [calllink cmethod=getdesktopmousedown] set [calllink cmethod=setdesktopmousedown];
+  native string property onDesktopMouseUp get [calllink cmethod=getdesktopmouseup] set [calllink cmethod=setdesktopmouseup];
+  native string property onDesktopMouseMove get [calllink cmethod=getdesktopmousemove] set [calllink cmethod=setdesktopmousemove];
+  native int property desktopW get [calllink cmethod=getdesktopw];
+  native int property desktopH get [calllink cmethod=getdesktoph];
+  native ShiftState property shiftState get;
+}        
+
+/*
+class PrinterDevice {
+  native string property name get;
+}  
+
+class PrinterDevices {
+  native PrinterDevice operator [int index] get;
+  native int property count get;
+}  
+*/
+
+class Printer {
+  native constructor () [cmethod=newprinter wantrt];
+  native Canvas function getInfo() [link cresult calllink cmethod=getinfo];
+  native void function loadProperties(XMLNode xml) [cargs cmethod=loadprops calllink];
+  native void function saveProperties(XMLNode xml) [cargs cmethod=saveprops calllink];
+  native int property pghi get [calllink];
+  native int property pgwi get [calllink];
+  native Canvas function beginPage() [calllink cresult cmethod=beginpage];
+  native void function endPage() [calllink cresult cmethod=endpage];
+  native Font function makeFont(Font src) [calllink cmethod=createprnfont cargs cresult];///vyrobi tiskarnovy font
+  native void function setup() [calllink];
+  native void function detailSetup() [calllink cmethod=detailsetup];
+  native void function beginDoc(string title);
+  native void function beginFileDoc(string title,string file) [calllink cmethod=begindoc];
+  native void function endDoc() [calllink cmethod=enddoc];
+//  static native PrinterDevices property devices get;
+  native void function destroy() [link];
+  ///pixels per milimeter int X axis direction
+  native float property ppmmx get [calllink];
+  ///pixels per milimeter int Y axis direction
+  native float property ppmmy get [calllink];
+}
+
+///console-like window
+class Console {
+  ///prints all arguments
+  native void function print(...) [wantextra];
+  ///prints all arguments and goes to new line
+  native void function println(...) [wantextra];
+  ///return readed line
+  native string function readln();
+  ///closes virtual or system console, if console is system, is opened by calling print,println,readln
+  native void function close() [calllink];
+  ///creates and opens virtual console
+  native constructor () [cmethod=newconsole wantrt];
+  ///waits for key down(this key has no effect)
+  native void function wait() [calllink];
+  ///returns system console
+  static native Console property std get [cmethod=getstdcon wantrt];
+  native void function destroy() [link];
+}
+
+///pressed key with constrol keys(eg. Alt+F1)
+class Key {
+  ///compares to string representation of key(eg. alt+ctrl+f1==Ctrl+Alt+F1)
+  native bool operator ==(string key);
+  native bool operator !=(string key);
+  ///creates new key object from string like ctrl+f2
+  native constructor (string keyname) [cmethod=newkey wantrt];
+  ///returns, whether key contains shift
+  native bool property shift get;
+  ///returns, whether key contains alt
+  native bool property alt get;
+  ///returns, whether key contains control
+  native bool property ctrl get;
+  ///returns, whether key contains left shift
+  native bool property lshift get;
+  ///returns, whether key contains right shift
+  native bool property rshift get;
+  ///returns key name (if this==Alt+M, key is M)
+  native string property key get;
+}
+
+class ShiftState {
+  ///returns, whether key contains shift
+  native bool property shift get;
+  ///returns, whether key contains alt
+  native bool property alt get;
+  ///returns, whether key contains control
+  native bool property ctrl get;
+  ///returns, whether key contains left shift
+  native bool property lshift get;
+  ///returns, whether key contains right shift
+  native bool property rshift get;
+}
+
+class Timer {
+  ///creates new timer, new is not running
+  native constructor() [cmethod=newtimer wantrt];
+  ///delegate, is called every interval, if timer is running
+  native property handler get set;
+  ///starts timer, every iterval handler is called
+  native void function start() [calllink cmethod=restart];
+  ///stops timer, handler is never called before start is called
+  native void function stop() [calllink];
+  ///timer is running or waiting to run
+  native bool property running get [calllink cmethod=isrunning];
+  ///interval in seconds
+  native float property interval get [calllink] set [calllink];
+  ///simple timer, is called only ones
+  static native void function timer(float secs,handler,...) [wantextra cmethod=newsimpletimer];
+}
+
+class OpenDialog {
+  ///runs open-file-dialog
+  ///filter is *.txt ..., can have only 1 extension, returns file or null
+  static native function run(string filter) [cmethod=runopendialog wantrt];
+  native bool function execute() [calllink];
+  native string property file get [calllink] set [calllink];
+  native string property initialDir get [calllink cmethod=getinitialdir] set [calllink cmethod=setinitialdir];
+  ///files separated by \n
+  native string property files get [calllink];
+  ///filter:"Text files~*.txt|All files~*.*"
+  native string property filter get [calllink] set [calllink];
+  native bool property multiSelect get [calllink cmethod=getmultiselect] set [calllink cmethod=setmultiselect];
+  native constructor() [cmethod=newopendialog wantrt];
+}
+
+class SaveDialog {
+  ///runs open-file-dialog
+  ///filter is *.txt ..., can have only 1 extension, returns file or null
+  static native function run(string filter) [cmethod=runsavedialog wantrt];
+  native bool function execute() [calllink];
+  native string property initialDir get [calllink cmethod=getinitialdir] set [calllink cmethod=setinitialdir];
+  native string property file get [calllink] set [calllink];
+  native constructor() [cmethod=newsavedialog wantrt];
+  native string property filter get [calllink] set [calllink];
+}
+
+class ColorDialog {
+  ///returns color name or null, when cancelled
+  static native function run(string color) [cmethod=runcolordialog wantrt];
+}
+
+class PaneGrp {
+  native constructor () [cmethod=newpanegrp wantrt];
+  native Canvas property canvas get [safecall];
+  native void function beginDoc(Canvas destCanvas);
+  native void function endDoc() [cmethod=enddoc calllink];
+  native int property count get;
+  native Pane operator [int index] get [cmethod=getpane];
+  native int function sheetCount(int pageHi);
+  native void function replaceText(string oldtext,string newtext);
+}
+
+class Pane {
+  native bool property isFirst get [calllink cmethod=first];
+  native bool property isLast get [calllink cmethod=last];
+  native int property hi get [calllink cmethod=gethisum];
+  native PaneGrp property parent get;
+  native Canvas property canvas get;
+}
+
+class LogPage {
+  native void function addPane(Pane pane) [calllink cmethod=addpane cargs];
+  native bool function canAddPane(Pane pane) [calllink cmethod=canaddpane cargs];
+  native int property hi get [calllink];
+  native bool property isBlocked get [calllink cmethod=isblocked];
+  native bool property isFreeBegin get [calllink cmethod=freebegin];
+  native bool property isFreeEnd get [calllink cmethod=freeend];
+  native bool property isLeft get [calllink cmethod=isleft];
+  native void function addPaneGrp(PaneGrp panegrp) [calllink cmethod=addpanegrp cargs];
+  ///returns number of pages neccessary added, when adding panes
+  native int function getExtraPageCount(PaneGrp panes) [calllink cmethod=getextrapagecount cargs];
+  native int property count get;
+  native Pane operator [int index] get [cmethod=getpane];
+  native void function erasePane(int index,int count) [calllink cmethod=erasepane cargs];
+  native void function insertPane(int index,Pane pane) [calllink cmethod=insertpane cargs];
+  native void function draw(Canvas cnv);
+}
+
+
+class MetaCanvas {
+  native void function draw(Canvas cnv);
+  native void function replaceText(string oldtext,string newtext);
+  native property canvas get;
+  native constructor () [wantrt cmethod=newmetacanvas];
+}
+
+class ResizeCanvas {
+  native constructor (Canvas cnv,float kx,float ky) [cmethod=newresizecanvas wantrt];
+  native property canvas get;
+}
+
+class SubCanvas {
+  native constructor (Canvas cnv,int dx,int dy) [cmethod=newsubcanvas wantrt];
+  native property canvas get;
+}
+
+/**
+TextCanvas has two modes:simple, where it only writes the text and with
+limited page height, where it throws expception from methods text and wrap,
+if the page height limit is broken. Data after last call of method flush are lost.
+*/
+
+class TextCanvas {
+  native constructor(Canvas cnv,int wi) [cmethod=newtextcanvas wantrt];
+  native constructor(Canvas cnv,int wi,int pagehi) [cmethod=newtextcanvas wantrt];
+  native void function text(string s) [wantir];
+  native void function font(Font font) [calllink cargs];
+  native void function wrap() [calllink];
+  native void function flush() [calllink];
+  ///fixed x-coord, can wrap
+  native void function textElemX(int space,int x,string s) [wantir];
+  ///cannot divide in more lines
+  native void function textElem(int space,string s) [wantir];
+}
+
+class PageDistribution {
+  native int property sheetCount get;
+  native int property freePageCount get;
+  native void function draw(int page,Canvas cnv);
+}
+
+///Array of LogPage
+class LogPages {
+  native constructor () [cmethod=newlogpages wantrt];
+  ///adds grp, can add new pages
+  native void function add(PaneGrp grp) [cmethod=addpanegrp calllink cargs];
+  native void function print(Printer prn) [cmethod=print calllink cargs];
+  native void function loadPropsFrom(Printer prn) [cmethod=setpropsfrom calllink cargs];
+  native void function setPageSize(int w,int h) [cmethod=setsize calllink];
+  ///makes book page distrubution
+  native PageDistribution function complete(Array ofsx,Array ofsy);
+  ///makes linear page distrubution
+  native PageDistribution function completeLines(Array ofsx,Array ofsy);
+  native int property pageHi get [calllink cmethod=getpghi];
+  native int property pageWi get [calllink cmethod=getpgwi];
+  native LogPage operator [int index] get [cmethod=getpage];
+  native LogPage function addPage();
+  native int property count get;
+  native LogPage property last get;
+  ///returns page number, which contains pane
+  native int function searchPane(Pane pane) [cargs calllink cmethod=searchpane];
+}
+
+class MenuItem {
+  native string property text get [calllink] set [calllink];
+  native bool property checked get [calllink] set [calllink];
+  native string property shortcut get [calllink] set [calllink];
+  native void function load(XMLNode xml);
+  native constructor () [wantrt cmethod=newmenuitem];
+}
+
+class WaitWindow {
+  native void function show() [calllink];
+  native void function hide() [calllink];
+  native string property msg get [calllink] set [calllink];
+  native constructor () [wantrt cmethod=newwaitwindow];
+  native void function destroy() [link];
+}
+
+class MidiOut {
+  native constructor () [wantrt cmethod=newmidiout];
+  native void function open() [wantir];
+  native void function message(int status,int param1,int param2) [calllink];
+  native void function close();
+  native void function noteOn(int channel,int midihi,int velocity);
+  native void function noteOff(int channel,int midihi,int velocity);
+  native void function setInstrument(int channel,int instrumentId);
+}

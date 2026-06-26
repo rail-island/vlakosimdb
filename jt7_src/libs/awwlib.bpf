@@ -1,0 +1,54 @@
+#include <winlib.h>
+#pragma hdrstop
+USEUNIT("..\jlib\aws\awswindow.cpp");
+USEUNIT("..\jlib\aws\awscontrol.cpp");
+USEUNIT("..\jlib\aws\awsdefs.cpp");
+USEUNIT("..\jlib\aws\awsextctrls.cpp");
+USEUNIT("..\jlib\aws\awsform.cpp");
+USEUNIT("..\jlib\aws\awslayout.cpp");
+USEUNIT("..\jlib\aws\awsmodels.cpp");
+USEUNIT("..\jlib\aws\awspaint.cpp");
+USEUNIT("..\jlib\aws\awsproplist.cpp");
+USEUNIT("..\jlib\aws\awsreal.cpp");
+USEUNIT("..\jlib\aws\awssystem.cpp");
+USEUNIT("..\jlib\aws\awscomponent.cpp");
+USEUNIT("..\jlib\aww\awwwindow.cpp");
+USEUNIT("..\jlib\aww\awwcontrol.cpp");
+USEUNIT("..\jlib\aww\awwextctrls.cpp");
+USEUNIT("..\jlib\aww\awwobject.cpp");
+USEUNIT("..\jlib\aww\awwpaint.cpp");
+USEUNIT("..\jlib\aww\awwstdctrls.cpp");
+USEUNIT("..\jlib\aww\awwsystem.cpp");
+USEUNIT("..\jlib\aww\awwcomctrls.cpp");
+USEUNIT("..\jlib\win\w32keys.cpp");
+USEUNIT("..\jlib\win\w32init.cpp");
+USEUNIT("..\jlib\win\w32dci.cpp");
+USEUNIT("..\jlib\win\wsystem.cpp");
+USEUNIT("..\jlib\win\w32gr.cpp");
+USEUNIT("..\jlib\aws\awsstddlgs.cpp");
+USEUNIT("..\jlib\aws\awswintool.cpp");
+USEUNIT("..\jlib\ext\handleman.cpp");
+USEUNIT("..\jlib\aww\awwfont.cpp");
+USEUNIT("..\jlib\aws\awstable.cpp");
+USEUNIT("..\jlib\aws\awstree.cpp");
+USEUNIT("..\jlib\aws\awsgr.cpp");
+USEUNIT("..\jlib\aws\awsmenu.cpp");
+USEUNIT("..\jlib\aww\awwmenu.cpp");
+USEUNIT("..\jlib\aws\awsprint.cpp");
+USEUNIT("..\jlib\aww\awwprint.cpp");
+USEUNIT("..\jlib\win\wbmpfile.cpp");
+USEUNIT("..\jlib\aws\awsnullctrl.cpp");
+USEUNIT("..\jlib\aww\awwhint.cpp");
+USEUNIT("..\jlib\aww\awwdlgs.cpp");
+USEUNIT("..\jlib\aws\awstextcnv.cpp");
+USERES("..\buttons\stdres.res");
+USEUNIT("..\jlib\aws\awshtmlview.cpp");
+USEUNIT("..\jlib\aws\awschecklist.cpp");
+USEUNIT("..\jlib\aws\awscolortable.cpp");
+USEUNIT("..\jlib\aws\awspager.cpp");
+//---------------------------------------------------------------------------
+#define Library
+
+// To add a file to the library use the Project menu 'Add to Project'.
+
+ 

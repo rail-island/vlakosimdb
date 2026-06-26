@@ -1,0 +1,738 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<module option="explicit" initlevel="32" name="wintools" label_count="0">
+<class virtual="0" name="SDIFile">
+<attrs/>
+<command>
+<defvar name="intf">
+<pushnull/>
+</defvar>
+<defvar name="file">
+<pushnull/>
+</defvar>
+</command>
+<command>
+<defvar name="modified">
+<pushnull/>
+</defvar>
+</command>
+<command>
+<defvar name="filetype">
+<pushnull/>
+</defvar>
+</command>
+<constructor help="1" name="op:new">
+<pars>
+<param name="intf"/>
+<param name="filetype"/>
+</pars>
+<code>
+<block>
+<command>
+<expr>
+<setprop obj="this" prop="intf">
+<variable name="intf"/>
+</setprop>
+</expr>
+<expr>
+<setprop obj="this" prop="filetype">
+<variable name="filetype"/>
+</setprop>
+</expr>
+</command>
+</block>
+</code>
+</constructor>
+<function help="1" static="0" name="save">
+<pars/>
+<code>
+<block>
+<command>
+<ifelse>
+<cond>
+<variable name="file"/>
+</cond>
+<block>
+<command>
+<expr>
+<cm name="save">
+<variable name="file"/>
+<variable name="intf"/>
+</cm>
+</expr>
+<expr>
+<assign>
+<variable name="modified"/>
+<pushnull/>
+</assign>
+</expr>
+<return>
+<pushsys/>
+</return>
+</command>
+</block>
+<return>
+<call>
+<params/>
+<variable name="saveAs"/>
+</call>
+</return>
+</ifelse>
+</command>
+</block>
+</code>
+</function>
+<function help="1" static="0" name="saveAs">
+<pars/>
+<code>
+<block>
+<command>
+<if>
+<initcond name="res">
+<cm name="run">
+<cm name="op:add">
+<variable name="filetype"/>
+<pushstr value="*."/>
+</cm>
+<variable name="SaveDialog"/>
+</cm>
+</initcond>
+<block>
+<command>
+<expr>
+<assign>
+<variable name="file"/>
+<variable name="res"/>
+</assign>
+</expr>
+<expr>
+<cm name="save">
+<variable name="file"/>
+<variable name="intf"/>
+</cm>
+</expr>
+<expr>
+<assign>
+<variable name="modified"/>
+<pushnull/>
+</assign>
+</expr>
+<return>
+<pushsys/>
+</return>
+</command>
+</block>
+</if>
+<return>
+<pushnull/>
+</return>
+</command>
+</block>
+</code>
+</function>
+<function help="1" static="0" name="canNew">
+<pars/>
+<code>
+<block>
+<command>
+<if>
+<cond>
+<call>
+<params/>
+<variable name="canClose"/>
+</call>
+</cond>
+<block>
+<command>
+<expr>
+<assign>
+<variable name="file"/>
+<pushnull/>
+</assign>
+</expr>
+<expr>
+<assign>
+<variable name="modified"/>
+<pushnull/>
+</assign>
+</expr>
+<return>
+<pushsys/>
+</return>
+</command>
+</block>
+</if>
+<return>
+<pushnull/>
+</return>
+</command>
+</block>
+</code>
+</function>
+<function help="1" static="0" name="open">
+<pars/>
+<code>
+<block>
+<command>
+<if>
+<cond>
+<call>
+<params/>
+<variable name="canClose"/>
+</call>
+</cond>
+<block>
+<command>
+<if>
+<initcond name="res">
+<cm name="run">
+<cm name="op:add">
+<variable name="filetype"/>
+<pushstr value="*."/>
+</cm>
+<variable name="OpenDialog"/>
+</cm>
+</initcond>
+<block>
+<command>
+<expr>
+<assign>
+<variable name="file"/>
+<variable name="res"/>
+</assign>
+</expr>
+<expr>
+<cm name="load">
+<variable name="file"/>
+<variable name="intf"/>
+</cm>
+</expr>
+<expr>
+<assign>
+<variable name="modified"/>
+<pushnull/>
+</assign>
+</expr>
+</command>
+</block>
+</if>
+</command>
+</block>
+</if>
+</command>
+</block>
+</code>
+</function>
+<function comment1="return, whether the file can be closed, if user select it, it can save the file" help="1" static="0" name="canClose">
+<pars/>
+<code>
+<block>
+<command>
+<if>
+<cond>
+<or>
+<variable name="modified"/>
+<cm name="modified">
+<variable name="intf"/>
+</cm>
+</or>
+</cond>
+<block>
+<command>
+<select>
+<cm name="msgbox">
+<cm name="op:add">
+<pushstr value=" zmenen, ulozit?"/>
+<cm name="op:add">
+<condexpr>
+<variable name="file"/>
+<variable name="file"/>
+<pushstr value="[Beze jmena]"/>
+</condexpr>
+<pushstr value="Soubor "/>
+</cm>
+</cm>
+<pushstr value="ync"/>
+<variable name="Window"/>
+</cm>
+<body>
+<item>
+<pushstr value="y"/>
+<return>
+<call>
+<params/>
+<variable name="save"/>
+</call>
+</return>
+</item>
+<item>
+<pushstr value="n"/>
+<return>
+<pushsys/>
+</return>
+</item>
+<item>
+<pushstr value="c"/>
+<return>
+<pushnull/>
+</return>
+</item>
+</body>
+</select>
+</command>
+</block>
+</if>
+<return>
+<pushsys/>
+</return>
+</command>
+</block>
+</code>
+</function>
+<function comment1="sets modified flag to true" help="1" static="0" name="modify">
+<pars/>
+<code>
+<block>
+<command>
+<expr>
+<assign>
+<variable name="modified"/>
+<pushsys/>
+</assign>
+</expr>
+</command>
+</block>
+</code>
+</function>
+<function static="0" name="get:file" resulttype="Object">
+<pars/>
+<code>
+<block>
+<command>
+<return>
+<condexpr>
+<variable name="file"/>
+<variable name="file"/>
+<pushstr value="[Beze jmena]"/>
+</condexpr>
+</return>
+</command>
+</block>
+</code>
+</function>
+<invalid static="0" name="set:file" void="1">
+<pars>
+<param name="value" type="Object"/>
+</pars>
+</invalid>
+<invalid hlpname="property" help="1" static="0" name="file" type="Object"/>
+</class>
+<class virtual="0" name="PrintDialog">
+<attrs/>
+<command>
+<defvar name="pages">
+<inlinearray>
+<params/>
+</inlinearray>
+</defvar>
+</command>
+<function name="get:pages">
+<pars/>
+<code>
+<block>
+<command>
+<return>
+<variable name="pages"/>
+</return>
+</command>
+</block>
+</code>
+</function>
+<command>
+<defvar name="file">
+<pushnull/>
+</defvar>
+</command>
+<function name="get:file">
+<pars/>
+<code>
+<block>
+<command>
+<return>
+<variable name="file"/>
+</return>
+</command>
+</block>
+</code>
+</function>
+<command>
+<defvar name="form">
+<pushnull/>
+</defvar>
+<defvar name="win">
+<pushnull/>
+</defvar>
+</command>
+<command>
+<defvar name="pagecnt">
+<pushnull/>
+</defvar>
+</command>
+<command>
+<defvar name="ok">
+<pushnull/>
+</defvar>
+</command>
+<constructor help="1" name="op:new">
+<pars/>
+<code/>
+</constructor>
+<function help="1" static="0" name="fileprintchng">
+<pars/>
+<code>
+<block>
+<command>
+<expr>
+<assign>
+<defer name="enabled">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="file"/>
+</deference>
+</defer>
+<defer name="checked">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="printtofile"/>
+</deference>
+</defer>
+</assign>
+</expr>
+</command>
+</block>
+</code>
+</function>
+<function help="1" static="0" name="paritysel">
+<pars>
+<param name="parity"/>
+</pars>
+<code>
+<block>
+<command>
+<defvar name="pgs">
+<cm name="split">
+<pushstr value=";"/>
+<defer name="selected">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="pages"/>
+</deference>
+</defer>
+</cm>
+</defvar>
+<expr>
+<cm name="makeInts">
+<variable name="pgs"/>
+</cm>
+</expr>
+<defvar name="res">
+<inlinearray>
+<params/>
+</inlinearray>
+</defvar>
+<foreach var="i">
+<variable name="pgs"/>
+<if>
+<cond>
+<cm name="op:eq">
+<callnew>
+<params>
+<variable name="parity"/>
+</params>
+<variable name="Number"/>
+</callnew>
+<cm name="op:mod">
+<pushnum value="2"/>
+<variable name="i"/>
+</cm>
+</cm>
+</cond>
+<expr>
+<cm name="push">
+<variable name="i"/>
+<variable name="res"/>
+</cm>
+</expr>
+</if>
+</foreach>
+<expr>
+<assign>
+<defer name="selected">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="pages"/>
+</deference>
+</defer>
+<cm name="join">
+<pushstr value=";"/>
+<variable name="res"/>
+</cm>
+</assign>
+</expr>
+</command>
+</block>
+</code>
+</function>
+<function help="1" static="0" name="print">
+<pars/>
+<code>
+<block>
+<command>
+<expr>
+<assign>
+<variable name="ok"/>
+<pushsys/>
+</assign>
+</expr>
+<expr>
+<cm name="close">
+<variable name="win"/>
+</cm>
+</expr>
+</command>
+</block>
+</code>
+</function>
+<function help="1" static="0" name="cancel">
+<pars/>
+<code>
+<block>
+<command>
+<expr>
+<assign>
+<variable name="ok"/>
+<pushnull/>
+</assign>
+</expr>
+<expr>
+<cm name="close">
+<variable name="win"/>
+</cm>
+</expr>
+</command>
+</block>
+</code>
+</function>
+<function help="1" static="0" name="browse">
+<pars/>
+<code>
+<block>
+<command>
+<defvar name="dlg">
+<callnew>
+<params/>
+<variable name="SaveDialog"/>
+</callnew>
+</defvar>
+<expr>
+<assign>
+<defer name="file">
+<variable name="dlg"/>
+</defer>
+<defer name="text">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="file"/>
+</deference>
+</defer>
+</assign>
+</expr>
+<if>
+<cond>
+<cm name="execute">
+<variable name="dlg"/>
+</cm>
+</cond>
+<expr>
+<assign>
+<defer name="text">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="file"/>
+</deference>
+</defer>
+<defer name="file">
+<variable name="dlg"/>
+</defer>
+</assign>
+</expr>
+</if>
+</command>
+</block>
+</code>
+</function>
+<function help="1" static="0" name="run">
+<pars>
+<param name="pageCount" type="int"/>
+</pars>
+<code>
+<block>
+<command>
+<expr>
+<assign>
+<variable name="pagecnt"/>
+<variable name="pageCount"/>
+</assign>
+</expr>
+<expr>
+<assign>
+<variable name="form"/>
+<callnew>
+<params/>
+<variable name="Form"/>
+</callnew>
+</assign>
+</expr>
+<expr>
+<assign>
+<variable name="win"/>
+<cm name="loadWindow">
+<pushstr value="form.printdialog"/>
+<variable name="form"/>
+</cm>
+</assign>
+</expr>
+<expr>
+<assign>
+<defer name="handler">
+<variable name="form"/>
+</defer>
+<pushthis/>
+</assign>
+</expr>
+<expr>
+<assign>
+<defer name="enabled">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="file"/>
+</deference>
+</defer>
+<pushnull/>
+</assign>
+</expr>
+<expr>
+<assign>
+<defer name="items">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="pages"/>
+</deference>
+</defer>
+<cm name="join">
+<pushstr value="
+"/>
+<cm name="sequence">
+<pushnum value="1"/>
+<variable name="pagecnt"/>
+<pushnum value="1"/>
+<variable name="Array"/>
+</cm>
+</cm>
+</assign>
+</expr>
+<expr>
+<assign>
+<defer name="selected">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="pages"/>
+</deference>
+</defer>
+<cm name="join">
+<pushstr value=";"/>
+<cm name="sequence">
+<pushnum value="0"/>
+<cm name="op:sub">
+<pushnum value="1"/>
+<variable name="pagecnt"/>
+</cm>
+<pushnum value="1"/>
+<variable name="Array"/>
+</cm>
+</cm>
+</assign>
+</expr>
+<expr>
+<cm name="showModal">
+<variable name="win"/>
+</cm>
+</expr>
+<expr>
+<assign>
+<variable name="pages"/>
+<cm name="split">
+<pushstr value=";"/>
+<defer name="selected">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="pages"/>
+</deference>
+</defer>
+</cm>
+</assign>
+</expr>
+<expr>
+<cm name="makeInts">
+<variable name="pages"/>
+</cm>
+</expr>
+<if>
+<cond>
+<defer name="checked">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="reverse"/>
+</deference>
+</defer>
+</cond>
+<expr>
+<cm name="reverse">
+<variable name="pages"/>
+</cm>
+</expr>
+</if>
+<if>
+<cond>
+<defer name="checked">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="printtofile"/>
+</deference>
+</defer>
+</cond>
+<expr>
+<assign>
+<variable name="file"/>
+<defer name="text">
+<deference type="prop">
+<variable name="form"/>
+<pushstr value="file"/>
+</deference>
+</defer>
+</assign>
+</expr>
+</if>
+<expr>
+<cm name="destroy">
+<variable name="form"/>
+</cm>
+</expr>
+<return>
+<variable name="ok"/>
+</return>
+</command>
+</block>
+</code>
+</function>
+</class>
+</module>

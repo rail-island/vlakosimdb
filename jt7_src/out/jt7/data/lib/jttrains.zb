@@ -1,0 +1,32 @@
+module trainsModule;
+
+var form,win;
+var game;
+var trains=[];
+
+function show() {
+  if (form) return;
+  form=new Form();
+  form.handler=this;
+  win=form.loadWindow("jtycon.trainsfrm");
+  game=JTycon.game;
+  update();
+  win.show();
+  JTWinManager.place(win);
+}
+
+function onclose() {
+  JTWinManager.closed(win);
+  form.destroy();
+  form=null;
+  win=null;
+}
+
+function update() {
+  trains=game.mobiles.collect({value is Train});
+  form->trains.items=trains.join({value.name & ":" & value.state & ";" & value->line.name},"\n");
+}
+
+function showtrain() {
+  if (var t=trains[form->trains.cur]) JTycon.showobj(t);
+}

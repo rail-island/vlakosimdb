@@ -1,0 +1,95 @@
+module modelViewModule;
+
+var maxambient=2,maxdiffuse=1,maxspecular=1;
+
+class ModelView {
+  var form,ctrl;
+  readonly model=new Model();
+  var dx=0,dy=0;
+  var lastmx,lastmy;
+  var ismoving;//zda se posouva obraz
+  var isrotating;//zda se rotuje obraz
+  readwrite renderHandler;
+
+  function init(control,owner) {
+    if (owner) form=new Form(owner);else form=new Form();
+    ctrl=control;
+    ctrl.loadProps(Application.findResource("model.view"),form);
+    form.handler=this;
+    form->glview.model=model;
+    option directly;
+    var lx=Application.options-/light;
+    form->ambient.cur=form->ambient.max*lx->ambient/maxambient;
+    form->diffuse.cur=form->diffuse.max*lx->diffuse/maxdiffuse;
+    form->specular.cur=form->specular.max*lx->specular/maxspecular;
+  }
+  function render() {
+    form->glview.render();
+  }  
+  function onrender() {
+    if (renderHandler) renderHandler.glv_render(form->glview.renderContext);
+  }  
+  property vars get {return form->glview.vars;}
+  
+  constructor(control) {init(control,null);}
+  constructor(control,owner) {init(control,owner);}
+  
+  function load(xml,zip) {
+    model.load(xml,zip);
+    changeview();
+  }   
+  function destroy() {
+    form.destroy();form=null;ctrl=null;
+  }
+  function mdown(x,y,button) {
+    x=new Number(x);y=new Number(y);
+    select (button) {
+      "right":{
+        lastmx=x;lastmy=y;ismoving=true;
+      }
+      "left":{
+        lastmx=x;lastmy=y;isrotating=true;
+      }
+    }
+    changeview();
+  }
+  function mmove(x,y) {
+    if (ismoving) {
+      x=new Number(x);y=new Number(y);
+      dx-=(x-lastmx)/form->glview.W*2;
+      dy-=(y-lastmy)/form->glview.H*2;
+      lastmx=x;lastmy=y;
+      changeview();
+    }
+    if (isrotating) {
+      x=new Number(x);y=new Number(y);
+      var dx=x-lastmx,dy=y-lastmy;
+      form->see.cur+=dy;form->view.cur+=dx;
+      lastmx=x;lastmy=y;
+      changeview();
+    }
+  }
+  function mup(button) {
+    select (button) {
+      "right":ismoving=false;
+      "left":isrotating=false;
+    }
+    changeview();
+  }
+  function savetovrml() {
+    if (var file=SaveDialog.run("*.wrz")) model.saveToVRML(file);
+  }
+  
+  function changeview() {
+    form->glview.mapView(form->see.cur,form->view.cur,0.002*(1.1).power(form->scale.cur),dx,dy);
+    form->glview.lighting=form->light.switched;
+    var lx=Application.options-/light;
+    form->glview.setLight(form->ambient.cur/form->ambient.max*maxambient,
+                          form->diffuse.cur/form->diffuse.max*maxdiffuse,
+                          form->specular.cur/form->specular.max*maxspecular,
+                          lx->ydir,lx->xzangle);
+    render();
+  }
+}
+
+

@@ -1,0 +1,73 @@
+module rstDatchTopScript;
+
+requires module modelScripts;
+
+readonly text="Raiway Station Datch";
+readonly name="datch";
+
+function addpt(shape,x,y,z,s,t) {
+  var pt=shape.add("vertex");
+  pt->x=x;pt->y=y;pt->z=z;
+  pt->s=s;pt->t=t;
+}
+
+function fillconst(xml,opt) {
+  xml->r=opt->r;xml->b=opt->b;xml->g=opt->g;
+  xml->texture=opt->texture;
+  xml.setVar("texture.transparent",opt->transparent);
+}
+
+function makerst(xml,opt) {
+  option directly;
+  xml.clearSubs();
+  xml->type="shape3d";
+  var ypos=new Number(opt->ypos);
+  var r=opt->r,g=opt->g,b=opt->g;
+  var len=new Number(opt->len);
+  var wi=new Number(opt->wi),hi=new Number(opt->hi);
+  var n=new Number(opt->n);
+  var t1,s1,t2,s2;
+  if (opt->textransp=="1") {
+    t1=new Number(opt->t1);t2=new Number(opt->t2);
+    s1=new Number(opt->s1);s2=new Number(opt->s2);
+  } else {
+    s1=new Number(opt->t1);s2=new Number(opt->t2);
+    t1=new Number(opt->s1);t2=new Number(opt->s2);
+  }
+  
+  var rad=(hi*hi+wi*wi/4)/(2*hi);
+  var angle0=((rad-hi)/(wi/2)).atan(),sumangle=Math.PI-2*angle0,dangle=sumangle/n;
+  var angle=angle0;
+  
+  for(var i=0;i<n;i++) {
+    var a1=angle,a2=angle+dangle;
+    var ax1=rad*a1.cos()+wi/2,ay1=rad*a1.sin()+ypos-(rad-hi);
+    var ax2=rad*a2.cos()+wi/2,ay2=rad*a2.sin()+ypos-(rad-hi);
+    var polygon=xml.add("polygon");
+    fillconst(polygon,opt);
+    var sb1=i/n*(s2-s1)+s1,tb1=i/n*(t2-t1)+t1;
+    var sb2=(i+1)/n*(s2-s1)+s1,tb2=(i+1)/n*(t2-t1)+t1;
+    addpt(polygon,0,ay1,ax1, t1,sb1);
+    addpt(polygon,len,ay1,ax1, t2,sb1);
+    addpt(polygon,len,ay2,ax2, t2,sb2);
+    addpt(polygon,0,ay2,ax2, t1,sb2);
+    angle+=dangle;
+  }
+}
+
+function run() {
+  var sel=modelScripts.selected;
+  if (!sel) return;
+  var xml=sel;
+  if (xml->initialized!="yes") {
+    xml->initialized="yes";
+    xml->r=1;
+    xml->g=1;
+    xml->b=1;
+  }
+  if (Application.runXMLDialog(Application.findResource("form.rstscript"),xml)) {
+    makerst(sel,xml);
+  }
+}
+
+modelScripts.addScript(this);

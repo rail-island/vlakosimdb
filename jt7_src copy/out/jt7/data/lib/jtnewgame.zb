@@ -1,0 +1,42 @@
+module newGameModule;
+
+var form,win;
+var ok;
+
+readonly W,H;
+
+function show() {
+  ok=false;
+  if (form) return;
+  form=new Form();
+  form.handler=this;
+  win=form.loadWindow("jtycon.newgamefrm");
+  win.showModal();
+  return ok;
+}
+
+function makeok() {
+  ok=true;
+  select (form->size.cur) {
+    0:{W=100;H=100;}
+    1:{W=200;H=200;}
+    2:{W=500;H=500;}
+    3:{W=1000;H=1000;}
+    4:{W=new Number(form->w.text);H=new Number(form->h.text);}
+  }
+  if (W<10 || W>1000) ok=false;
+  if (H<10 || H>1000) ok=false;
+  win.close();
+}
+
+function makecancel() {
+  win.close();
+}
+
+function onclose() {
+  form.destroy();
+  form=null;
+  win=null;
+}
+
+

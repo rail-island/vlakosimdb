@@ -1,0 +1,16 @@
+module terrainTypeModule;
+
+
+include module commonTypeModule;
+
+var formname="jtycon.tertypefrm";
+
+function gettypes() {
+  return game.terrainTypes;
+}
+
+function work(x,y,name) {
+  game.setTerrain(x,y,name);
+}
+
+

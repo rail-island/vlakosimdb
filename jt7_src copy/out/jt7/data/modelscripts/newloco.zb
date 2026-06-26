@@ -1,0 +1,44 @@
+module newLocoScript;
+
+requires module modelScripts;
+
+readonly text="$Locomotive";
+readonly name="loco";
+
+function create(parobj) {
+  var xml=new XMLNode();
+  xml->name="loco1";
+  xml->len=15;
+  xml->wi=3;
+  xml->hi=5;
+  if (Application.runXMLDialog(Application.findResource("poed.newlocofrm"),xml)) {
+    if (parobj.hasChild(xml->name&".zip")) {
+      Window.alert("$Object "&xml->name&".zip $object-exists-msg");
+      return null;
+    }
+    var obj=parobj.openChild(xml->name&".zip");
+    var index=new XMLNode();
+    index.name="loco";
+    index->name=xml->name;
+    obj.saveXML("index.xml",index);
+    
+    var model=obj.openChild("model.zip");
+    var modxml=new XMLNode();
+    
+    var sdata=new Store();
+    sdata->xsize=xml->len;sdata->ysize=xml->hi;sdata->zsize=xml->wi;sdata->name="model";
+    sdata->x0="0";sdata->y0="0";sdata->z0="";//z:centrovane
+    sdata->texx=2;sdata->texy=1;sdata->texz=2;
+    if (xml->difx=="1") sdata->texx=3;
+    if (xml->difz=="1") sdata->texz=3;
+    sdata->texdetail=10;sdata->treemodel="0";
+    
+    simpleObjectModule.createSimpleObject(sdata,modxml,model);
+    model.saveXML("index.xml",modxml);
+    
+    return obj;
+  }
+}
+
+modelScripts.addNewObjectScript(this);
+

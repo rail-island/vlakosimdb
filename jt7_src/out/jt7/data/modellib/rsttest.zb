@@ -1,0 +1,55 @@
+module rstTestModule;
+
+var form,win;
+var zipobj;
+var modv;
+var rst;
+var bridge;
+var inst;
+
+function remake() {
+  if (rst) inst=rst.complete(form->trc.cur,form->trl.cur);
+  if (bridge) inst=bridge.complete(form->trl.cur);
+  modv.changeview();
+}
+
+function run(xml,obj) {
+  if (win) return;
+  
+  Textures.clear();
+  
+  this.zipobj=obj;
+  
+  form=new Form();
+  win=form.loadWindow("form.rsttester");
+  form.handler=this;
+  
+  modv=new ModelView(form->glv,form);
+  modv.renderHandler=this;
+  
+  bridge=null;
+  rst=jtObject.load(obj);
+  if (rst is jtBridge) {
+    bridge=rst;rst=null;
+  }
+  
+  form->trc.cur=1;form->trl.cur=1;
+  remake();
+  
+  win.showModal();
+  
+  form.destroy();
+  modv.destroy();
+  modv=null;
+  form=null;
+  win=null;
+}
+
+function glv_render(rc) {
+  inst.render(0,0,0,rc,0);
+}
+
+function quit() {
+  win.close();
+}
+

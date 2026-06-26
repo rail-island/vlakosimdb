@@ -1,0 +1,89 @@
+includable module commonTypeModule;
+
+///must be difined:
+//var formname
+//function gettypes()
+//function work(type)
+
+var form,win;
+var game;
+var pt0;
+var rightset;
+var types;
+
+function show() {
+  game=JTycon.game;
+  if (form) return;
+  form=new Form();
+  form.handler=this;
+  JTycon.state=this;
+  win=form.loadWindow(formname);
+  if (!types) types=gettypes();
+  form->list.items=types.join({value.title},"\n");
+  win.show();
+  JTWinManager.place(win);
+}
+
+function onclose() {
+  JTWinManager.closed(win);
+  if (JTycon.state===this) JTycon.state=null;
+  form.destroy();
+  form=null;
+  win=null;
+}
+
+function makerect() {
+  var x1=pt0->x,y1=pt0->y,x2=game.mapX,y2=game.mapY;
+  if (x1>x2) {var p=x1;x1=x2;x2=p;}
+  if (y1>y2) {var p=y1;y1=y2;y2=p;}
+  return new (x1=x1,y1=y1,x2=x2,y2=y2);
+}
+
+function setmode(value) {
+  JTycon.state=this;
+  mode=value;
+}
+
+function onpaint() {
+//  var color="lime";
+  var cursor=Cursors.dry;
+  if (pt0) {
+    var r=makerect();
+//    for(var x=r->x1;x<=r->x2;x++) for(var y=r->y1;y<=r->y2;y++) 
+    game.drawCustomCursors(r->x1,r->y1,r->x2,r->y2,cursor,0);
+  } else {
+    game.drawCustomCursor(game.mapX,game.mapY,cursor,0);
+  }
+}
+
+function mdown(button) {
+  if (button=="left") pt0=new (x=game.mapX,y=game.mapY);
+  else {
+    rightset=true;
+    mmove();
+  }
+}
+
+function setstate() {
+  JTycon.state=this;
+}
+
+function mup(button) {
+  if (pt0) {
+    var r=makerect();
+    if (var type=types[form->list.cur]) {
+      var name=type.name;
+      for(var x=r->x1;x<=r->x2;x++) for(var y=r->y1;y<=r->y2;y++) work(x,y,name);
+    }
+  }
+  rightset=false;
+  pt0=null;
+}
+
+function mmove() {
+  if (rightset) {
+    var name=types[form->list.cur];
+    work(game.mapX,game.mapY,name);
+  }
+}
+

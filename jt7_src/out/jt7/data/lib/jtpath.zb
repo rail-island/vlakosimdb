@@ -1,0 +1,33 @@
+module pathModule;
+
+class jtDirectory {
+  readonly name;
+  readonly parent;
+  readonly childs=[];
+  readonly elems=[];
+  
+  constructor() {}
+  constructor(parent,name) {this.parent=parent;this.name=name;}
+  
+  function add(obj) {
+    var pth=obj.path.split("/");
+    var act=this;
+    for (p in pth) {
+      act=act.forceSub(p);
+    }
+    act.elems.push(obj);
+  }
+  function forceSub(subname) {
+    if (var res=childs.searchIf({value.name==subname})) return res;
+    var res=new jtDirectory(this,subname);
+    childs.push(res);
+    return res;
+  }
+  function sort() {
+    childs.sort({String.compare(left.name,right.name)});
+    elems.sort({String.compare(left.title,right.title)});
+    for (c in childs) c.sort();
+  }
+}
+
+

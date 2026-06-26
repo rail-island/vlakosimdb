@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<data>
+<window rep.name="form.editwin" layout="1" closeonesc="1">
+<memo name="memo"/>
+</window>
+</data>

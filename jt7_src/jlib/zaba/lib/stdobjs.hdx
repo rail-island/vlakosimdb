@@ -1,0 +1,1335 @@
+<?xml version="1.0" encoding="Windows-1250"?>
+<help_data>
+<class name="Object" >
+
+<function name="isInstanceOf"  type=""><pars>
+<param name="classType" type=""/>
+
+</pars>
+
+</function>
+
+<function name="typename"  type=""><pars>
+
+</pars>
+
+</function>
+<property name="typename"  type="Object"/></class>
+<class name="Number" >
+<operator name="+"  type="float"/><operator name="-"  type="float"/><operator name="*"  type="float"/><operator name="/"  type="float"/><operator name="%"  type="float"/><operator name="=="  type="bool"/><operator name="!="  type="bool"/><operator name="&lt;"  type="bool"/><operator name="&gt;"  type="bool"/><operator name="&lt;="  type="bool"/><operator name="&gt;="  type="bool"/><operator name="++"  type="float"/><operator name="--"  type="float"/><operator name="-"  type="float"/>
+<constructor name="op:new"  type=""><pars>
+<param name="n" type=""/>
+
+</pars>
+
+</constructor>
+
+<function name="sin" comment1="sine"  type="float"><pars>
+
+</pars>
+
+</function>
+
+<function name="cos" comment1="cosine"  type="float"><pars>
+
+</pars>
+
+</function>
+
+<function name="tan" comment1="tanget"  type="float"><pars>
+
+</pars>
+
+</function>
+
+<function name="asin" comment1="arc sine"  type="float"><pars>
+
+</pars>
+
+</function>
+
+<function name="acos" comment1="arc cosine"  type="float"><pars>
+
+</pars>
+
+</function>
+
+<function name="atan" comment1="arc tangent"  type="float"><pars>
+
+</pars>
+
+</function>
+
+<function name="log" comment1="natural logarithm"  type="float"><pars>
+
+</pars>
+
+</function>
+
+<function name="exp" comment1="e powered to this"  type="float"><pars>
+
+</pars>
+
+</function>
+
+<function name="power" comment1="this to exponent-th"  type="float"><pars>
+<param name="exponent" type="float"/>
+
+</pars>
+
+</function>
+
+<function name="abs" comment1="this&gt;0?this:-this"  type="float"><pars>
+
+</pars>
+
+</function>
+
+<function name="sgn" comment1="this&gt;0:1,this==0:0,this&lt;0:-1"  type="float"><pars>
+
+</pars>
+
+</function>
+
+<function name="round" comment1="rounds to nearest integer"  type="int"><pars>
+
+</pars>
+
+</function>
+
+<function name="rand" comment1="random number from interval &lt;0,1)" static="1"  type="float"><pars>
+
+</pars>
+
+</function>
+
+<function name="rand" comment1="integer random number from &lt;0,range-1&gt;" static="1"  type="int"><pars>
+<param name="range" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="compare" static="1"  type="int"><pars>
+<param name="value1" type="float"/>
+<param name="value2" type="float"/>
+
+</pars>
+
+</function>
+</class>
+<class name="Math" >
+<property get="1" set="0" name="PI" static="1"  type="float"/><property get="1" set="0" name="E" static="1"  type="float"/>
+<function name="min" static="1"  type="float"><pars>
+
+</pars>
+
+</function>
+
+<function name="max" static="1"  type="float"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="MultiIndex" >
+<operator get="1" set="1" name="[]"  type="int"/>
+<function name="reverse"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="add"  type="void"><pars>
+<param name="what" type="int"/>
+
+</pars>
+
+</function>
+
+<constructor name="op:new"  type=""><pars>
+
+</pars>
+
+</constructor>
+
+<constructor name="op:new"  type=""><pars>
+<param name="a" type="Array"/>
+
+</pars>
+
+</constructor>
+
+<function name="toArray"  type="Array"><pars>
+
+</pars>
+
+</function>
+
+<function name="clone"  type="Object"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="CharMap" comment1="
+Map to change characters (eg. uppercase...)
+" >
+<property get="1" set="1" name="source" comment1="eg. uppercase:abcdef..."  type="string"/><property get="1" set="1" name="target" comment1="eg. uppercase:ABCDEF..."  type="string"/>
+<constructor name="op:new"  type=""><pars>
+
+</pars>
+
+</constructor>
+</class>
+<class name="String" >
+<operator name="+" comment1="concatenation"  type="string"/><operator name="==" comment1="exatly equals to right"  type="bool"/><operator name="!=" comment1="exatly equals to right"  type="bool"/><operator name="&lt;" comment1="case-insensitive compare"  type="bool"/><operator name="&gt;" comment1="case-insensitive compare"  type="bool"/><operator name="&lt;=" comment1="case-insensitive compare"  type="bool"/><operator name="&gt;=" comment1="case-insensitive compare"  type="bool"/>
+<constructor name="op:new" comment1="converts obj to string"  type=""><pars>
+<param name="obj" type="Object"/>
+
+</pars>
+
+</constructor>
+<property get="1" set="0" name="length" comment1="length of string"  type="int"/><operator get="1" set="0" name="[]" comment1="returns char at index"  type="string"/>
+<function name="beginsWith" comment1="returns whether this has begin s"  type="bool"><pars>
+<param name="s" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="endsWith" comment1="returns whether this has end s"  type="bool"><pars>
+<param name="s" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="charAt" comment1="returns character at position index(idnexed from 0)"  type="string"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="substr" comment1="returns string &lt;from,from+count)"  type="string"><pars>
+<param name="from" type="int"/>
+<param name="count" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="substring" comment1="returns string &lt;from,end)"  type="string"><pars>
+<param name="from" type="int"/>
+<param name="end" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="toUpperCase" comment1="returns string converted to upper case"  type="string"><pars>
+
+</pars>
+
+</function>
+
+<function name="toLowerCase" comment1="returns string converted to lower case"  type="string"><pars>
+
+</pars>
+
+</function>
+
+<function name="trim" comment1="returns string without leading and ending white chracters"  type="string"><pars>
+
+</pars>
+
+</function>
+
+<function name="indexOf" comment1="returns index of substring substr, -1, if substr isn&apos;t in this"  type="int"><pars>
+<param name="substr" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="mapIndexOf" comment1="returns index of substring substr, -1, if substr isn&apos;t in this"  type="int"><pars>
+<param name="substr" type="string"/>
+<param name="map" type="CharMap"/>
+
+</pars>
+
+</function>
+
+<function name="split" comment1="splits string in substrings"  type="Object"><pars>
+<param name="separator" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="save" comment1="saves string to file (EOLns are saved like in UNIX)"  type="void"><pars>
+<param name="file" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="mapBeginsWith" comment1="returns whether this has begin s"  type="bool"><pars>
+<param name="s" type="string"/>
+<param name="map" type="CharMap"/>
+
+</pars>
+
+</function>
+
+<function name="replace" comment1="replaces first regex with 2-nd argument, 2-nd argument can contain \1,\2"  type="string"><pars>
+<param name="regex" type="RegExp"/>
+<param name="replace_with" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="replaceAll" comment1="replaces all regex with 2-nd argument, 2-nd argument can contain \1,\2"  type="string"><pars>
+<param name="regex" type="RegExp"/>
+<param name="replace_with" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="replace" comment1="replaces first regex with 2-nd argument, 2-nd argument can contain \1,\2"  type="string"><pars>
+<param name="origin" type="string"/>
+<param name="replace_with" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="replaceAll" comment1="replaces all regex with 2-nd argument, 2-nd argument can contain \1,\2"  type="string"><pars>
+<param name="origin" type="string"/>
+<param name="replace_with" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="translate" comment1="translates to local language"  type="string"><pars>
+
+</pars>
+
+</function>
+
+<function name="mapReplace" comment1="returns string changed with CharMap"  type="string"><pars>
+<param name="map" type="CharMap"/>
+
+</pars>
+
+</function>
+
+<function name="compare" static="1"  type="int"><pars>
+<param name="value1" type="string"/>
+<param name="value2" type="string"/>
+
+</pars>
+
+</function>
+</class>
+<class name="ArrayIterator" >
+
+<function name="getValue"  type="Object"><pars>
+
+</pars>
+
+</function>
+
+<function name="moveNext"  type="Object"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="Array" >
+<operator get="1" set="1" name="[]" comment1="returns indexth element, if index is out of bounds, returns null"  type="Object"/>
+<function name="push" comment1="adds arguments to the end of the array"  type="void"><pars>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="length" comment1="length"  type="Number"/><property get="1" set="0" name="count" comment1="synonymum to length"  type="Number"/>
+<function name="pop" comment1="removes and returns the last element"  type="Object"><pars>
+
+</pars>
+
+</function>
+
+<function name="reverse" comment1="reverses all elements"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="shift" comment1="removes and returns the first element"  type="Object"><pars>
+
+</pars>
+
+</function>
+
+<function name="join" comment1="returns string elem1 separator elem2 ..."  type="Object"><pars>
+<param name="func" type="InlineMethod"/>
+<param name="separator" type="String"/>
+
+</pars>
+
+</function>
+
+<function name="join" comment1="returns string elem1 separator elem2 ..."  type="Object"><pars>
+<param name="separator" type="String"/>
+
+</pars>
+
+</function>
+
+<function name="sort" comment1="heap sort"  type="void"><pars>
+<param name="comparator" type="InlineMethod"/>
+
+</pars>
+
+</function>
+
+<function name="sort" comment1="heap sort"  type="void"><pars>
+<param name="comparator" type="Object"/>
+
+</pars>
+
+</function>
+
+<function name="sort" comment1="alphabetic sort"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<constructor name="op:new" comment1="creates array from arguments"  type=""><pars>
+
+</pars>
+
+</constructor>
+
+<function name="erase" comment1="erases elements index,index+1,...,index+count-1"  type="void"><pars>
+<param name="index" type="int"/>
+<param name="count" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="erase" comment1="erases elements index"  type="void"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="insert" comment1="inserts element what at position index"  type="void"><pars>
+<param name="index" type="int"/>
+<param name="what" type=""/>
+
+</pars>
+
+</function>
+
+<function name="search" comment1="searches what, return inedx or -1, tests for what==items[i]"  type="int"><pars>
+<param name="what" type=""/>
+
+</pars>
+
+</function>
+
+<function name="remove" comment1="removes first object equal to what"  type="void"><pars>
+<param name="what" type=""/>
+
+</pars>
+
+</function>
+
+<function name="removeRef" comment1="removes first object what"  type="void"><pars>
+<param name="what" type=""/>
+
+</pars>
+
+</function>
+
+<function name="reOrder" comment1="changes order of items, newOrder must be permutation of count members"  type="void"><pars>
+<param name="newOrder" type="MultiIndex"/>
+
+</pars>
+
+</function>
+
+<function name="clear" comment1="removes all items"  type="void"><pars>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="last"  type="Object"/>
+<function name="getIterator"  type="Object"><pars>
+
+</pars>
+
+</function>
+
+<function name="clone" comment1="shallow copy"  type="Object"><pars>
+
+</pars>
+
+</function>
+
+<function name="assign" comment1="shallow copy"  type="void"><pars>
+<param name="array" type="Array"/>
+
+</pars>
+
+</function>
+
+<function name="sequence" comment1="returns arithmetic sequence &lt;low,high&gt;" static="1"  type="Array"><pars>
+<param name="low" type="float"/>
+<param name="high" type="float"/>
+<param name="step" type="float"/>
+
+</pars>
+
+</function>
+
+<function name="makeInts" comment1="converts all members to integer"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="makeFloats" comment1="converts all members to float"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="makeStrings" comment1="converts all members to string"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="makeBools" comment1="converts all members to bool"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="searchIf" comment1="serchs item with condiotion true" comment2="condition is inline function, which returns null, if item is not ok,
+  or any value, if item is ok. Value is value of element, index is its index
+  Example: [1,2,3].searchIf({if (value==2) return index;return null;}) returns 1
+  "  type="Object"><pars>
+<param name="condition" type=""/>
+
+</pars>
+
+</function>
+
+<function name="searchIfIndex" comment1="returns searched item index or -1"  type="Object"><pars>
+<param name="condition" type=""/>
+
+</pars>
+
+</function>
+
+<function name="searchIfValue" comment1="returns returned expression or null"  type="Object"><pars>
+<param name="condition" type=""/>
+
+</pars>
+
+</function>
+
+<function name="searchRef" comment1="rearches array for ref using operator ===(very fast)"  type="int"><pars>
+<param name="ref" type=""/>
+
+</pars>
+
+</function>
+
+<function name="searchInt" comment1="rearches array for num"  type="int"><pars>
+<param name="num" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="searchString" comment1="rearches array for str"  type="int"><pars>
+<param name="str" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="searchFloat" comment1="rearches array for num"  type="int"><pars>
+<param name="num" type="float"/>
+
+</pars>
+
+</function>
+
+<function name="searchExtrem" comment1="searchs extram, eg. searchExtrem({value},{extrem&lt;=value}) returns minimum"  type="Object"><pars>
+<param name="extrem" type="InlineMethod"/>
+<param name="forall" type="InlineMethod"/>
+
+</pars>
+
+</function>
+
+<function name="collect" comment1="returns array of all items with true condition"  type="Array"><pars>
+<param name="condition" type="InlineMethod"/>
+
+</pars>
+
+</function>
+
+<function name="convert" comment1="returns converted array (eg. [1,2].convert({value*2}) returns [2,4])"  type="Array"><pars>
+<param name="convertion" type="InlineMethod"/>
+
+</pars>
+
+</function>
+
+<function name="addArray" comment1="adds items from array"  type="void"><pars>
+<param name="array" type="Array"/>
+
+</pars>
+
+</function>
+
+<function name="exchange" comment1="exchanges items index1 and index2"  type="void"><pars>
+<param name="idnex1" type="int"/>
+<param name="index2" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="moveUp" comment1="if cannot do this, does nothing"  type="bool"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="moveDown" comment1="if cannot do this, does nothing"  type="bool"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="segment" comment1="returns subarray"  type="Array"><pars>
+<param name="from" type="int"/>
+<param name="len" type="int"/>
+
+</pars>
+
+</function>
+</class>
+<class name="Matrix" comment1="n-dimensional array with fixed size" >
+<operator get="1" set="1" name="[]" comment1="arguments are indexes to array" comment2="arguments are indexes to array, number of arguments must be 
+     equal to number of arguments put to constructor
+  "  type="Object"/>
+<constructor name="op:new" comment1="arguments are dimensions" comment2="
+    arguments are dimensions, eg. new Matrix(4,3) creates 2-dimensional array
+    with 4 rows(0..3) and 3 columns(0..2), valid indexing is [0..3,0..2]
+  "  type=""><pars>
+
+</pars>
+
+</constructor>
+
+<function name="fill" comment1="sets all elements to value"  type="void"><pars>
+<param name="value" type=""/>
+
+</pars>
+
+</function>
+
+<function name="search" comment1="searches what" comment2="searches what, if found, returns MultiIndex, if not found, returns null"  type="Object"><pars>
+<param name="what" type=""/>
+
+</pars>
+
+</function>
+
+<function name="clone"  type="Object"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="StringBuffer" >
+
+<function name="add"  type="void"><pars>
+<param name="what" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="erase"  type="void"><pars>
+<param name="begin" type="int"/>
+<param name="end" type="int"/>
+
+</pars>
+
+</function>
+
+<constructor name="op:new"  type=""><pars>
+
+</pars>
+
+</constructor>
+</class>
+<class name="InlineMethod" >
+
+<function name="op:call"  type="Object"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="System" >
+
+<function name="createArray"  type="Object"><pars>
+
+</pars>
+
+</function>
+
+<function name="getStackTrace"  type="string"><pars>
+
+</pars>
+
+</function>
+
+<function name="createDelegate"  type="Object"><pars>
+<param name="name" type="string"/>
+<param name="object" type=""/>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="interpretState"  type="XMLNode"/><operator get="1" set="1" name="-&gt;"  type="Object"/><operator get="1" set="0" name="[]"  type="Object"/>
+<function name="createInlineMethod"  type="Object"><pars>
+<param name="locals" type=""/>
+<param name="obj" type=""/>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="clock" comment1="returns seconds (can be used to measure time differences)"  type="float"/>
+<function name="command"  type="int"><pars>
+<param name="command" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="createInterruptFunction"  type="Object"><pars>
+<param name="obj" type=""/>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="createIsList"  type=""><pars>
+<param name="classtype" type=""/>
+
+</pars>
+
+</function>
+</class>
+<class name="Date" >
+<property get="1" set="1" name="day" comment1="day,1..31"  type="int"/><property get="1" set="1" name="month" comment1="month,1..12"  type="int"/><property get="1" set="1" name="year" comment1="year,1900.."  type="int"/><property get="1" set="1" name="hours" comment1="hours,0..23"  type="int"/><property get="1" set="1" name="minutes" comment1="minutes,0..59"  type="int"/><property get="1" set="1" name="seconds" comment1="seconds,0..59"  type="int"/><property get="1" set="1" name="ticks"  type="int"/><property get="1" set="0" name="sortString"  type="string"/><property get="1" set="1" name="asString" comment1="returns string as 27.9.2018"  type="string"/>
+<constructor name="op:new" comment1="creates instance with actual date and time"  type=""><pars>
+
+</pars>
+
+</constructor>
+
+<constructor name="op:new" comment1="creates instance with date and time from value"  type=""><pars>
+<param name="value" type="string"/>
+
+</pars>
+
+</constructor>
+
+<function name="format"  type="string"><pars>
+<param name="fmt" type="string"/>
+
+</pars>
+
+</function>
+</class>
+<class name="File" comment1="represents ftile or directory name" >
+
+<function name="isFile" comment1="returns, whether this is existing file"  type="bool"><pars>
+
+</pars>
+
+</function>
+
+<function name="isDirectory" comment1="returns, whether this is existing directory"  type="bool"><pars>
+
+</pars>
+
+</function>
+<operator name="/" comment1="returns subitem in directory"  type="File"/>
+<function name="listFiles" comment1="returns array of short names of files"  type="Object"><pars>
+<param name="dir" type="string"/>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="root" comment1="root directory" static="1"  type="File"/>
+<function name="list" static="1"  type="Object"><pars>
+<param name="mask" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="mkdir" comment1="creates this directory"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="mkdirs" comment1="creates this directories"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="relTo" comment1="returns path relative to directory"  type="File"><pars>
+<param name="directory" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="getDirectory" comment1="returns parent"  type="File"><pars>
+
+</pars>
+
+</function>
+
+<function name="getFile" comment1="returns file name without path"  type="File"><pars>
+
+</pars>
+
+</function>
+<operator name="%" comment1="returns filename with changed extension"  type="File"/>
+<function name="load" comment1="loads file as string"  type="string"><pars>
+
+</pars>
+
+</function>
+
+<function name="copyTo" comment1="copies file"  type="void"><pars>
+<param name="newname" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="renameTo" comment1="renames file"  type="void"><pars>
+<param name="newname" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="hasExt" comment1="returns, whether file has extension ext"  type="bool"><pars>
+<param name="ext" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="remove" comment1="removes the file or directory"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<constructor name="op:new" comment1="creates new File object"  type=""><pars>
+<param name="name" type="string"/>
+
+</pars>
+
+</constructor>
+</class>
+<class name="StoreIterator" >
+
+<function name="moveNext"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="getValue"  type="Object"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="Store" >
+<operator get="1" set="1" name="-&gt;"  type="Object"/>
+<constructor name="op:new"  type=""><pars>
+
+</pars>
+
+</constructor>
+<operator get="1" set="1" name="[]"  type="Object"/>
+<function name="getIterator" comment1="returns iterator, that enumerates all key(variable) names"  type="Object"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="RefStore" comment1="
+Like Store, but is indexed by object reference
+" >
+<operator get="1" set="1" name="[]" comment1="assign null to delete variable"  type="Object"/>
+<constructor name="op:new"  type=""><pars>
+
+</pars>
+
+</constructor>
+<property get="1" set="0" name="keys" comment1="returns Array of keys"  type="Array"/></class>
+<class name="Exception" >
+
+<constructor name="op:new"  type=""><pars>
+<param name="msg" type="string"/>
+
+</pars>
+
+</constructor>
+</class>
+<class name="VarListIterator" >
+
+<function name="moveNext"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="getValue"  type="Object"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="VarList" >
+<operator get="1" set="1" name="-&gt;"  type="string"/>
+<function name="getIterator"  type="VarListIterator"><pars>
+
+</pars>
+
+</function>
+
+<function name="clear"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="eraseVar"  type="void"><pars>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+
+<constructor name="op:new"  type=""><pars>
+
+</pars>
+
+</constructor>
+</class>
+<class name="XMLIterator" >
+
+<function name="getValue"  type="Object"><pars>
+
+</pars>
+
+</function>
+
+<function name="moveNext"  type="void"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="XMLNode" >
+<operator get="1" set="0" name="[]" comment1="readonly access to child elements"  type="XMLNode"/><operator get="1" set="0" name="[]" comment1="readonly access to child elements"  type="XMLNode"/><operator get="1" set="0" name="[]" comment1="by-name child access"  type="XMLNode"/><property get="1" set="1" name="name" comment1="element name"  type="string"/><property get="1" set="1" name="text" comment1="element text"  type="string"/><operator get="1" set="0" name="[]" comment1="readonly random access to child elements"  type="XMLNode"/>
+<function name="getSub" comment1="readonly by-name access to child elements"  type="XMLNode"><pars>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="at" comment1="readonly random access to child elements"  type="XMLNode"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="add" comment1="adds new child element, returns link to it"  type="XMLNode"><pars>
+
+</pars>
+
+</function>
+
+<function name="add" comment1="adds new child element named name, returns link to it"  type="XMLNode"><pars>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="forceSub" comment1="if exists child name, returns it, else adds new"  type="XMLNode"><pars>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="insert" comment1="inserts new child element before element pos, returns link to it"  type="XMLNode"><pars>
+<param name="pos" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="eraseAt" comment1="erase index-th child"  type="void"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="eraseSub" comment1="erases first child name"  type="void"><pars>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="assign" comment1="deep copy from src"  type="void"><pars>
+<param name="src" type="XMLNode"/>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="count" comment1="number of child elements"  type="int"/><property get="1" set="0" name="varCount" comment1="number of attributes"  type="int"/>
+<function name="varAt" comment1="then index-th attribute value(from 0)"  type="string"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="varNameAt" comment1="then index-th attribute name(from 0)"  type="string"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="getVar" comment1="returns value of attribute name"  type="string"><pars>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="setVar" comment1="sets value of attribute name to value"  type="void"><pars>
+<param name="name" type="string"/>
+<param name="value" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="load" comment1="loads XML from file(full path expected) and returns new XML" static="1"  type="XMLNode"><pars>
+<param name="file" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="sort"  type="void"><pars>
+<param name="comparator" type="InlineMethod"/>
+
+</pars>
+
+</function>
+<operator get="1" set="1" name="-&gt;"  type="string"/><operator get="1" set="0" name="-/" comment1="readonly access to child elements"  type="XMLNode"/>
+<constructor name="op:new" comment1="creates empty XML node"  type=""><pars>
+
+</pars>
+
+</constructor>
+
+<function name="save" comment1="saves XML to file(full path expected)"  type="void"><pars>
+<param name="file" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="clear" comment1="deletes all attributes and childs"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="load" comment1="loads XML from file and replaces old contents of XMLNode"  type="void"><pars>
+<param name="file" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="saveVars" comment1="save all variables from vars"  type="void"><pars>
+<param name="vars" type="VarList"/>
+
+</pars>
+
+</function>
+
+<function name="loadVars" comment1="loads all variables from vars, deletes old vars"  type="void"><pars>
+<param name="vars" type="VarList"/>
+
+</pars>
+
+</function>
+
+<function name="clearVars" comment1="deletes all variables"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="clearSubs" comment1="deletes all subs"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="eraseVar" comment1="erases variable name"  type="void"><pars>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="nodeAt" comment1="returns XMLNode at index or throws exception, if no exists"  type="XMLNode"><pars>
+<param name="index" type="MultiIndex"/>
+
+</pars>
+
+</function>
+<operator name="==" comment1="if true, chenges in right are reflected in this"  type="bool"/><operator name="!=" comment1="if true, chenges in right are not reflected in this"  type="bool"/>
+<function name="equalTo" comment1="equal by content"  type="bool"><pars>
+<param name="xml" type="XMLNode"/>
+
+</pars>
+
+</function>
+
+<function name="weekEqualTo" comment1="equal by content, not sorted"  type="bool"><pars>
+<param name="xml" type="XMLNode"/>
+
+</pars>
+
+</function>
+
+<function name="isVar" comment1="returns, whether XML element has specified attribute name"  type="bool"><pars>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="isSub" comment1="returns, whether XML element has child name"  type="bool"><pars>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="parent" comment1="returns parent XMLNode or null"  type="XMLNode"/>
+<function name="remove" comment1="removes node from XML tree"  type="void"><pars>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="childs" comment1="returns array of childs"  type="Array"/><property get="1" set="0" name="varNames" comment1="returns array of all variable names"  type="Array"/>
+<function name="exists" comment1="returns, whether exists object path"  type="bool"><pars>
+<param name="path" type="XMLPath"/>
+
+</pars>
+
+</function>
+
+<function name="exchange" comment1="exchanges two childs, returns, whether change is valid"  type="bool"><pars>
+<param name="index1" type="int"/>
+<param name="index2" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="getIterator"  type="XMLIterator"><pars>
+
+</pars>
+
+</function>
+
+<function name="clone"  type="Object"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="XMLPath" >
+
+<constructor name="op:new"  type=""><pars>
+<param name="path" type="string"/>
+
+</pars>
+
+</constructor>
+</class>
+<class name="Delegate" >
+
+<function name="op:call"  type="Object"><pars>
+
+</pars>
+
+</function>
+</class>
+<class name="QuickSorter" comment1="
+Alphabetic table sort
+" >
+
+<function name="push"  type="void"><pars>
+
+</pars>
+
+</function>
+
+<function name="sort"  type="MultiIndex"><pars>
+
+</pars>
+
+</function>
+
+<constructor name="op:new"  type=""><pars>
+
+</pars>
+
+</constructor>
+</class>
+<class name="CharMixer" >
+
+<function name="compileFile"  type="void"><pars>
+<param name="file" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="run"  type="string"><pars>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="globals"  type="VarList"/>
+<constructor name="op:new"  type=""><pars>
+
+</pars>
+
+</constructor>
+<operator get="1" set="1" name="-&gt;"  type="Object"/>
+<function name="hasSub"  type="bool"><pars>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+
+<function name="callSub"  type="string"><pars>
+<param name="name" type="string"/>
+
+</pars>
+
+</function>
+</class>
+<class name="RegExp" >
+
+<constructor name="op:new" comment1="compiles new regular expression from regex"  type=""><pars>
+<param name="regex" type="string"/>
+
+</pars>
+
+</constructor>
+
+<function name="match" comment1="runs regular expression on text, returns match result or null"  type="RegResult"><pars>
+<param name="text" type="string"/>
+
+</pars>
+
+</function>
+<operator name="*" comment1="synonyme to match"  type="RegResult"/></class>
+<class name="RegResult" >
+
+<function name="replace"  type="string"><pars>
+<param name="replace_string" type="string"/>
+
+</pars>
+
+</function>
+<operator get="1" set="0" name="[]" comment1="returns n-th substring of last matched text"  type="string"/><property get="1" set="0" name="match" comment1="returns matched text"  type="string"/><property get="1" set="0" name="text" comment1="returns text to match"  type="string"/>
+<function name="begin" comment1="returns begin of index-th substring"  type="int"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+
+<function name="end" comment1="returns end of index-th substring"  type="int"><pars>
+<param name="index" type="int"/>
+
+</pars>
+
+</function>
+<property get="1" set="0" name="count" comment1="returns substring count"  type="int"/></class>
+<class name="InterruptFunction" >
+
+<function name="op:call"  type="Object"><pars>
+
+</pars>
+
+</function>
+<property name="finished"  type="bool"/></class>
+</help_data>

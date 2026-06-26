@@ -1,0 +1,61 @@
+module smokeEditModule;
+
+var form,win;
+var zipobj;
+var modv;
+var smoke;
+var inst;
+var lasttime;
+
+function run(xml,obj) {
+  if (win) return;
+  
+  Textures.clear();
+  
+  this.zipobj=obj;
+
+  lasttime=(system).clock;
+  smoke=jtObject.load(obj);
+  inst=smoke.create();
+  
+  form=new Form();
+  win=form.loadWindow("form.smokeeditor");
+  form.handler=this;
+  
+  modv=new ModelView(form->glv,form);
+  modv.renderHandler=this;
+  
+  win.showModal();
+  
+  form.destroy();
+  modv=null;
+  form=null;
+  win=null;
+}
+
+function quit() {
+  win.close();
+}
+
+function glv_render(rc) {
+  inst.render(rc);
+}
+
+var lastfps=0;
+var flips=0;
+
+function makeIdle() {
+  if (!form) return;
+  var xspeed=form->speed.cur/form->speed.max*5;
+  var dt=(system).clock-lasttime;
+  inst.iterate(dt,0,0.5,0,xspeed,0,0);
+  inst.translate(dt*xspeed,0,0);
+  lasttime=(system).clock;
+  modv.render();
+  flips++;
+  if (lasttime-lastfps>1) {
+    form->fps.text="fps:"&(flips/(lasttime-lastfps)).round();
+    lastfps=lasttime;
+    flips=0;
+  }
+}
