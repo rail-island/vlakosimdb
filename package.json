@@ -7,7 +7,8 @@
   "scripts": {
     "build:models": "node scripts/build-models.mjs",
     "remaster": "node scripts/remaster.mjs",
-    "upload:roblox": "node scripts/upload-roblox.mjs",
+    "upload": "node scripts/upload-roblox.mjs",
+    "upload:dry": "node scripts/upload-roblox.mjs --dry-run",
     "dev": "npm run build:models && vite",
     "build": "npm run build:models && vite build",
     "preview": "vite preview"

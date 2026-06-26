@@ -2,7 +2,7 @@
 Texture-atlas builder, extracted from upload_utils.
 
 Parses a model XML and shelf-packs its referenced textures into a single combined
-PNG atlas. Used by the Roblox upload scripts (upload_loco.py, upload_building.py)
+PNG atlas. Used by the Roblox upload scripts (upload_loco.py)
 and by the texture remastering pipeline (remaster_textures.py).
 
 Imports its small helpers one-way from ``upload_utils`` (which must NOT import this

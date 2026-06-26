@@ -1,5 +1,5 @@
 """
-Shared utilities for Roblox upload scripts (upload_loco.py, upload_building.py).
+Shared utilities for Roblox upload scripts (upload_loco.py).
 
 Provides:
   - Lockfile management
