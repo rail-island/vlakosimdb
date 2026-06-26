@@ -148,23 +148,52 @@ describe("side-logo mirroring fix", () => {
     return { sAtMinX: attrNum(lo, "s"), sAtMaxX: attrNum(hi, "s") };
   }
 
-  it("flips s on the positive-axis side only, un-mirroring opposite faces", () => {
+  // Largest matching face's s at its lowest- and highest- world-`axis` vertex.
+  function sByAxis(polys, pred, axis) {
+    let best = null;
+    let span = -1;
+    for (const p of polys) {
+      if (!pred(p)) continue;
+      const vs = asArray(p.vertex);
+      const c = vs.map((v) => attrNum(v, axis));
+      const s = Math.max(...c) - Math.min(...c);
+      if (s > span) { span = s; best = vs; }
+    }
+    if (!best) return null;
+    let lo = best[0], hi = best[0];
+    for (const v of best) {
+      if (attrNum(v, axis) < attrNum(lo, axis)) lo = v;
+      if (attrNum(v, axis) > attrNum(hi, axis)) hi = v;
+    }
+    return { sLo: attrNum(lo, "s"), sHi: attrNum(hi, "s") };
+  }
+
+  it("un-mirrors the reversed side of each axis pair (z+ and x−, not z−/x+)", () => {
     const root = parseXmlSafe(path.join(repoRoot, "db/train/loco/electric/cd_163/model/index.xml"));
     const sm = root.simplemodel ?? root;
     const faithful = generateModel(sm, { fixSideMirroring: false }).polygon;
     const fixed = generateModel(sm, { fixSideMirroring: true }).polygon;
+    const near = (a, b) => Math.abs(a - b) < 1e-3;
 
-    // z_dec is the z+ side (dir 4, even) → s should flip; z_inc is z- (dir 5, odd) → unchanged.
+    // --- long sides (z): z_dec = z+ (dir 4) flips; z_inc = z- (dir 5) unchanged ---
     const zdecF = sByX(faithful, "pack:z_dec.bmp");
     const zdecX = sByX(fixed, "pack:z_dec.bmp");
     const zincF = sByX(faithful, "pack:z_inc.bmp");
     const zincX = sByX(fixed, "pack:z_inc.bmp");
-
-    // Faithful: both long sides map x→s the same way (the bug).
-    expect(Math.abs(zdecF.sAtMaxX - zincF.sAtMaxX)).toBeLessThan(1e-3);
-    // Fixed: z+ side is mirrored (s := 1 - s), z- side unchanged → they now oppose.
-    expect(Math.abs(zdecX.sAtMaxX - (1 - zdecF.sAtMaxX))).toBeLessThan(1e-3);
-    expect(Math.abs(zincX.sAtMaxX - zincF.sAtMaxX)).toBeLessThan(1e-3);
+    expect(near(zdecF.sAtMaxX, zincF.sAtMaxX)).toBe(true);        // faithful: same mapping (bug)
+    expect(near(zdecX.sAtMaxX, 1 - zdecF.sAtMaxX)).toBe(true);    // z+ flipped
+    expect(near(zincX.sAtMaxX, zincF.sAtMaxX)).toBe(true);        // z- unchanged
     expect(Math.abs(zdecX.sAtMaxX - zincX.sAtMaxX)).toBeGreaterThan(0.5);
+
+    // --- cab ends (x, both on pack:x_both.bmp): x- (dir 1) flips; x+ (dir 0) unchanged.
+    // x faces project s←world z, so measure along the z axis.
+    const xpos = (p) => attrStr(p, "texture") === "pack:x_both.bmp" && attrNum(p, "nx") > 0.5;
+    const xneg = (p) => attrStr(p, "texture") === "pack:x_both.bmp" && attrNum(p, "nx") < -0.5;
+    const xposF = sByAxis(faithful, xpos, "z");
+    const xposX = sByAxis(fixed, xpos, "z");
+    const xnegF = sByAxis(faithful, xneg, "z");
+    const xnegX = sByAxis(fixed, xneg, "z");
+    expect(near(xposX.sHi, xposF.sHi)).toBe(true);               // x+ unchanged
+    expect(near(xnegX.sHi, 1 - xnegF.sHi)).toBe(true);           // x- flipped
   });
 });

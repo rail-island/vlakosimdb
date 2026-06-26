@@ -59,6 +59,12 @@ export class ColorCond {
   }
 }
 
+// Per-direction (0..5 = x+ x- y+ y- z+ z-) flag for which side of an axis pair
+// the renderer shows mirrored; used by ColorAlg.fixSideMirroring. Derived from
+// the projection axis × outward normal handedness and confirmed visually on
+// cd_163: the x- and z+ faces are the reversed ones.
+const MIRROR_FLIP_DIR = [false, true, false, false, true, false];
+
 export function normalFromDir(dir) {
   switch (dir) {
     case 0: return { x: 1, y: 0, z: 0 };
@@ -173,9 +179,12 @@ export class ColorAlg {
         if (p.y < Math.min(ci.y1, ci.y2) - EPS) return false;
         if (p.y > Math.max(ci.y1, ci.y2) + EPS) return false;
       }
-      // Mirror the horizontal coordinate on the positive-axis side of each pair so
-      // both faces read the texture the same way (un-mirror logos/lettering).
-      const mirror = this.fixSideMirroring && (ci.dir & 1) === 0;
+      // Mirror the horizontal coordinate on the side of each axis pair that the
+      // renderer shows reversed, so both faces read the texture the same way
+      // (un-mirror logos/lettering). Which side is reversed is handedness- and
+      // projection-dependent, so it is per-axis (not a uniform dir parity):
+      // x− (dir 1) and z+ (dir 4). y faces (roof/floor) are never lettered.
+      const mirror = this.fixSideMirroring && MIRROR_FLIP_DIR[ci.dir];
       for (let i = 0; i < verts.length; i++) {
         const s = (pt2[i].x - ci.x1) / (ci.x2 - ci.x1);
         verts[i]["@_s"] = mirror ? 1 - s : s;
