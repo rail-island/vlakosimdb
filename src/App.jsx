@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Filters from "./components/Filters.jsx";
 import Gallery from "./components/Gallery.jsx";
 import Viewer from "./components/Viewer.jsx";
@@ -15,13 +15,18 @@ const CATEGORY_LABELS = {
   other: "Other",
 };
 
+function selectedIdFromHash() {
+  return window.location.hash.startsWith("#/") ? window.location.hash.slice(2) || null : null;
+}
+
 export default function App() {
   const [manifest, setManifest] = useState(null);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [resolution, setResolution] = useState("all");
-  const [selectedId, setSelectedId] = useState(() => window.location.hash.slice(2) || null);
+  const [selectedId, setSelectedId] = useState(selectedIdFromHash);
+  const galleryScroll = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     fetch("manifest.json")
@@ -35,15 +40,28 @@ export default function App() {
 
   // Keep selection in the URL hash for shareable deep links.
   useEffect(() => {
-    const onHash = () => setSelectedId(window.location.hash.slice(2) || null);
+    const onHash = () => setSelectedId(selectedIdFromHash());
     window.addEventListener("hashchange", onHash);
-    return () => window.removeEventListener("hashchange", onHash);
+    window.addEventListener("popstate", onHash);
+    return () => {
+      window.removeEventListener("hashchange", onHash);
+      window.removeEventListener("popstate", onHash);
+    };
   }, []);
 
-  const select = (id) => {
-    window.location.hash = id ? `/${id}` : "";
+  const select = useCallback((id) => {
+    if (id) {
+      galleryScroll.current = { x: window.scrollX, y: window.scrollY };
+      window.history.pushState(null, "", `#/${id}`);
+      setSelectedId(id);
+      return;
+    }
+
+    const { x, y } = galleryScroll.current;
+    window.history.pushState(null, "", `${window.location.pathname}${window.location.search}`);
     setSelectedId(id);
-  };
+    requestAnimationFrame(() => window.scrollTo({ left: x, top: y, behavior: "auto" }));
+  }, []);
 
   const categories = useMemo(() => {
     if (!manifest) return [];
