@@ -24,6 +24,20 @@ export function parseModel(modelDir, options = {}) {
   return { polygons, textureSources };
 }
 
+/**
+ * Read a model's committed `options.json` (per-side texture flips etc.).
+ * `modelDir` is the folder containing index.xml. Returns `{}` if absent/invalid.
+ */
+export function readOptions(modelDir) {
+  const p = path.join(modelDir, "options.json");
+  if (!fs.existsSync(p)) return {};
+  try {
+    return JSON.parse(fs.readFileSync(p, "utf8"));
+  } catch {
+    return {};
+  }
+}
+
 function walk(dir, keyPrefix, scale, translate, polygons, textureSources, depth, options) {
   if (depth > 8) return; // guard against pathological recursion
   const xmlPath = path.join(dir, "index.xml");
@@ -36,9 +50,12 @@ function walk(dir, keyPrefix, scale, translate, polygons, textureSources, depth,
     return;
   }
   const sm = root.simplemodel ?? root;
+  // Per-model options (committed options.json next to index.xml); flipS un-mirrors
+  // chosen sides. See scripts/lib/simplemodel/coloralg.mjs DIR_KEYS.
+  const flipS = readOptions(dir).flipS ?? {};
   // Regenerate <model> from the source description (clips/shapes/colorizes) when
   // present; fall back to the pre-baked <model> for baked-only models.
-  const modelEl = generateModel(sm) ?? sm.model;
+  const modelEl = generateModel(sm, { flipS }) ?? sm.model;
 
   const [sx, sy, sz] = scale;
   const flip = sx * sy * sz < 0; // negative determinant flips winding

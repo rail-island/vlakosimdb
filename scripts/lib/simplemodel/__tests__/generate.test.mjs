@@ -9,6 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseXmlSafe, asArray, attrNum, attrStr } from "../../xml.mjs";
 import { generateModel } from "../generate.mjs";
+import { parseModel } from "../../geometry.mjs";
 
 const repoRoot = path.resolve(fileURLToPath(import.meta.url), "../../../../..");
 
@@ -106,13 +107,13 @@ function runCase(relPath) {
   const root = parseXmlSafe(path.join(repoRoot, relPath));
   const sm = root.simplemodel ?? root;
   const baked = asArray(sm.model?.polygon); // <inline> elements aren't <polygon>, naturally excluded
-  // fixSideMirroring off: faithful reproduction of the original C++ baked UVs.
-  const generated = generateModel(sm, { fixSideMirroring: false });
+  // No flipS: faithful reproduction of the original C++ baked UVs.
+  const generated = generateModel(sm);
   expect(generated, "generateModel returned null").not.toBeNull();
   assertBijection(baked, generated.polygon);
 }
 
-describe("simplemodel generator vs baked <model> (faithful, fix off)", () => {
+describe("simplemodel generator vs baked <model> (faithful, no flips)", () => {
   it("cd_163 — clip CSG + colorize sides + material", () => {
     runCase("db/train/loco/electric/cd_163/model/index.xml");
   });
@@ -168,11 +169,11 @@ describe("side-logo mirroring fix", () => {
     return { sLo: attrNum(lo, "s"), sHi: attrNum(hi, "s") };
   }
 
-  it("un-mirrors the reversed side of each axis pair (z+ and x−, not z−/x+)", () => {
+  it("flips only the sides named in flipS (s → 1 − s), leaving others untouched", () => {
     const root = parseXmlSafe(path.join(repoRoot, "db/train/loco/electric/cd_163/model/index.xml"));
     const sm = root.simplemodel ?? root;
-    const faithful = generateModel(sm, { fixSideMirroring: false }).polygon;
-    const fixed = generateModel(sm, { fixSideMirroring: true }).polygon;
+    const faithful = generateModel(sm).polygon;
+    const fixed = generateModel(sm, { flipS: { "x-": true, "z+": true } }).polygon;
     const near = (a, b) => Math.abs(a - b) < 1e-3;
 
     // --- long sides (z): z_dec = z+ (dir 4) flips; z_inc = z- (dir 5) unchanged ---
@@ -195,5 +196,17 @@ describe("side-logo mirroring fix", () => {
     const xnegX = sByAxis(fixed, xneg, "z");
     expect(near(xposX.sHi, xposF.sHi)).toBe(true);               // x+ unchanged
     expect(near(xnegX.sHi, 1 - xnegF.sHi)).toBe(true);           // x- flipped
+  });
+
+  it("parseModel reads the committed options.json (cd_163 ships x-/z+ flips)", () => {
+    const modelDir = path.join(repoRoot, "db/train/loco/electric/cd_163/model");
+    // cd_163 ships options.json enabling x-/z+, so its z+ side comes out flipped
+    // vs the faithful baked mapping.
+    const { polygons } = parseModel(modelDir);
+    const zplus = polygons.filter((p) => p.textureKey?.endsWith("z_dec.bmp"));
+    expect(zplus.length).toBeGreaterThan(0);
+    // Faithful z+ maps x-min→s≈0; with the committed flip it maps x-min→s≈1.
+    const lo = zplus.flatMap((p) => p.verts).reduce((a, v) => (v.x < a.x ? v : a));
+    expect(lo.s).toBeGreaterThan(0.5);
   });
 });

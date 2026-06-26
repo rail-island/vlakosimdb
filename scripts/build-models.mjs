@@ -7,11 +7,12 @@ import { fileURLToPath } from "node:url";
 import { buildModelGlb } from "./lib/model-build.mjs";
 import { parseMetadata } from "./lib/metadata.mjs";
 import { encodePNG, loadImageRGBA } from "./lib/images.mjs";
+import { readOptions } from "./lib/geometry.mjs";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DB_TRAIN = path.join(ROOT, "db", "train");
-const MATERIALS = path.join(ROOT, "materials");
-const OUT = path.join(ROOT, "public");
+export const MATERIALS = path.join(ROOT, "materials");
+export const OUT = path.join(ROOT, "public");
 const MODELS_OUT = path.join(OUT, "models");
 const THUMBS_OUT = path.join(OUT, "thumbs");
 
@@ -44,7 +45,7 @@ function findModelDirs(base) {
   return result.sort();
 }
 
-function slug(s) {
+export function slug(s) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
 
@@ -68,6 +69,62 @@ function makeThumbnail(dir, outPath) {
   return false;
 }
 
+/**
+ * Build one model's GLB + thumbnail and return its manifest entry.
+ * @param {string} dir absolute model parent dir (contains model/index.xml)
+ * @param {{ id?: string, materialsDir?: string }} opts
+ * @returns {{ id, entry }|null}  null if the model has no geometry
+ */
+export function buildOneModel(dir, { id, materialsDir = MATERIALS } = {}) {
+  const rel = path.relative(DB_TRAIN, dir).split(path.sep);
+  const modelName = rel[rel.length - 1];
+  const categoryParts = rel.slice(0, -1);
+  const category = categoryParts[0] || "other";
+  const subcategory = categoryParts[1] || null;
+  if (!id) id = slug(rel.join("-")) || slug(modelName) || "model";
+
+  // Metadata (top-level index.xml is optional).
+  let meta = { name: modelName, title: modelName, author: "", email: "", weight: null, power: null, maxspeed: null, path: "" };
+  const indexXml = path.join(dir, "index.xml");
+  if (fs.existsSync(indexXml)) {
+    try {
+      meta = { ...meta, ...clean(parseMetadata(indexXml)) };
+    } catch { /* keep defaults */ }
+  }
+
+  // Geometry + atlas + GLB (shared builder). The 4x atlas is built in-memory
+  // from the per-texture model/*_4x.png files; falls back to the compact atlas.
+  const result = buildModelGlb(dir, materialsDir);
+  if (!result) return null;
+  const { glb, hires } = result;
+
+  fs.writeFileSync(path.join(MODELS_OUT, `${id}.glb`), glb.buffer);
+  const hasThumb = makeThumbnail(dir, path.join(THUMBS_OUT, `${id}.png`));
+
+  const entry = {
+    id,
+    name: stripDollar(meta.name) || modelName,
+    title: stripDollar(meta.title) || stripDollar(meta.name) || modelName,
+    category,
+    subcategory,
+    author: meta.author || "",
+    email: meta.email || "",
+    weight: meta.weight,
+    power: meta.power,
+    maxspeed: meta.maxspeed,
+    length: glb.stats.length,
+    bbox: glb.stats.bbox,
+    vertices: glb.stats.vertices,
+    faces: glb.stats.faces,
+    hires,
+    dir: path.relative(ROOT, dir),
+    glb: `models/${id}.glb`,
+    thumb: hasThumb ? `thumbs/${id}.png` : null,
+    flip: readOptions(path.join(dir, "model")).flipS ?? {},
+  };
+  return { id, entry };
+}
+
 function main() {
   if (!fs.existsSync(DB_TRAIN)) {
     console.error(`db/train not found at ${DB_TRAIN}`);
@@ -87,57 +144,18 @@ function main() {
   for (const dir of dirs) {
     const rel = path.relative(DB_TRAIN, dir).split(path.sep);
     const modelName = rel[rel.length - 1];
-    const categoryParts = rel.slice(0, -1);
-    const category = categoryParts[0] || "other";
-    const subcategory = categoryParts[1] || null;
-
     let id = slug(rel.join("-"));
     if (!id) id = slug(modelName) || `model-${models.length}`;
     while (usedIds.has(id)) id = `${id}-2`;
     usedIds.add(id);
 
     try {
-      // Metadata (top-level index.xml is optional).
-      let meta = { name: modelName, title: modelName, author: "", email: "", weight: null, power: null, maxspeed: null, path: "" };
-      const indexXml = path.join(dir, "index.xml");
-      if (fs.existsSync(indexXml)) {
-        try {
-          meta = { ...meta, ...clean(parseMetadata(indexXml)) };
-        } catch { /* keep defaults */ }
-      }
-
-      // Geometry + atlas + GLB (shared builder). The 4x atlas is built in-memory
-      // from the per-texture model/*_4x.png files; falls back to the compact atlas.
-      const result = buildModelGlb(dir, MATERIALS);
+      const result = buildOneModel(dir, { id });
       if (!result) {
         skipped.push(`${id} (no polygons/vertices)`);
         continue;
       }
-      const { glb, hires } = result;
-
-      fs.writeFileSync(path.join(MODELS_OUT, `${id}.glb`), glb.buffer);
-      const hasThumb = makeThumbnail(dir, path.join(THUMBS_OUT, `${id}.png`));
-
-      models.push({
-        id,
-        name: stripDollar(meta.name) || modelName,
-        title: stripDollar(meta.title) || stripDollar(meta.name) || modelName,
-        category,
-        subcategory,
-        author: meta.author || "",
-        email: meta.email || "",
-        weight: meta.weight,
-        power: meta.power,
-        maxspeed: meta.maxspeed,
-        length: glb.stats.length,
-        bbox: glb.stats.bbox,
-        vertices: glb.stats.vertices,
-        faces: glb.stats.faces,
-        hires,
-        dir: path.relative(ROOT, dir),
-        glb: `models/${id}.glb`,
-        thumb: hasThumb ? `thumbs/${id}.png` : null,
-      });
+      models.push(result.entry);
       built++;
     } catch (e) {
       skipped.push(`${id} (${e.message})`);
@@ -163,4 +181,8 @@ function clean(obj) {
   return out;
 }
 
-main();
+// Run the full build only when invoked directly (not when imported, e.g. by the
+// Vite dev plugin reusing buildOneModel).
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main();
+}

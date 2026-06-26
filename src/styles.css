@@ -183,6 +183,15 @@ body {
 .hint { color: var(--muted); font-size: 12px; margin-top: 22px; }
 .viewer-loading { color: var(--muted); font-size: 13px; }
 
+.flip-panel {
+  margin-top: 20px; padding: 10px 12px;
+  border: 1px solid var(--border, #333); border-radius: 8px;
+}
+.flip-panel legend { color: var(--muted); font-size: 12px; padding: 0 6px; }
+.flip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px; }
+.flip-side { margin-top: 0; font-size: 13px; font-variant-numeric: tabular-nums; }
+.flip-panel .hint { margin-top: 10px; }
+
 @media (max-width: 720px) {
   .viewer { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
   .viewer-info {

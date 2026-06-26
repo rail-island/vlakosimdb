@@ -5,6 +5,10 @@ import * as THREE from "three";
 
 const RAILROAD_KEY = "vlakosimdb:railroad";
 
+// Texture-flip sides (must match scripts/lib/simplemodel/coloralg.mjs DIR_KEYS).
+const FLIP_SIDES = ["x+", "x-", "y+", "y-", "z+", "z-"];
+const IS_DEV = import.meta.env.DEV;
+
 function Model({ url, onMeasure }) {
   const { scene } = useGLTF(url);
   useEffect(() => {
@@ -116,10 +120,49 @@ export default function Viewer({ model, onClose }) {
     localStorage.setItem(RAILROAD_KEY, showRailroad ? "1" : "0");
   }, [showRailroad]);
 
+  // Per-side texture flips (dev only). `ver` busts the GLB cache after a rebuild.
+  const [flip, setFlip] = useState(() => model.flip || {});
+  const [ver, setVer] = useState(0);
+  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    setFlip(model.flip || {});
+    setVer(0);
+  }, [model.id]);
+
+  const glbUrl = useMemo(() => (ver ? `${model.glb}?v=${ver}` : model.glb), [model.glb, ver]);
+
+  const toggleFlip = useCallback(
+    async (key, checked) => {
+      const prev = flip;
+      const next = { ...flip };
+      if (checked) next[key] = true;
+      else delete next[key];
+      setFlip(next);
+      setSaving(true);
+      try {
+        const r = await fetch("/api/model-options", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: model.id, flipS: next }),
+        });
+        if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || r.statusText);
+        useGLTF.clear(glbUrl);
+        setVer(Date.now()); // reload the rebuilt GLB
+      } catch (e) {
+        setFlip(prev); // revert on failure
+        // eslint-disable-next-line no-alert
+        alert("Saving flip failed: " + e.message);
+      } finally {
+        setSaving(false);
+      }
+    },
+    [flip, model.id, glbUrl]
+  );
+
   const [bbox, setBbox] = useState(null);
   const onMeasure = useCallback((b) => setBbox(b), []);
-  // Re-measure when the model changes.
-  useEffect(() => setBbox(null), [model.glb]);
+  // Re-measure when the displayed GLB changes (model switch or rebuild).
+  useEffect(() => setBbox(null), [glbUrl]);
 
   return (
     <div className="viewer-overlay" onClick={onClose}>
@@ -135,8 +178,8 @@ export default function Viewer({ model, onClose }) {
             <directionalLight position={[10, 18, 8]} intensity={1.4} />
             <directionalLight position={[-8, 6, -10]} intensity={0.5} />
             <Suspense fallback={<Loader />}>
-              <Bounds fit clip observe margin={1.25} key={model.glb}>
-                <Model url={model.glb} onMeasure={onMeasure} />
+              <Bounds fit clip observe margin={1.25} key={glbUrl}>
+                <Model url={glbUrl} onMeasure={onMeasure} />
               </Bounds>
             </Suspense>
             {showRailroad ? (
@@ -177,6 +220,26 @@ export default function Viewer({ model, onClose }) {
             />
             Show railroad &amp; ground
           </label>
+
+          {IS_DEV && (
+            <fieldset className="flip-panel">
+              <legend>Flip texture (dev){saving ? " · saving…" : ""}</legend>
+              <div className="flip-grid">
+                {FLIP_SIDES.map((side) => (
+                  <label key={side} className="toggle flip-side">
+                    <input
+                      type="checkbox"
+                      checked={!!flip[side]}
+                      disabled={saving}
+                      onChange={(e) => toggleFlip(side, e.target.checked)}
+                    />
+                    {side}
+                  </label>
+                ))}
+              </div>
+              <p className="hint">Mirrors that side's lettering; saved to options.json.</p>
+            </fieldset>
+          )}
 
           <p className="hint">Drag to orbit · scroll to zoom · Esc to close</p>
         </aside>

@@ -44,7 +44,7 @@ function makeClips(name, along, pedr, dir) {
  * Regenerate <model> polygons from source. Returns a fast-xml-parser-shaped node
  * `{ polygon: [...] }`, or `null` when there is no source to regenerate from.
  */
-export function generateModel(sm, { fixSideMirroring = true } = {}) {
+export function generateModel(sm, { flipS = {} } = {}) {
   const shapes = asArray(sm.shapes?.shape);
   if (shapes.length === 0) return null;
   const alongx = findAlong(sm, "x");
@@ -96,7 +96,7 @@ export function generateModel(sm, { fixSideMirroring = true } = {}) {
 
   // Build colorize sides (non-stamp items only).
   const calg = new ColorAlg();
-  calg.fixSideMirroring = fixSideMirroring;
+  calg.flipS = flipS;
   for (const cize of asArray(sm.colorizes?.colorize)) {
     if (attrStr(cize, "stamp") === "1") continue;
     const material = attrStr(cize, "material") === "1";

@@ -59,11 +59,9 @@ export class ColorCond {
   }
 }
 
-// Per-direction (0..5 = x+ x- y+ y- z+ z-) flag for which side of an axis pair
-// the renderer shows mirrored; used by ColorAlg.fixSideMirroring. Derived from
-// the projection axis × outward normal handedness and confirmed visually on
-// cd_163: the x- and z+ faces are the reversed ones.
-const MIRROR_FLIP_DIR = [false, true, false, false, true, false];
+// Side key per direction index (0..5). Used to look up per-side flip flags in
+// ColorAlg.flipS (from a model's options.json).
+export const DIR_KEYS = ["x+", "x-", "y+", "y-", "z+", "z-"];
 
 export function normalFromDir(dir) {
   switch (dir) {
@@ -93,9 +91,10 @@ function setProjected(d, x, y, z) {
 export class ColorAlg {
   constructor() {
     this.items = [];
-    // When true, mirror `s` on positive-axis sides (dir 0/2/4) of rect textures so
-    // opposite faces don't render their logo reversed. See generateModel option.
-    this.fixSideMirroring = false;
+    // Per-side flip flags (keyed by DIR_KEYS, e.g. { "x-": true, "z+": true }).
+    // A true entry mirrors `s` (s → 1-s) on that side's rect textures so an
+    // opposite-face pair doesn't render its logo reversed. From options.json.
+    this.flipS = {};
   }
   addSide(dir, x1, y1, x2, y2, name, transparent, cond, rkoef, gkoef, bkoef, denylight) {
     if (dir < 0 || dir >= 6) return;
@@ -179,12 +178,10 @@ export class ColorAlg {
         if (p.y < Math.min(ci.y1, ci.y2) - EPS) return false;
         if (p.y > Math.max(ci.y1, ci.y2) + EPS) return false;
       }
-      // Mirror the horizontal coordinate on the side of each axis pair that the
-      // renderer shows reversed, so both faces read the texture the same way
-      // (un-mirror logos/lettering). Which side is reversed is handedness- and
-      // projection-dependent, so it is per-axis (not a uniform dir parity):
-      // x− (dir 1) and z+ (dir 4). y faces (roof/floor) are never lettered.
-      const mirror = this.fixSideMirroring && MIRROR_FLIP_DIR[ci.dir];
+      // Mirror the horizontal coordinate when this side is flagged in flipS, so a
+      // reversed-reading face (e.g. cd_163's x−/z+) reads the right way around.
+      // Which side needs it is texture-authoring dependent, hence per-model config.
+      const mirror = !!this.flipS[DIR_KEYS[ci.dir]];
       for (let i = 0; i < verts.length; i++) {
         const s = (pt2[i].x - ci.x1) / (ci.x2 - ci.x1);
         verts[i]["@_s"] = mirror ? 1 - s : s;
