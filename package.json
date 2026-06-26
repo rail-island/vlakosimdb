@@ -9,6 +9,8 @@
     "remaster": "node scripts/remaster.mjs",
     "upload": "node scripts/upload-roblox.mjs",
     "upload:dry": "node scripts/upload-roblox.mjs --dry-run",
+    "upload:hires": "node scripts/upload-roblox.mjs --hires-only",
+    "upload:hires:dry": "node scripts/upload-roblox.mjs --hires-only --dry-run",
     "dev": "npm run build:models && vite",
     "build": "npm run build:models && vite build",
     "preview": "vite preview"

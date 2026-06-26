@@ -3,7 +3,11 @@
 // upload_loco.py). Reuses the shared model builder, so the mesh embeds the same
 // 4x atlas (built from model/*_4x.png) as the web build.
 //
-//   node scripts/upload-roblox.mjs [--dry-run] [--input INPUT_LOCO] [--output loco_data.lua]
+//   node scripts/upload-roblox.mjs [--dry-run] [--hires-only] [--input INPUT_LOCO] [--output loco_data.lua]
+//
+// --hires-only uploads only hi-res models (those with model/*_4x.png remastered
+// textures). Non-hires models are left untouched: their existing thumbnailAssetId
+// and modelAssetId are read back from the current loco_data.lua and kept.
 //
 // Env (.env or environment): ROBLOX_UPLOAD_ASSETS_KEY (falls back to
 // ROBLOX_API_KEY) and ROBLOX_CREATOR_ID. Flags --api-key / --creator-id override.
@@ -88,7 +92,8 @@ function thumbnailPngBytes(locoDir) {
   return { name: "thumbnail.png", bytes: encodePNG(loadImageRGBA(src)), src };
 }
 
-async function processLoco(locoDir, lockdata, apiKey, creatorId, dryRun) {
+async function processLoco(locoDir, lockdata, apiKey, creatorId, dryRun, opts = {}) {
+  const { hiresOnly = false, existingAssets = {} } = opts;
   const indexXml = path.join(locoDir, "index.xml");
   const rel = path.relative(ROOT, locoDir);
   const meta = parseMetadata(indexXml);
@@ -98,15 +103,31 @@ async function processLoco(locoDir, lockdata, apiKey, creatorId, dryRun) {
   let length = 0;
   let glbBytes = null;
   let atlas4xPng = null;
+  let hires = false;
   if (built) {
     glbBytes = built.glb.buffer;
     length = built.glb.stats.length;
     atlas4xPng = built.atlas4xPng;
+    hires = built.hires;
     fs.writeFileSync(path.join(locoDir, "model.glb"), glbBytes);
   }
 
-  let thumbnailAssetId = "PENDING_UPLOAD";
-  let modelAssetId = "PENDING_UPLOAD";
+  // In hires-only mode, fall back to the previously uploaded asset IDs (read back
+  // from the existing loco_data.lua) so non-hires models — and hires models on a
+  // dry run, where nothing is actually uploaded — keep their IDs in the DB.
+  const prev = hiresOnly ? (existingAssets[luaStr(meta.name || "unknown")] || {}) : {};
+  if (hiresOnly && !hires) {
+    console.log("  [SKIP] not a hi-res model — keeping existing asset IDs");
+    return {
+      metadata: meta,
+      thumbnailAssetId: prev.thumbnailAssetId || "PENDING_UPLOAD",
+      modelAssetId: prev.modelAssetId || "PENDING_UPLOAD",
+      length,
+    };
+  }
+
+  let thumbnailAssetId = prev.thumbnailAssetId || "PENDING_UPLOAD";
+  let modelAssetId = prev.modelAssetId || "PENDING_UPLOAD";
 
   if (!dryRun) {
     // Thumbnail
@@ -154,6 +175,23 @@ async function processLoco(locoDir, lockdata, apiKey, creatorId, dryRun) {
 function luaStr(v) { return String(v ?? "").replace(/\\/g, "\\\\").replace(/"/g, '\\"'); }
 function luaInt(v) { const n = parseInt(v, 10); return Number.isFinite(n) ? n : 0; }
 
+// Read back thumbnailAssetId / modelAssetId from an existing loco_data.lua,
+// keyed by the (lua-escaped) loco name so processLoco can preserve them.
+function parseExistingAssets(luaPath) {
+  const map = {};
+  if (!fs.existsSync(luaPath)) return map;
+  const text = fs.readFileSync(luaPath, "utf-8");
+  const entry = /\["((?:[^"\\]|\\.)*)"\]\s*=\s*\{([\s\S]*?)\n\t\},/g;
+  let m;
+  while ((m = entry.exec(text))) {
+    const body = m[2];
+    const t = /thumbnailAssetId\s*=\s*"((?:[^"\\]|\\.)*)"/.exec(body);
+    const md = /modelAssetId\s*=\s*"((?:[^"\\]|\\.)*)"/.exec(body);
+    map[m[1]] = { thumbnailAssetId: t ? t[1] : null, modelAssetId: md ? md[1] : null };
+  }
+  return map;
+}
+
 function generateLua(allLocos, outputPath) {
   const lines = [
     "-- Auto-generated locomotive database",
@@ -185,10 +223,11 @@ function generateLua(allLocos, outputPath) {
 // ---------------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const a = { dryRun: false, input: null, output: null, apiKey: null, creatorId: null };
+  const a = { dryRun: false, hiresOnly: false, input: null, output: null, apiKey: null, creatorId: null };
   for (let i = 0; i < argv.length; i++) {
     const x = argv[i];
     if (x === "--dry-run") a.dryRun = true;
+    else if (x === "--hires-only") a.hiresOnly = true;
     else if (x === "--input") a.input = argv[++i];
     else if (x === "--output") a.output = argv[++i];
     else if (x === "--api-key") a.apiKey = argv[++i];
@@ -213,18 +252,24 @@ async function main() {
   if (!locoDirs.length) { console.error("No locomotive directories found."); process.exit(1); }
   console.log(`Found ${locoDirs.length} locomotive(s) to process.\n`);
 
+  const outputPath = path.resolve(ROOT, args.output || OUTPUT_LUA);
+  const existingAssets = args.hiresOnly ? parseExistingAssets(outputPath) : {};
+  if (args.hiresOnly) console.log("Hi-res only: non-hires models keep their existing asset IDs.\n");
+
   const lockdata = loadLockfile();
   const allLocos = [];
   for (let i = 0; i < locoDirs.length; i++) {
     const [override, locoDir] = locoDirs[i];
     console.log(`[${i + 1}/${locoDirs.length}] Processing ${path.relative(ROOT, locoDir)}…`);
     if (!fs.existsSync(path.join(locoDir, "index.xml"))) { console.log("  [SKIP] No index.xml"); continue; }
-    const result = await processLoco(locoDir, lockdata, apiKey, creatorId, args.dryRun);
+    const result = await processLoco(locoDir, lockdata, apiKey, creatorId, args.dryRun, {
+      hiresOnly: args.hiresOnly, existingAssets,
+    });
     if (override !== null) result.metadata.path = override;
     allLocos.push(result);
   }
 
-  generateLua(allLocos, path.resolve(ROOT, args.output || OUTPUT_LUA));
+  generateLua(allLocos, outputPath);
   console.log(`\nDone! Processed ${allLocos.length} locomotive(s).`);
 }
 
