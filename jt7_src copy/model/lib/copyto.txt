@@ -1,2 +1,0 @@
-c:\jena\cuziv\out\jt7\data\modellib
-
