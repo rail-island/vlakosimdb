@@ -14,6 +14,7 @@ local LocoDatabase = {
 		length = 12.4,
 		thumbnailAssetId = "105107341991768",
 		modelAssetId = "133311318491320",
+		hiresTextures = false,
 	},
 	["CD_110 046-0"] = {
 		name = "CD_110 046-0",
@@ -25,8 +26,9 @@ local LocoDatabase = {
 		power = 800,
 		path = "Loco/Electric",
 		length = 14.4,
-		thumbnailAssetId = "PENDING_UPLOAD",
-		modelAssetId = "80892404119339",
+		thumbnailAssetId = "110452136877608",
+		modelAssetId = "137490773023150",
+		hiresTextures = true,
 	},
 	["CD_111"] = {
 		name = "CD_111",
@@ -38,8 +40,9 @@ local LocoDatabase = {
 		power = 500,
 		path = "Loco/Electric",
 		length = 14.3,
-		thumbnailAssetId = "133038834224260",
-		modelAssetId = "79728951582077",
+		thumbnailAssetId = "90414561341355",
+		modelAssetId = "117006318891407",
+		hiresTextures = true,
 	},
 	["CD_123"] = {
 		name = "CD_123",
@@ -53,6 +56,7 @@ local LocoDatabase = {
 		length = 15.9,
 		thumbnailAssetId = "112663983074962",
 		modelAssetId = "120484215818844",
+		hiresTextures = false,
 	},
 	["CD_123-019-2"] = {
 		name = "CD_123-019-2",
@@ -66,6 +70,7 @@ local LocoDatabase = {
 		length = 17.2,
 		thumbnailAssetId = "101426291922465",
 		modelAssetId = "81338812752856",
+		hiresTextures = false,
 	},
 	["CD_130"] = {
 		name = "CD_130",
@@ -79,6 +84,7 @@ local LocoDatabase = {
 		length = 15.9,
 		thumbnailAssetId = "108185801666420",
 		modelAssetId = "85174323232194",
+		hiresTextures = false,
 	},
 	["CD_140"] = {
 		name = "CD_140",
@@ -92,6 +98,7 @@ local LocoDatabase = {
 		length = 15.9,
 		thumbnailAssetId = "114219880026004",
 		modelAssetId = "87389982092357",
+		hiresTextures = false,
 	},
 	["CD_140_040"] = {
 		name = "CD_140_040",
@@ -105,6 +112,7 @@ local LocoDatabase = {
 		length = 17,
 		thumbnailAssetId = "118282523584313",
 		modelAssetId = "90125581378613",
+		hiresTextures = false,
 	},
 	["CD_141"] = {
 		name = "CD_141",
@@ -118,6 +126,7 @@ local LocoDatabase = {
 		length = 15.9,
 		thumbnailAssetId = "72935033182367",
 		modelAssetId = "129335821491157",
+		hiresTextures = false,
 	},
 	["CD_141_017"] = {
 		name = "CD_141_017",
@@ -131,6 +140,7 @@ local LocoDatabase = {
 		length = 16,
 		thumbnailAssetId = "139506162277240",
 		modelAssetId = "114967163026001",
+		hiresTextures = false,
 	},
 	["CD_150"] = {
 		name = "CD_150",
@@ -142,8 +152,9 @@ local LocoDatabase = {
 		power = 4000,
 		path = "Loco/Electric",
 		length = 16.8,
-		thumbnailAssetId = "101300566361558",
-		modelAssetId = "137244831687579",
+		thumbnailAssetId = "81868273592550",
+		modelAssetId = "110017369386356",
+		hiresTextures = true,
 	},
 	["CD_151"] = {
 		name = "CD_151",
@@ -157,6 +168,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "90834369705767",
 		modelAssetId = "72830495957592",
+		hiresTextures = true,
 	},
 	["CD_151_CEZ"] = {
 		name = "CD_151_CEZ",
@@ -168,8 +180,9 @@ local LocoDatabase = {
 		power = 4000,
 		path = "Loco/Electric",
 		length = 16.853,
-		thumbnailAssetId = "126401953517761",
-		modelAssetId = "108771832140122",
+		thumbnailAssetId = "104895057181118",
+		modelAssetId = "88499205344990",
+		hiresTextures = true,
 	},
 	["CD_162"] = {
 		name = "CD_162",
@@ -183,6 +196,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "90400581237142",
 		modelAssetId = "112188683637157",
+		hiresTextures = false,
 	},
 	["CD_162.022"] = {
 		name = "CD_162.022",
@@ -196,6 +210,7 @@ local LocoDatabase = {
 		length = 16.9,
 		thumbnailAssetId = "129158493700370",
 		modelAssetId = "95583988043418",
+		hiresTextures = false,
 	},
 	["CD_163"] = {
 		name = "CD_163",
@@ -209,6 +224,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "105419362251561",
 		modelAssetId = "116741755960321",
+		hiresTextures = true,
 	},
 	["CD_163.022"] = {
 		name = "CD_163.022",
@@ -222,6 +238,7 @@ local LocoDatabase = {
 		length = 16.9,
 		thumbnailAssetId = "103040590424210",
 		modelAssetId = "105779102205741",
+		hiresTextures = false,
 	},
 	["CD_163_021"] = {
 		name = "CD_163_021",
@@ -235,6 +252,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "137366716730931",
 		modelAssetId = "120501671168204",
+		hiresTextures = false,
 	},
 	["CD_169"] = {
 		name = "CD_169",
@@ -246,8 +264,9 @@ local LocoDatabase = {
 		power = 4000,
 		path = "Loco/Electric",
 		length = 17.2,
-		thumbnailAssetId = "96082283459553",
-		modelAssetId = "77182492694893",
+		thumbnailAssetId = "76193172359572",
+		modelAssetId = "138187030939810",
+		hiresTextures = true,
 	},
 	["CD_180"] = {
 		name = "CD_180",
@@ -261,6 +280,7 @@ local LocoDatabase = {
 		length = 18.7,
 		thumbnailAssetId = "118799584960358",
 		modelAssetId = "101118950243750",
+		hiresTextures = false,
 	},
 	["CD_181"] = {
 		name = "CD_181",
@@ -274,6 +294,7 @@ local LocoDatabase = {
 		length = 18.8,
 		thumbnailAssetId = "125120125401090",
 		modelAssetId = "111260421810322",
+		hiresTextures = false,
 	},
 	["CD_181-OKD"] = {
 		name = "CD_181-OKD",
@@ -287,6 +308,7 @@ local LocoDatabase = {
 		length = 18.8,
 		thumbnailAssetId = "129849103622455",
 		modelAssetId = "139085535130732",
+		hiresTextures = false,
 	},
 	["CD_182"] = {
 		name = "CD_182",
@@ -300,6 +322,7 @@ local LocoDatabase = {
 		length = 18.7,
 		thumbnailAssetId = "110172842964862",
 		modelAssetId = "140329738056059",
+		hiresTextures = false,
 	},
 	["CD_210"] = {
 		name = "CD_210",
@@ -313,6 +336,7 @@ local LocoDatabase = {
 		length = 15.2,
 		thumbnailAssetId = "135935955553145",
 		modelAssetId = "103934221338458",
+		hiresTextures = false,
 	},
 	["CD_230"] = {
 		name = "CD_230",
@@ -326,6 +350,7 @@ local LocoDatabase = {
 		length = 16.3,
 		thumbnailAssetId = "113434908459085",
 		modelAssetId = "71388781966689",
+		hiresTextures = false,
 	},
 	["CD_240"] = {
 		name = "CD_240",
@@ -339,6 +364,7 @@ local LocoDatabase = {
 		length = 16.3,
 		thumbnailAssetId = "93650685233146",
 		modelAssetId = "74066196440543",
+		hiresTextures = false,
 	},
 	["CD_240_047"] = {
 		name = "CD_240_047",
@@ -352,6 +378,7 @@ local LocoDatabase = {
 		length = 16.3,
 		thumbnailAssetId = "105256512328509",
 		modelAssetId = "85445105146735",
+		hiresTextures = false,
 	},
 	["CD_242"] = {
 		name = "CD_242",
@@ -365,6 +392,7 @@ local LocoDatabase = {
 		length = 15.9,
 		thumbnailAssetId = "70694384083579",
 		modelAssetId = "98068467481227",
+		hiresTextures = false,
 	},
 	["CD_263"] = {
 		name = "CD_263",
@@ -378,6 +406,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "95157696256904",
 		modelAssetId = "133158642105384",
+		hiresTextures = false,
 	},
 	["CD_263.015"] = {
 		name = "CD_263.015",
@@ -391,6 +420,7 @@ local LocoDatabase = {
 		length = 16.9,
 		thumbnailAssetId = "134597191905692",
 		modelAssetId = "124350944483877",
+		hiresTextures = false,
 	},
 	["CD_340"] = {
 		name = "CD_340",
@@ -404,6 +434,7 @@ local LocoDatabase = {
 		length = 16.3,
 		thumbnailAssetId = "134020010349057",
 		modelAssetId = "84838331665666",
+		hiresTextures = false,
 	},
 	["CD_362"] = {
 		name = "CD_362",
@@ -417,6 +448,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "98349346133112",
 		modelAssetId = "128357537337252",
+		hiresTextures = false,
 	},
 	["CD_362.054"] = {
 		name = "CD_362.054",
@@ -430,6 +462,7 @@ local LocoDatabase = {
 		length = 16.9,
 		thumbnailAssetId = "130766867821270",
 		modelAssetId = "98927806661854",
+		hiresTextures = false,
 	},
 	["CD_363"] = {
 		name = "CD_363",
@@ -441,8 +474,9 @@ local LocoDatabase = {
 		power = 3060,
 		path = "Loco/Electric",
 		length = 16.853,
-		thumbnailAssetId = "124635460893663",
-		modelAssetId = "92558479874509",
+		thumbnailAssetId = "80319461138676",
+		modelAssetId = "115164824797333",
+		hiresTextures = true,
 	},
 	["CD_363.044"] = {
 		name = "CD_363.044",
@@ -456,6 +490,7 @@ local LocoDatabase = {
 		length = 16.9,
 		thumbnailAssetId = "83462180176976",
 		modelAssetId = "135296193235235",
+		hiresTextures = false,
 	},
 	["CD_363_009"] = {
 		name = "CD_363_009",
@@ -469,6 +504,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "119424502587206",
 		modelAssetId = "112388005339119",
+		hiresTextures = false,
 	},
 	["CD_363_037"] = {
 		name = "CD_363_037",
@@ -482,6 +518,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "117046527456351",
 		modelAssetId = "70449200125799",
+		hiresTextures = false,
 	},
 	["CD_371.005"] = {
 		name = "CD_371.005",
@@ -495,6 +532,7 @@ local LocoDatabase = {
 		length = 16.9,
 		thumbnailAssetId = "138957115456476",
 		modelAssetId = "78753110896014",
+		hiresTextures = false,
 	},
 	["CD_371_002"] = {
 		name = "CD_371_002",
@@ -508,6 +546,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "130881877861049",
 		modelAssetId = "125362264749355",
+		hiresTextures = false,
 	},
 	["CD_372"] = {
 		name = "CD_372",
@@ -521,6 +560,7 @@ local LocoDatabase = {
 		length = 16.9,
 		thumbnailAssetId = "133871121335254",
 		modelAssetId = "88255810509997",
+		hiresTextures = false,
 	},
 	["CSD_131"] = {
 		name = "CSD_131",
@@ -534,6 +574,7 @@ local LocoDatabase = {
 		length = 16.7,
 		thumbnailAssetId = "87513847155032",
 		modelAssetId = "72597869318136",
+		hiresTextures = false,
 	},
 	["DB AG_180"] = {
 		name = "DB AG_180",
@@ -547,6 +588,7 @@ local LocoDatabase = {
 		length = 16.9,
 		thumbnailAssetId = "125942929394147",
 		modelAssetId = "127764780044205",
+		hiresTextures = false,
 	},
 	["DB_111"] = {
 		name = "DB_111",
@@ -560,6 +602,7 @@ local LocoDatabase = {
 		length = 15.78,
 		thumbnailAssetId = "128036986129307",
 		modelAssetId = "89308147358874",
+		hiresTextures = false,
 	},
 	["DB_111_BB"] = {
 		name = "DB_111_BB",
@@ -573,6 +616,7 @@ local LocoDatabase = {
 		length = 15.78,
 		thumbnailAssetId = "82473611177195",
 		modelAssetId = "97922319113722",
+		hiresTextures = false,
 	},
 	["DB_111_S"] = {
 		name = "DB_111_S",
@@ -586,6 +630,7 @@ local LocoDatabase = {
 		length = 15.78,
 		thumbnailAssetId = "98220428433100",
 		modelAssetId = "100549484595071",
+		hiresTextures = false,
 	},
 	["DB_112"] = {
 		name = "DB_112",
@@ -599,6 +644,7 @@ local LocoDatabase = {
 		length = 15.5,
 		thumbnailAssetId = "140451985664144",
 		modelAssetId = "116096959038959",
+		hiresTextures = false,
 	},
 	["DB_143"] = {
 		name = "DB_143",
@@ -612,6 +658,7 @@ local LocoDatabase = {
 		length = 15.5,
 		thumbnailAssetId = "113434538762050",
 		modelAssetId = "77381869312017",
+		hiresTextures = false,
 	},
 	["DB_143 007"] = {
 		name = "DB_143 007",
@@ -625,6 +672,7 @@ local LocoDatabase = {
 		length = 14.8,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "140445106493306",
+		hiresTextures = false,
 	},
 	["DB_143vr"] = {
 		name = "DB_143vr",
@@ -638,6 +686,7 @@ local LocoDatabase = {
 		length = 15.5,
 		thumbnailAssetId = "115344576792493",
 		modelAssetId = "102048721822078",
+		hiresTextures = false,
 	},
 	["DB_156a"] = {
 		name = "DB_156a",
@@ -651,6 +700,7 @@ local LocoDatabase = {
 		length = 19.4,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "119130171541640",
+		hiresTextures = false,
 	},
 	["DB_180"] = {
 		name = "DB_180",
@@ -664,6 +714,7 @@ local LocoDatabase = {
 		length = 16.847,
 		thumbnailAssetId = "104890168486935",
 		modelAssetId = "96206613434957",
+		hiresTextures = false,
 	},
 	["DNT_184.5"] = {
 		name = "DNT_184.5",
@@ -677,6 +728,7 @@ local LocoDatabase = {
 		length = 20.3,
 		thumbnailAssetId = "87916684456743",
 		modelAssetId = "137584313629709",
+		hiresTextures = false,
 	},
 	["DNT_184_5#1"] = {
 		name = "DNT_184_5#1",
@@ -690,6 +742,7 @@ local LocoDatabase = {
 		length = 20.4,
 		thumbnailAssetId = "133755571159386",
 		modelAssetId = "75560181626675",
+		hiresTextures = false,
 	},
 	["DNT_184_5#2"] = {
 		name = "DNT_184_5#2",
@@ -703,6 +756,7 @@ local LocoDatabase = {
 		length = 20.4,
 		thumbnailAssetId = "122017931069272",
 		modelAssetId = "118011556883146",
+		hiresTextures = false,
 	},
 	["DR_243"] = {
 		name = "DR_243",
@@ -716,6 +770,7 @@ local LocoDatabase = {
 		length = 15.5,
 		thumbnailAssetId = "91770268193051",
 		modelAssetId = "83242071081368",
+		hiresTextures = false,
 	},
 	["OBB 1012"] = {
 		name = "OBB 1012",
@@ -729,6 +784,7 @@ local LocoDatabase = {
 		length = 17.1,
 		thumbnailAssetId = "95705057814529",
 		modelAssetId = "95657428678287",
+		hiresTextures = false,
 	},
 	["OBB_1040"] = {
 		name = "OBB_1040",
@@ -742,6 +798,7 @@ local LocoDatabase = {
 		length = 11.7,
 		thumbnailAssetId = "121142008069539",
 		modelAssetId = "107889412064894",
+		hiresTextures = false,
 	},
 	["ZSR_255"] = {
 		name = "ZSR_255",
@@ -755,6 +812,7 @@ local LocoDatabase = {
 		length = 15,
 		thumbnailAssetId = "99001667114503",
 		modelAssetId = "110566980675603",
+		hiresTextures = false,
 	},
 	["ZSR_350"] = {
 		name = "ZSR_350",
@@ -768,6 +826,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "140395554464292",
 		modelAssetId = "88942343849689",
+		hiresTextures = false,
 	},
 	["ZSR_350_001"] = {
 		name = "ZSR_350_001",
@@ -781,6 +840,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "94335690714015",
 		modelAssetId = "127036851810044",
+		hiresTextures = false,
 	},
 	["ZSR_350_002"] = {
 		name = "ZSR_350_002",
@@ -794,6 +854,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "109330235843997",
 		modelAssetId = "80675581820351",
+		hiresTextures = false,
 	},
 	["ZSR_350_003"] = {
 		name = "ZSR_350_003",
@@ -807,6 +868,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "84726067727654",
 		modelAssetId = "101393353854604",
+		hiresTextures = false,
 	},
 	["ZSR_350_004"] = {
 		name = "ZSR_350_004",
@@ -820,6 +882,7 @@ local LocoDatabase = {
 		length = 16.853,
 		thumbnailAssetId = "94962470958182",
 		modelAssetId = "100637864711590",
+		hiresTextures = false,
 	},
 	["CD 771"] = {
 		name = "CD 771",
@@ -831,8 +894,9 @@ local LocoDatabase = {
 		power = 740,
 		path = "Loco/Diesel",
 		length = 17.6,
-		thumbnailAssetId = "88488014858917",
-		modelAssetId = "139595778854211",
+		thumbnailAssetId = "73805154398390",
+		modelAssetId = "103950509542661",
+		hiresTextures = true,
 	},
 	["CD_704"] = {
 		name = "CD_704",
@@ -846,6 +910,7 @@ local LocoDatabase = {
 		length = 6.5,
 		thumbnailAssetId = "101337958426960",
 		modelAssetId = "108228554257022",
+		hiresTextures = false,
 	},
 	["CD_704 red"] = {
 		name = "CD_704 red",
@@ -859,6 +924,7 @@ local LocoDatabase = {
 		length = 11.6,
 		thumbnailAssetId = "98201493853140",
 		modelAssetId = "123069460958346",
+		hiresTextures = false,
 	},
 	["CD_710.620-6"] = {
 		name = "CD_710.620-6",
@@ -872,6 +938,7 @@ local LocoDatabase = {
 		length = 9,
 		thumbnailAssetId = "130592817663796",
 		modelAssetId = "118331250505485",
+		hiresTextures = false,
 	},
 	["CD_714"] = {
 		name = "CD_714",
@@ -885,6 +952,7 @@ local LocoDatabase = {
 		length = 13.3,
 		thumbnailAssetId = "106213008959151",
 		modelAssetId = "87531652954385",
+		hiresTextures = false,
 	},
 	["CD_743_002"] = {
 		name = "CD_743_002",
@@ -898,6 +966,7 @@ local LocoDatabase = {
 		length = 13.4,
 		thumbnailAssetId = "128147202899269",
 		modelAssetId = "125804250888902",
+		hiresTextures = false,
 	},
 	["CD_749"] = {
 		name = "CD_749",
@@ -911,6 +980,7 @@ local LocoDatabase = {
 		length = 16.2,
 		thumbnailAssetId = "85603856840329",
 		modelAssetId = "83298420374097",
+		hiresTextures = false,
 	},
 	["CD_750"] = {
 		name = "CD_750",
@@ -924,6 +994,7 @@ local LocoDatabase = {
 		length = 15.4,
 		thumbnailAssetId = "135956390126702",
 		modelAssetId = "138903125476177",
+		hiresTextures = false,
 	},
 	["CD_750_308"] = {
 		name = "CD_750_308",
@@ -937,6 +1008,7 @@ local LocoDatabase = {
 		length = 15.4,
 		thumbnailAssetId = "96578851834551",
 		modelAssetId = "84536245431016",
+		hiresTextures = false,
 	},
 	["CD_751"] = {
 		name = "CD_751",
@@ -950,6 +1022,7 @@ local LocoDatabase = {
 		length = 15.8,
 		thumbnailAssetId = "73780235156456",
 		modelAssetId = "71472689863889",
+		hiresTextures = false,
 	},
 	["CD_753"] = {
 		name = "CD_753",
@@ -963,6 +1036,7 @@ local LocoDatabase = {
 		length = 16.2,
 		thumbnailAssetId = "90682961609804",
 		modelAssetId = "131053892812002",
+		hiresTextures = false,
 	},
 	["CD_754"] = {
 		name = "CD_754",
@@ -974,8 +1048,9 @@ local LocoDatabase = {
 		power = 1470,
 		path = "Loco/Diesel",
 		length = 15.4,
-		thumbnailAssetId = "122787912048169",
-		modelAssetId = "76311215502999",
+		thumbnailAssetId = "138116859587217",
+		modelAssetId = "115528589328650",
+		hiresTextures = true,
 	},
 	["CD_754_013"] = {
 		name = "CD_754_013",
@@ -989,6 +1064,7 @@ local LocoDatabase = {
 		length = 15.4,
 		thumbnailAssetId = "125220635890475",
 		modelAssetId = "88869249789536",
+		hiresTextures = false,
 	},
 	["CD_771.235"] = {
 		name = "CD_771.235",
@@ -1002,6 +1078,7 @@ local LocoDatabase = {
 		length = 17.6,
 		thumbnailAssetId = "125598798905715",
 		modelAssetId = "88721645203555",
+		hiresTextures = false,
 	},
 	["CD_771.421"] = {
 		name = "CD_771.421",
@@ -1015,6 +1092,7 @@ local LocoDatabase = {
 		length = 17.6,
 		thumbnailAssetId = "125301636831809",
 		modelAssetId = "117266982845664",
+		hiresTextures = false,
 	},
 	["CD_781"] = {
 		name = "CD_781",
@@ -1028,6 +1106,7 @@ local LocoDatabase = {
 		length = 16.6,
 		thumbnailAssetId = "71186915362121",
 		modelAssetId = "135303500520516",
+		hiresTextures = false,
 	},
 	["CD_781_462"] = {
 		name = "CD_781_462",
@@ -1041,6 +1120,7 @@ local LocoDatabase = {
 		length = 16.6,
 		thumbnailAssetId = "98889448461355",
 		modelAssetId = "96026583832343",
+		hiresTextures = false,
 	},
 	["CSD_T238_0"] = {
 		name = "CSD_T238_0",
@@ -1054,6 +1134,7 @@ local LocoDatabase = {
 		length = 6.5,
 		thumbnailAssetId = "132547910939940",
 		modelAssetId = "102186083658166",
+		hiresTextures = false,
 	},
 	["CSD_T499"] = {
 		name = "CSD_T499",
@@ -1067,6 +1148,7 @@ local LocoDatabase = {
 		length = 17.5,
 		thumbnailAssetId = "107743832846145",
 		modelAssetId = "98154240169711",
+		hiresTextures = false,
 	},
 	["CSD_T_679"] = {
 		name = "CSD_T_679",
@@ -1080,6 +1162,7 @@ local LocoDatabase = {
 		length = 18.3,
 		thumbnailAssetId = "79079087544496",
 		modelAssetId = "134631500037907",
+		hiresTextures = false,
 	},
 	["DB_212"] = {
 		name = "DB_212",
@@ -1093,6 +1176,7 @@ local LocoDatabase = {
 		length = 11.4,
 		thumbnailAssetId = "72714724730433",
 		modelAssetId = "83046699876530",
+		hiresTextures = false,
 	},
 	["DB_212bb"] = {
 		name = "DB_212bb",
@@ -1106,6 +1190,7 @@ local LocoDatabase = {
 		length = 11.4,
 		thumbnailAssetId = "72332712566577",
 		modelAssetId = "96020831384057",
+		hiresTextures = false,
 	},
 	["DB_212nr"] = {
 		name = "DB_212nr",
@@ -1119,6 +1204,7 @@ local LocoDatabase = {
 		length = 11.4,
 		thumbnailAssetId = "133522631385347",
 		modelAssetId = "107468582803232",
+		hiresTextures = false,
 	},
 	["Viamont_740.627"] = {
 		name = "Viamont_740.627",
@@ -1132,6 +1218,7 @@ local LocoDatabase = {
 		length = 13.4,
 		thumbnailAssetId = "122781896945529",
 		modelAssetId = "109498973786547",
+		hiresTextures = false,
 	},
 	["Viamont_742.507"] = {
 		name = "Viamont_742.507",
@@ -1145,6 +1232,7 @@ local LocoDatabase = {
 		length = 13.4,
 		thumbnailAssetId = "90893745391249",
 		modelAssetId = "88451385378307",
+		hiresTextures = false,
 	},
 	["CSD_386"] = {
 		name = "CSD_386",
@@ -1158,6 +1246,7 @@ local LocoDatabase = {
 		length = 14.7,
 		thumbnailAssetId = "82062955566189",
 		modelAssetId = "104902715992705",
+		hiresTextures = false,
 	},
 	["CSD_433"] = {
 		name = "CSD_433",
@@ -1171,6 +1260,7 @@ local LocoDatabase = {
 		length = 10.6,
 		thumbnailAssetId = "131780325805841",
 		modelAssetId = "116033724017543",
+		hiresTextures = false,
 	},
 	["CSD_433_0"] = {
 		name = "CSD_433_0",
@@ -1184,6 +1274,7 @@ local LocoDatabase = {
 		length = 10.9,
 		thumbnailAssetId = "98056284933798",
 		modelAssetId = "116930584111152",
+		hiresTextures = false,
 	},
 	["CSD_433_0#2"] = {
 		name = "CSD_433_0#2",
@@ -1197,6 +1288,7 @@ local LocoDatabase = {
 		length = 10.9,
 		thumbnailAssetId = "108423820453009",
 		modelAssetId = "85787765493329",
+		hiresTextures = false,
 	},
 	["CSD_456_0"] = {
 		name = "CSD_456_0",
@@ -1210,6 +1302,7 @@ local LocoDatabase = {
 		length = 13.8,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "82719638250267",
+		hiresTextures = false,
 	},
 	["CSD_475_179#L"] = {
 		name = "CSD_475_179#L",
@@ -1223,6 +1316,7 @@ local LocoDatabase = {
 		length = 12.3,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "108394126093730",
+		hiresTextures = false,
 	},
 	["CSD_475_179#T"] = {
 		name = "CSD_475_179#T",
@@ -1236,6 +1330,7 @@ local LocoDatabase = {
 		length = 6.7,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "74075073147737",
+		hiresTextures = false,
 	},
 	["CSD_498_1"] = {
 		name = "CSD_498_1",
@@ -1249,6 +1344,7 @@ local LocoDatabase = {
 		length = 17.2,
 		thumbnailAssetId = "73902721946006",
 		modelAssetId = "108412349574247",
+		hiresTextures = false,
 	},
 	["CSD_498_1#T"] = {
 		name = "CSD_498_1#T",
@@ -1262,6 +1358,7 @@ local LocoDatabase = {
 		length = 8,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "107117116741461",
+		hiresTextures = false,
 	},
 	["CSD_556_0"] = {
 		name = "CSD_556_0",
@@ -1275,6 +1372,7 @@ local LocoDatabase = {
 		length = 14.7,
 		thumbnailAssetId = "101498338374512",
 		modelAssetId = "122366463196383",
+		hiresTextures = false,
 	},
 	["CSD_556_0#T"] = {
 		name = "CSD_556_0#T",
@@ -1288,6 +1386,7 @@ local LocoDatabase = {
 		length = 7.5,
 		thumbnailAssetId = "89749727100880",
 		modelAssetId = "99353583213512",
+		hiresTextures = false,
 	},
 	["CSD_636"] = {
 		name = "CSD_636",
@@ -1301,6 +1400,7 @@ local LocoDatabase = {
 		length = 14.8,
 		thumbnailAssetId = "131621309306198",
 		modelAssetId = "89921656433335",
+		hiresTextures = false,
 	},
 	["CSD_M112"] = {
 		name = "CSD_M112",
@@ -1314,6 +1414,7 @@ local LocoDatabase = {
 		length = 8.4,
 		thumbnailAssetId = "129671728841068",
 		modelAssetId = "76812482327666",
+		hiresTextures = false,
 	},
 	["MUV_69"] = {
 		name = "MUV_69",
@@ -1327,6 +1428,7 @@ local LocoDatabase = {
 		length = 5.9,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "132151175143344",
+		hiresTextures = false,
 	},
 	["CD_A"] = {
 		name = "CD_A",
@@ -1340,6 +1442,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "80585425442574",
 		modelAssetId = "79138663240483",
+		hiresTextures = true,
 	},
 	["CD_A-old"] = {
 		name = "CD_A-old",
@@ -1353,6 +1456,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "135566086620920",
 		modelAssetId = "109503755749334",
+		hiresTextures = false,
 	},
 	["CD_AB"] = {
 		name = "CD_AB",
@@ -1366,6 +1470,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "85461848083126",
 		modelAssetId = "106255548186472",
+		hiresTextures = false,
 	},
 	["CD_Aee"] = {
 		name = "CD_Aee",
@@ -1379,6 +1484,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "138295449529715",
 		modelAssetId = "124278350703857",
+		hiresTextures = false,
 	},
 	["CD_Aeel"] = {
 		name = "CD_Aeel",
@@ -1392,6 +1498,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "122591751006222",
 		modelAssetId = "126580490555668",
+		hiresTextures = false,
 	},
 	["CD_Ampz"] = {
 		name = "CD_Ampz",
@@ -1405,6 +1512,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "97807203780444",
 		modelAssetId = "113218752418502",
+		hiresTextures = false,
 	},
 	["CD_B"] = {
 		name = "CD_B",
@@ -1418,6 +1526,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "134673104374347",
 		modelAssetId = "89959900422112",
+		hiresTextures = false,
 	},
 	["CD_B-old"] = {
 		name = "CD_B-old",
@@ -1431,6 +1540,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "91717464828127",
 		modelAssetId = "81406678865358",
+		hiresTextures = false,
 	},
 	["CD_Baafx#1"] = {
 		name = "CD_Baafx#1",
@@ -1444,6 +1554,7 @@ local LocoDatabase = {
 		length = 12.5,
 		thumbnailAssetId = "132560945169082",
 		modelAssetId = "92089985607145",
+		hiresTextures = false,
 	},
 	["CD_Baafx#3"] = {
 		name = "CD_Baafx#3",
@@ -1457,6 +1568,7 @@ local LocoDatabase = {
 		length = 12.5,
 		thumbnailAssetId = "83111028770104",
 		modelAssetId = "127987667512035",
+		hiresTextures = false,
 	},
 	["CD_Baafx#4"] = {
 		name = "CD_Baafx#4",
@@ -1470,6 +1582,7 @@ local LocoDatabase = {
 		length = 12.5,
 		thumbnailAssetId = "113620105886114",
 		modelAssetId = "87065984539379",
+		hiresTextures = false,
 	},
 	["CD_Bcc"] = {
 		name = "CD_Bcc",
@@ -1483,6 +1596,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "123273024885726",
 		modelAssetId = "87067942710774",
+		hiresTextures = false,
 	},
 	["CD_BDmeer"] = {
 		name = "CD_BDmeer",
@@ -1496,6 +1610,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "88132953293851",
 		modelAssetId = "100659144459742",
+		hiresTextures = false,
 	},
 	["CD_Bdmtee"] = {
 		name = "CD_Bdmtee",
@@ -1509,6 +1624,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "127851734701274",
 		modelAssetId = "81092702361242",
+		hiresTextures = false,
 	},
 	["CD_BDs"] = {
 		name = "CD_BDs",
@@ -1522,6 +1638,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "131747751301293",
 		modelAssetId = "134846769602798",
+		hiresTextures = false,
 	},
 	["CD_Bee"] = {
 		name = "CD_Bee",
@@ -1535,6 +1652,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "132849309953882",
 		modelAssetId = "87338259538767",
+		hiresTextures = false,
 	},
 	["CD_Bee001"] = {
 		name = "CD_Bee001",
@@ -1548,6 +1666,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "95289177226391",
 		modelAssetId = "101997311722004",
+		hiresTextures = false,
 	},
 	["CD_Beel"] = {
 		name = "CD_Beel",
@@ -1561,6 +1680,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "105187439609699",
 		modelAssetId = "134724280651959",
+		hiresTextures = false,
 	},
 	["CD_Beer"] = {
 		name = "CD_Beer",
@@ -1574,6 +1694,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "136897249974469",
 		modelAssetId = "82247762286524",
+		hiresTextures = false,
 	},
 	["CD_Bifx"] = {
 		name = "CD_Bifx",
@@ -1587,6 +1708,7 @@ local LocoDatabase = {
 		length = 18.3,
 		thumbnailAssetId = "132719264930897",
 		modelAssetId = "90518549697201",
+		hiresTextures = false,
 	},
 	["CD_Bix"] = {
 		name = "CD_Bix",
@@ -1600,6 +1722,7 @@ local LocoDatabase = {
 		length = 18.3,
 		thumbnailAssetId = "124495372096323",
 		modelAssetId = "73541925873152",
+		hiresTextures = false,
 	},
 	["CD_Bmee"] = {
 		name = "CD_Bmee",
@@ -1613,6 +1736,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "73462795167878",
 		modelAssetId = "71047125472275",
+		hiresTextures = false,
 	},
 	["CD_Bmo#1"] = {
 		name = "CD_Bmo#1",
@@ -1626,6 +1750,7 @@ local LocoDatabase = {
 		length = 26.8,
 		thumbnailAssetId = "129401687382726",
 		modelAssetId = "86134420787681",
+		hiresTextures = false,
 	},
 	["CD_Bmo#2"] = {
 		name = "CD_Bmo#2",
@@ -1639,6 +1764,7 @@ local LocoDatabase = {
 		length = 26.8,
 		thumbnailAssetId = "79644060076365",
 		modelAssetId = "138873741425721",
+		hiresTextures = false,
 	},
 	["CD_Bmo#3"] = {
 		name = "CD_Bmo#3",
@@ -1652,6 +1778,7 @@ local LocoDatabase = {
 		length = 26.8,
 		thumbnailAssetId = "71263022286298",
 		modelAssetId = "115707767728384",
+		hiresTextures = false,
 	},
 	["CD_Bmz"] = {
 		name = "CD_Bmz",
@@ -1665,6 +1792,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "95099450797581",
 		modelAssetId = "111820933841469",
+		hiresTextures = false,
 	},
 	["CD_Bnb"] = {
 		name = "CD_Bnb",
@@ -1678,6 +1806,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "101039666129545",
 		modelAssetId = "89471914523734",
+		hiresTextures = false,
 	},
 	["CD_Bpb"] = {
 		name = "CD_Bpb",
@@ -1691,6 +1820,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "140521061252573",
 		modelAssetId = "76462177486835",
+		hiresTextures = false,
 	},
 	["CD_Bt"] = {
 		name = "CD_Bt",
@@ -1704,6 +1834,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "71778217246789",
 		modelAssetId = "120548030824440",
+		hiresTextures = false,
 	},
 	["CD_Ds"] = {
 		name = "CD_Ds",
@@ -1717,6 +1848,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "136310905761590",
 		modelAssetId = "131297151729657",
+		hiresTextures = false,
 	},
 	["CD_Post"] = {
 		name = "CD_Post",
@@ -1730,6 +1862,7 @@ local LocoDatabase = {
 		length = 24.1,
 		thumbnailAssetId = "89553705049946",
 		modelAssetId = "134957887901068",
+		hiresTextures = false,
 	},
 	["CD_Wlab"] = {
 		name = "CD_Wlab",
@@ -1743,6 +1876,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "116878617053751",
 		modelAssetId = "77141136499383",
+		hiresTextures = false,
 	},
 	["CD_WLABmee"] = {
 		name = "CD_WLABmee",
@@ -1756,6 +1890,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "89841459052031",
 		modelAssetId = "127154106478068",
+		hiresTextures = false,
 	},
 	["CD_WRRm"] = {
 		name = "CD_WRRm",
@@ -1769,6 +1904,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "87944810646629",
 		modelAssetId = "108282143319372",
+		hiresTextures = false,
 	},
 	["CD_WRRmz"] = {
 		name = "CD_WRRmz",
@@ -1782,6 +1918,7 @@ local LocoDatabase = {
 		length = 26.9,
 		thumbnailAssetId = "110273117816550",
 		modelAssetId = "137792797901348",
+		hiresTextures = false,
 	},
 	["CSD_A"] = {
 		name = "CSD_A",
@@ -1795,6 +1932,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "76187130823259",
 		modelAssetId = "81047539341732",
+		hiresTextures = false,
 	},
 	["CSD_B"] = {
 		name = "CSD_B",
@@ -1808,6 +1946,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "102390112217730",
 		modelAssetId = "108101386673314",
+		hiresTextures = false,
 	},
 	["CSD_Balm"] = {
 		name = "CSD_Balm",
@@ -1821,6 +1960,7 @@ local LocoDatabase = {
 		length = 19,
 		thumbnailAssetId = "102318872207405",
 		modelAssetId = "118164904463949",
+		hiresTextures = false,
 	},
 	["CSD_Bam"] = {
 		name = "CSD_Bam",
@@ -1834,6 +1974,7 @@ local LocoDatabase = {
 		length = 22.2,
 		thumbnailAssetId = "99907297649491",
 		modelAssetId = "88268944196949",
+		hiresTextures = false,
 	},
 	["CSD_Bdmtee"] = {
 		name = "CSD_Bdmtee",
@@ -1847,6 +1988,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "121429482643075",
 		modelAssetId = "125883115269544",
+		hiresTextures = false,
 	},
 	["CSD_Be31"] = {
 		name = "CSD_Be31",
@@ -1860,6 +2002,7 @@ local LocoDatabase = {
 		length = 15.5,
 		thumbnailAssetId = "105279615207817",
 		modelAssetId = "131642260501036",
+		hiresTextures = false,
 	},
 	["CSD_Bi20"] = {
 		name = "CSD_Bi20",
@@ -1873,6 +2016,7 @@ local LocoDatabase = {
 		length = 12,
 		thumbnailAssetId = "113805064776966",
 		modelAssetId = "117048465659870",
+		hiresTextures = false,
 	},
 	["CSD_Bmo"] = {
 		name = "CSD_Bmo",
@@ -1886,6 +2030,7 @@ local LocoDatabase = {
 		length = 26.8,
 		thumbnailAssetId = "127385045673097",
 		modelAssetId = "120918472495251",
+		hiresTextures = false,
 	},
 	["CSD_Dsk"] = {
 		name = "CSD_Dsk",
@@ -1899,6 +2044,7 @@ local LocoDatabase = {
 		length = 10.5,
 		thumbnailAssetId = "114986175891594",
 		modelAssetId = "106639716471196",
+		hiresTextures = false,
 	},
 	["DB_abnvr"] = {
 		name = "DB_abnvr",
@@ -1912,6 +2058,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "108223527138607",
 		modelAssetId = "81220690867459",
+		hiresTextures = false,
 	},
 	["DB_abnvrIV"] = {
 		name = "DB_abnvrIV",
@@ -1925,6 +2072,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "92480391904121",
 		modelAssetId = "121212480457587",
+		hiresTextures = false,
 	},
 	["DB_Bdnrf"] = {
 		name = "DB_Bdnrf",
@@ -1938,6 +2086,7 @@ local LocoDatabase = {
 		length = 26.1,
 		thumbnailAssetId = "82776389674738",
 		modelAssetId = "84507056813157",
+		hiresTextures = false,
 	},
 	["DB_BdnrfIV"] = {
 		name = "DB_BdnrfIV",
@@ -1951,6 +2100,7 @@ local LocoDatabase = {
 		length = 26.1,
 		thumbnailAssetId = "82578539704121",
 		modelAssetId = "90713766717831",
+		hiresTextures = false,
 	},
 	["DB_Bnvr"] = {
 		name = "DB_Bnvr",
@@ -1964,6 +2114,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "118492092716181",
 		modelAssetId = "109942632359046",
+		hiresTextures = false,
 	},
 	["DB_BnvrIV"] = {
 		name = "DB_BnvrIV",
@@ -1977,6 +2128,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "96805457056471",
 		modelAssetId = "114155556142273",
+		hiresTextures = false,
 	},
 	["DB_DS_RE1"] = {
 		name = "DB_DS_RE1",
@@ -1990,6 +2142,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "81558053555596",
 		modelAssetId = "132529601008796",
+		hiresTextures = false,
 	},
 	["DB_DS_RE2"] = {
 		name = "DB_DS_RE2",
@@ -2003,6 +2156,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "90612083225081",
 		modelAssetId = "120897136921777",
+		hiresTextures = false,
 	},
 	["DB_DS_RE2_S"] = {
 		name = "DB_DS_RE2_S",
@@ -2016,6 +2170,7 @@ local LocoDatabase = {
 		length = 26.8,
 		thumbnailAssetId = "124737257838995",
 		modelAssetId = "115028157702683",
+		hiresTextures = false,
 	},
 	["DB_IC_Ampz"] = {
 		name = "DB_IC_Ampz",
@@ -2029,6 +2184,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "84014226358188",
 		modelAssetId = "87287395961169",
+		hiresTextures = false,
 	},
 	["DB_IC_Bmpz"] = {
 		name = "DB_IC_Bmpz",
@@ -2042,6 +2198,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "136634166217250",
 		modelAssetId = "111883659673494",
+		hiresTextures = false,
 	},
 	["DB_IC_WRmz"] = {
 		name = "DB_IC_WRmz",
@@ -2055,6 +2212,7 @@ local LocoDatabase = {
 		length = 26.9,
 		thumbnailAssetId = "78791459298185",
 		modelAssetId = "103379565229886",
+		hiresTextures = false,
 	},
 	["DR_SDS_B"] = {
 		name = "DR_SDS_B",
@@ -2068,6 +2226,7 @@ local LocoDatabase = {
 		length = 26.6,
 		thumbnailAssetId = "140222981817730",
 		modelAssetId = "102773833298850",
+		hiresTextures = false,
 	},
 	["DR_SDS_S"] = {
 		name = "DR_SDS_S",
@@ -2081,6 +2240,7 @@ local LocoDatabase = {
 		length = 26.5,
 		thumbnailAssetId = "114000012498291",
 		modelAssetId = "125870859053323",
+		hiresTextures = false,
 	},
 	["OBB_Ampz"] = {
 		name = "OBB_Ampz",
@@ -2094,6 +2254,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "138309275481709",
 		modelAssetId = "135570091896762",
+		hiresTextures = false,
 	},
 	["OBB_Bmpz"] = {
 		name = "OBB_Bmpz",
@@ -2107,6 +2268,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "95682983632381",
 		modelAssetId = "120369259906938",
+		hiresTextures = false,
 	},
 	["OBB_WRmz"] = {
 		name = "OBB_WRmz",
@@ -2120,6 +2282,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "89727594115938",
 		modelAssetId = "86882256399855",
+		hiresTextures = false,
 	},
 	["ZSR_A"] = {
 		name = "ZSR_A",
@@ -2133,6 +2296,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "83455594693827",
 		modelAssetId = "103492777469931",
+		hiresTextures = false,
 	},
 	["ZSR_AB"] = {
 		name = "ZSR_AB",
@@ -2146,6 +2310,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "89012216552189",
 		modelAssetId = "135543065453375",
+		hiresTextures = false,
 	},
 	["ZSR_Apee"] = {
 		name = "ZSR_Apee",
@@ -2159,6 +2324,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "104344331519348",
 		modelAssetId = "126027209476410",
+		hiresTextures = false,
 	},
 	["ZSR_B"] = {
 		name = "ZSR_B",
@@ -2172,6 +2338,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "84120874678424",
 		modelAssetId = "111004991816264",
+		hiresTextures = false,
 	},
 	["ZSR_BDmeer"] = {
 		name = "ZSR_BDmeer",
@@ -2185,6 +2352,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "137411203660363",
 		modelAssetId = "118488228702231",
+		hiresTextures = false,
 	},
 	["ZSR_BDs"] = {
 		name = "ZSR_BDs",
@@ -2198,6 +2366,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "94833203936500",
 		modelAssetId = "114744214344750",
+		hiresTextures = false,
 	},
 	["ZSR_Bh"] = {
 		name = "ZSR_Bh",
@@ -2211,6 +2380,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "131120290245821",
 		modelAssetId = "81640741160477",
+		hiresTextures = false,
 	},
 	["ZSR_Wlab"] = {
 		name = "ZSR_Wlab",
@@ -2224,6 +2394,7 @@ local LocoDatabase = {
 		length = 25,
 		thumbnailAssetId = "71327896898613",
 		modelAssetId = "139047760660180",
+		hiresTextures = false,
 	},
 	["ZSR_WRRm"] = {
 		name = "ZSR_WRRm",
@@ -2237,6 +2408,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "84491992204382",
 		modelAssetId = "78789207249904",
+		hiresTextures = false,
 	},
 	["CD_051"] = {
 		name = "CD_051",
@@ -2250,6 +2422,7 @@ local LocoDatabase = {
 		length = 24.1,
 		thumbnailAssetId = "85622813759242",
 		modelAssetId = "130902025390815",
+		hiresTextures = false,
 	},
 	["CD_451"] = {
 		name = "CD_451",
@@ -2263,6 +2436,7 @@ local LocoDatabase = {
 		length = 24.3,
 		thumbnailAssetId = "86654293172804",
 		modelAssetId = "100870101026012",
+		hiresTextures = true,
 	},
 	["CD_060"] = {
 		name = "CD_060",
@@ -2276,6 +2450,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "137150193098710",
 		modelAssetId = "95398513474491",
+		hiresTextures = false,
 	},
 	["CD_460"] = {
 		name = "CD_460",
@@ -2289,6 +2464,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "76378694807550",
 		modelAssetId = "91933479659166",
+		hiresTextures = false,
 	},
 	["CD_460,003-4"] = {
 		name = "CD_460,003-4",
@@ -2302,6 +2478,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "83437206455384",
 		modelAssetId = "125244646763090",
+		hiresTextures = false,
 	},
 	["CD_460,007-4"] = {
 		name = "CD_460,007-4",
@@ -2315,6 +2492,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "77606594113331",
 		modelAssetId = "83578877120568",
+		hiresTextures = false,
 	},
 	["CD_070"] = {
 		name = "CD_070",
@@ -2328,6 +2506,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "126605376069303",
 		modelAssetId = "118175816860764",
+		hiresTextures = false,
 	},
 	["CD_470"] = {
 		name = "CD_470",
@@ -2341,6 +2520,7 @@ local LocoDatabase = {
 		length = 24.55,
 		thumbnailAssetId = "105234949608769",
 		modelAssetId = "75047530957565",
+		hiresTextures = false,
 	},
 	["CD_071"] = {
 		name = "CD_071",
@@ -2352,8 +2532,9 @@ local LocoDatabase = {
 		power = 0,
 		path = "EMU",
 		length = 25.3,
-		thumbnailAssetId = "128555472877379",
-		modelAssetId = "87422389627861",
+		thumbnailAssetId = "138843098122795",
+		modelAssetId = "115920799404976",
+		hiresTextures = true,
 	},
 	["CD_471"] = {
 		name = "CD_471",
@@ -2365,8 +2546,9 @@ local LocoDatabase = {
 		power = 1000,
 		path = "EMU",
 		length = 25.1,
-		thumbnailAssetId = "96974092298017",
-		modelAssetId = "101062851319400",
+		thumbnailAssetId = "99281933551940",
+		modelAssetId = "88931800312938",
+		hiresTextures = true,
 	},
 	["CD_971"] = {
 		name = "CD_971",
@@ -2378,8 +2560,9 @@ local LocoDatabase = {
 		power = 1000,
 		path = "EMU",
 		length = 24.4,
-		thumbnailAssetId = "78750019892273",
-		modelAssetId = "83732905005880",
+		thumbnailAssetId = "134178706757873",
+		modelAssetId = "120169083928064",
+		hiresTextures = true,
 	},
 	["CD_075"] = {
 		name = "CD_075",
@@ -2393,6 +2576,7 @@ local LocoDatabase = {
 		length = 25.7,
 		thumbnailAssetId = "121880474136669",
 		modelAssetId = "85777055894944",
+		hiresTextures = false,
 	},
 	["CD_675"] = {
 		name = "CD_675",
@@ -2406,6 +2590,7 @@ local LocoDatabase = {
 		length = 25.4,
 		thumbnailAssetId = "117572306751657",
 		modelAssetId = "138855336015952",
+		hiresTextures = false,
 	},
 	["CD_975"] = {
 		name = "CD_975",
@@ -2419,6 +2604,7 @@ local LocoDatabase = {
 		length = 24.7,
 		thumbnailAssetId = "95377313305675",
 		modelAssetId = "90872853480554",
+		hiresTextures = false,
 	},
 	["CD_681"] = {
 		name = "CD_681",
@@ -2432,6 +2618,7 @@ local LocoDatabase = {
 		length = 25,
 		thumbnailAssetId = "83088516184314",
 		modelAssetId = "138176146489899",
+		hiresTextures = false,
 	},
 	["CD_683"] = {
 		name = "CD_683",
@@ -2445,6 +2632,7 @@ local LocoDatabase = {
 		length = 24.9,
 		thumbnailAssetId = "126726716770537",
 		modelAssetId = "130768970561724",
+		hiresTextures = false,
 	},
 	["CD_685"] = {
 		name = "CD_685",
@@ -2458,6 +2646,7 @@ local LocoDatabase = {
 		length = 24.9,
 		thumbnailAssetId = "108118842267978",
 		modelAssetId = "122760952088818",
+		hiresTextures = false,
 	},
 	["CD_686"] = {
 		name = "CD_686",
@@ -2471,6 +2660,7 @@ local LocoDatabase = {
 		length = 24.9,
 		thumbnailAssetId = "74446468393202",
 		modelAssetId = "76699937496683",
+		hiresTextures = false,
 	},
 	["CSD_060.045"] = {
 		name = "CSD_060.045",
@@ -2484,6 +2674,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "82957121366034",
 		modelAssetId = "134362032529349",
+		hiresTextures = false,
 	},
 	["CSD_460,045"] = {
 		name = "CSD_460,045",
@@ -2497,6 +2688,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "94054600997245",
 		modelAssetId = "72954922958923",
+		hiresTextures = false,
 	},
 	["CSD_460,052"] = {
 		name = "CSD_460,052",
@@ -2510,6 +2702,7 @@ local LocoDatabase = {
 		length = 24.5,
 		thumbnailAssetId = "136787807358458",
 		modelAssetId = "76930061692691",
+		hiresTextures = false,
 	},
 	["Eurostar Car 1"] = {
 		name = "Eurostar Car 1",
@@ -2523,6 +2716,7 @@ local LocoDatabase = {
 		length = 22,
 		thumbnailAssetId = "139934872149585",
 		modelAssetId = "105841604092388",
+		hiresTextures = false,
 	},
 	["Eurostar Car 2"] = {
 		name = "Eurostar Car 2",
@@ -2536,6 +2730,7 @@ local LocoDatabase = {
 		length = 18.8,
 		thumbnailAssetId = "87575169886400",
 		modelAssetId = "73827449805560",
+		hiresTextures = false,
 	},
 	["Eurostar Car 3"] = {
 		name = "Eurostar Car 3",
@@ -2549,6 +2744,7 @@ local LocoDatabase = {
 		length = 18.8,
 		thumbnailAssetId = "73446048511563",
 		modelAssetId = "101681985465817",
+		hiresTextures = false,
 	},
 	["Eurostar Loco"] = {
 		name = "Eurostar Loco",
@@ -2562,6 +2758,7 @@ local LocoDatabase = {
 		length = 21.8,
 		thumbnailAssetId = "137108294783110",
 		modelAssetId = "126369171174200",
+		hiresTextures = false,
 	},
 	["ICE Car"] = {
 		name = "ICE Car",
@@ -2575,6 +2772,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "128959732330759",
 		modelAssetId = "99505546820292",
+		hiresTextures = false,
 	},
 	["ICE Loco"] = {
 		name = "ICE Loco",
@@ -2588,6 +2786,7 @@ local LocoDatabase = {
 		length = 20.5,
 		thumbnailAssetId = "91596955957877",
 		modelAssetId = "116039475084159",
+		hiresTextures = false,
 	},
 	["ICE Restaurant"] = {
 		name = "ICE Restaurant",
@@ -2601,6 +2800,7 @@ local LocoDatabase = {
 		length = 26.4,
 		thumbnailAssetId = "84807098802198",
 		modelAssetId = "92491453175501",
+		hiresTextures = false,
 	},
 	["Bullet Car 1"] = {
 		name = "Bullet Car 1",
@@ -2614,6 +2814,7 @@ local LocoDatabase = {
 		length = 25,
 		thumbnailAssetId = "135539976960173",
 		modelAssetId = "103961408510742",
+		hiresTextures = false,
 	},
 	["Bullet Car 2"] = {
 		name = "Bullet Car 2",
@@ -2627,6 +2828,7 @@ local LocoDatabase = {
 		length = 25,
 		thumbnailAssetId = "134511650895188",
 		modelAssetId = "77333975561785",
+		hiresTextures = false,
 	},
 	["Bullet End Car"] = {
 		name = "Bullet End Car",
@@ -2640,6 +2842,7 @@ local LocoDatabase = {
 		length = 25,
 		thumbnailAssetId = "125011295872886",
 		modelAssetId = "95004259100793",
+		hiresTextures = false,
 	},
 	["TGV_AT_ch1"] = {
 		name = "TGV_AT_ch1",
@@ -2653,6 +2856,7 @@ local LocoDatabase = {
 		length = 21.6,
 		thumbnailAssetId = "81382488133361",
 		modelAssetId = "138406547912755",
+		hiresTextures = false,
 	},
 	["TGV_AT_ch2"] = {
 		name = "TGV_AT_ch2",
@@ -2666,6 +2870,7 @@ local LocoDatabase = {
 		length = 18.8,
 		thumbnailAssetId = "114068124730706",
 		modelAssetId = "90790782270593",
+		hiresTextures = false,
 	},
 	["TGV_AT_loco"] = {
 		name = "TGV_AT_loco",
@@ -2679,6 +2884,7 @@ local LocoDatabase = {
 		length = 21.9,
 		thumbnailAssetId = "85538273686326",
 		modelAssetId = "97462855455421",
+		hiresTextures = false,
 	},
 	["TGV_loco"] = {
 		name = "TGV_loco",
@@ -2692,6 +2898,7 @@ local LocoDatabase = {
 		length = 21.9,
 		thumbnailAssetId = "109292474096117",
 		modelAssetId = "PENDING_UPLOAD",
+		hiresTextures = false,
 	},
 	["TGV_vag#1"] = {
 		name = "TGV_vag#1",
@@ -2705,6 +2912,7 @@ local LocoDatabase = {
 		length = 21.6,
 		thumbnailAssetId = "95430483819252",
 		modelAssetId = "82409820562524",
+		hiresTextures = false,
 	},
 	["TGV_vag#2"] = {
 		name = "TGV_vag#2",
@@ -2718,6 +2926,7 @@ local LocoDatabase = {
 		length = 18.8,
 		thumbnailAssetId = "126949614666585",
 		modelAssetId = "85871429730389",
+		hiresTextures = false,
 	},
 	["CD_810#1"] = {
 		name = "CD_810#1",
@@ -2729,8 +2938,9 @@ local LocoDatabase = {
 		power = 155,
 		path = "DMU",
 		length = 13.2,
-		thumbnailAssetId = "120843204145791",
-		modelAssetId = "135720354455303",
+		thumbnailAssetId = "75369245080018",
+		modelAssetId = "94145979313608",
+		hiresTextures = true,
 	},
 	["CD_810#2"] = {
 		name = "CD_810#2",
@@ -2742,8 +2952,9 @@ local LocoDatabase = {
 		power = 155,
 		path = "DMU",
 		length = 13.2,
-		thumbnailAssetId = "74255134816539",
-		modelAssetId = "121087789921008",
+		thumbnailAssetId = "121790452574112",
+		modelAssetId = "119775626143496",
+		hiresTextures = true,
 	},
 	["CD_810#3"] = {
 		name = "CD_810#3",
@@ -2755,8 +2966,9 @@ local LocoDatabase = {
 		power = 155,
 		path = "DMU",
 		length = 13.2,
-		thumbnailAssetId = "109745025081845",
-		modelAssetId = "85194372706276",
+		thumbnailAssetId = "77976429114630",
+		modelAssetId = "128732588439809",
+		hiresTextures = true,
 	},
 	["CD_810#4"] = {
 		name = "CD_810#4",
@@ -2768,8 +2980,9 @@ local LocoDatabase = {
 		power = 155,
 		path = "DMU",
 		length = 13.2,
-		thumbnailAssetId = "91350052824520",
-		modelAssetId = "134477756610387",
+		thumbnailAssetId = "75855952071196",
+		modelAssetId = "108846254526037",
+		hiresTextures = true,
 	},
 	["CD_843"] = {
 		name = "CD_843",
@@ -2783,6 +2996,7 @@ local LocoDatabase = {
 		length = 24.1,
 		thumbnailAssetId = "113517490326021",
 		modelAssetId = "93523051145981",
+		hiresTextures = false,
 	},
 	["CD_854"] = {
 		name = "CD_854",
@@ -2794,8 +3008,9 @@ local LocoDatabase = {
 		power = 592,
 		path = "DMU",
 		length = 23.7,
-		thumbnailAssetId = "132488545515852",
-		modelAssetId = "140394851024470",
+		thumbnailAssetId = "89811323171295",
+		modelAssetId = "103882300498015",
+		hiresTextures = true,
 	},
 	["CSD_853"] = {
 		name = "CSD_853",
@@ -2809,6 +3024,7 @@ local LocoDatabase = {
 		length = 23.7,
 		thumbnailAssetId = "124812508089862",
 		modelAssetId = "114894051679565",
+		hiresTextures = false,
 	},
 	["CSD_M240"] = {
 		name = "CSD_M240",
@@ -2822,6 +3038,7 @@ local LocoDatabase = {
 		length = 19,
 		thumbnailAssetId = "80594295659324",
 		modelAssetId = "87755704485088",
+		hiresTextures = false,
 	},
 	["CSD_M296"] = {
 		name = "CSD_M296",
@@ -2835,6 +3052,7 @@ local LocoDatabase = {
 		length = 24.65,
 		thumbnailAssetId = "128339990768728",
 		modelAssetId = "123705545737492",
+		hiresTextures = false,
 	},
 	["DB_628"] = {
 		name = "DB_628",
@@ -2848,6 +3066,7 @@ local LocoDatabase = {
 		length = 22.2,
 		thumbnailAssetId = "130277546093716",
 		modelAssetId = "109410016494027",
+		hiresTextures = false,
 	},
 	["DB_628vr"] = {
 		name = "DB_628vr",
@@ -2861,6 +3080,7 @@ local LocoDatabase = {
 		length = 21.9,
 		thumbnailAssetId = "113881609257163",
 		modelAssetId = "125920497541251",
+		hiresTextures = false,
 	},
 	["MAV_Ax"] = {
 		name = "MAV_Ax",
@@ -2874,6 +3094,7 @@ local LocoDatabase = {
 		length = 22,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "100812388160252",
+		hiresTextures = false,
 	},
 	["MAV_Btx"] = {
 		name = "MAV_Btx",
@@ -2887,6 +3108,7 @@ local LocoDatabase = {
 		length = 21.6,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "99280520707920",
+		hiresTextures = false,
 	},
 	["MAV_Bx"] = {
 		name = "MAV_Bx",
@@ -2900,6 +3122,7 @@ local LocoDatabase = {
 		length = 22,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "111840155818029",
+		hiresTextures = false,
 	},
 	["MAV_MDmot"] = {
 		name = "MAV_MDmot",
@@ -2913,6 +3136,7 @@ local LocoDatabase = {
 		length = 13.9,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "100606913499101",
+		hiresTextures = false,
 	},
 	["N-Lp"] = {
 		name = "N-Lp",
@@ -2926,6 +3150,7 @@ local LocoDatabase = {
 		length = 14.8,
 		thumbnailAssetId = "108053322738903",
 		modelAssetId = "126657914228617",
+		hiresTextures = false,
 	},
 	["N-Nas"] = {
 		name = "N-Nas",
@@ -2939,6 +3164,7 @@ local LocoDatabase = {
 		length = 19.9,
 		thumbnailAssetId = "94129014448199",
 		modelAssetId = "84688375928559",
+		hiresTextures = false,
 	},
 	["N-Pao"] = {
 		name = "N-Pao",
@@ -2952,6 +3178,7 @@ local LocoDatabase = {
 		length = 14.4,
 		thumbnailAssetId = "137628780046576",
 		modelAssetId = "116275329840490",
+		hiresTextures = false,
 	},
 	["N-Ra#1"] = {
 		name = "N-Ra#1",
@@ -2965,6 +3192,7 @@ local LocoDatabase = {
 		length = 14.7,
 		thumbnailAssetId = "100858292155532",
 		modelAssetId = "122494037525869",
+		hiresTextures = false,
 	},
 	["N-Ra#2"] = {
 		name = "N-Ra#2",
@@ -2978,6 +3206,7 @@ local LocoDatabase = {
 		length = 14,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "99408407068840",
+		hiresTextures = false,
 	},
 	["N-Ra#3"] = {
 		name = "N-Ra#3",
@@ -2991,6 +3220,7 @@ local LocoDatabase = {
 		length = 14.5,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "127561266494371",
+		hiresTextures = false,
 	},
 	["N-Rah#1"] = {
 		name = "N-Rah#1",
@@ -3004,6 +3234,7 @@ local LocoDatabase = {
 		length = 11.7,
 		thumbnailAssetId = "131113707933252",
 		modelAssetId = "90106647363673",
+		hiresTextures = false,
 	},
 	["N-Raj"] = {
 		name = "N-Raj",
@@ -3017,6 +3248,7 @@ local LocoDatabase = {
 		length = 13.5,
 		thumbnailAssetId = "94286404062007",
 		modelAssetId = "134696867260951",
+		hiresTextures = false,
 	},
 	["N-Sqs"] = {
 		name = "N-Sqs",
@@ -3030,6 +3262,7 @@ local LocoDatabase = {
 		length = 19.9,
 		thumbnailAssetId = "77200966031322",
 		modelAssetId = "128042968118316",
+		hiresTextures = false,
 	},
 	["N-Vte"] = {
 		name = "N-Vte",
@@ -3043,6 +3276,7 @@ local LocoDatabase = {
 		length = 8.7,
 		thumbnailAssetId = "128616389701991",
 		modelAssetId = "110426124289778",
+		hiresTextures = false,
 	},
 	["N-Wap"] = {
 		name = "N-Wap",
@@ -3056,6 +3290,7 @@ local LocoDatabase = {
 		length = 12.7,
 		thumbnailAssetId = "133485048351250",
 		modelAssetId = "131073997372192",
+		hiresTextures = false,
 	},
 	["N-Z"] = {
 		name = "N-Z",
@@ -3069,6 +3304,7 @@ local LocoDatabase = {
 		length = 13.1,
 		thumbnailAssetId = "123981761272462",
 		modelAssetId = "85907225969032",
+		hiresTextures = false,
 	},
 	["N-Zaz"] = {
 		name = "N-Zaz",
@@ -3082,6 +3318,7 @@ local LocoDatabase = {
 		length = 15.6,
 		thumbnailAssetId = "121544850406858",
 		modelAssetId = "74932905427115",
+		hiresTextures = false,
 	},
 	["N_Eas"] = {
 		name = "N_Eas",
@@ -3095,6 +3332,7 @@ local LocoDatabase = {
 		length = 13.9,
 		thumbnailAssetId = "122357758336034",
 		modelAssetId = "75676004712131",
+		hiresTextures = false,
 	},
 	["N_Eas-drevo"] = {
 		name = "N_Eas-drevo",
@@ -3108,6 +3346,7 @@ local LocoDatabase = {
 		length = 13.9,
 		thumbnailAssetId = "139742845104488",
 		modelAssetId = "120009135200882",
+		hiresTextures = false,
 	},
 	["N_Eas-uhlo"] = {
 		name = "N_Eas-uhlo",
@@ -3121,6 +3360,7 @@ local LocoDatabase = {
 		length = 13.9,
 		thumbnailAssetId = "94034227055344",
 		modelAssetId = "131676033498752",
+		hiresTextures = false,
 	},
 	["N_Faccs"] = {
 		name = "N_Faccs",
@@ -3134,6 +3374,7 @@ local LocoDatabase = {
 		length = 12.8,
 		thumbnailAssetId = "112882406666683",
 		modelAssetId = "130410120742497",
+		hiresTextures = false,
 	},
 	["N_Falls"] = {
 		name = "N_Falls",
@@ -3147,6 +3388,7 @@ local LocoDatabase = {
 		length = 13.5,
 		thumbnailAssetId = "101802159773258",
 		modelAssetId = "116056164876776",
+		hiresTextures = false,
 	},
 	["N_Habbilns"] = {
 		name = "N_Habbilns",
@@ -3160,6 +3402,7 @@ local LocoDatabase = {
 		length = 20,
 		thumbnailAssetId = "73543920311339",
 		modelAssetId = "73453032908587",
+		hiresTextures = false,
 	},
 	["N_Habis_TW1"] = {
 		name = "N_Habis_TW1",
@@ -3173,6 +3416,7 @@ local LocoDatabase = {
 		length = 23.2,
 		thumbnailAssetId = "70703780166986",
 		modelAssetId = "132853634356647",
+		hiresTextures = false,
 	},
 	["N_Habis_TW2"] = {
 		name = "N_Habis_TW2",
@@ -3186,6 +3430,7 @@ local LocoDatabase = {
 		length = 23.2,
 		thumbnailAssetId = "103707769324395",
 		modelAssetId = "132188879879480",
+		hiresTextures = false,
 	},
 	["N_Hadgs"] = {
 		name = "N_Hadgs",
@@ -3199,6 +3444,7 @@ local LocoDatabase = {
 		length = 16.8,
 		thumbnailAssetId = "131739142633399",
 		modelAssetId = "85208361396513",
+		hiresTextures = false,
 	},
 	["N_Lp"] = {
 		name = "N_Lp",
@@ -3212,6 +3458,7 @@ local LocoDatabase = {
 		length = 11.9,
 		thumbnailAssetId = "128652076557097",
 		modelAssetId = "82360759183174",
+		hiresTextures = false,
 	},
 	["N_Lp-Prazdroj"] = {
 		name = "N_Lp-Prazdroj",
@@ -3225,6 +3472,7 @@ local LocoDatabase = {
 		length = 11.9,
 		thumbnailAssetId = "129334774764778",
 		modelAssetId = "88179101293062",
+		hiresTextures = false,
 	},
 	["N_Nas"] = {
 		name = "N_Nas",
@@ -3238,6 +3486,7 @@ local LocoDatabase = {
 		length = 20.9,
 		thumbnailAssetId = "84446051010191",
 		modelAssetId = "71991448044279",
+		hiresTextures = false,
 	},
 	["N_Nas-full#1"] = {
 		name = "N_Nas-full#1",
@@ -3251,6 +3500,7 @@ local LocoDatabase = {
 		length = 20.9,
 		thumbnailAssetId = "81130135743225",
 		modelAssetId = "126760913436452",
+		hiresTextures = false,
 	},
 	["N_Nas-full#2"] = {
 		name = "N_Nas-full#2",
@@ -3264,6 +3514,7 @@ local LocoDatabase = {
 		length = 20.9,
 		thumbnailAssetId = "85925395183118",
 		modelAssetId = "105030866339142",
+		hiresTextures = false,
 	},
 	["N_Nas-full#3"] = {
 		name = "N_Nas-full#3",
@@ -3277,6 +3528,7 @@ local LocoDatabase = {
 		length = 20.9,
 		thumbnailAssetId = "87530692412357",
 		modelAssetId = "105860798127145",
+		hiresTextures = false,
 	},
 	["N_Nas-full#4"] = {
 		name = "N_Nas-full#4",
@@ -3290,6 +3542,7 @@ local LocoDatabase = {
 		length = 20.9,
 		thumbnailAssetId = "105451271293568",
 		modelAssetId = "96469163042976",
+		hiresTextures = false,
 	},
 	["N_Pao"] = {
 		name = "N_Pao",
@@ -3303,6 +3556,7 @@ local LocoDatabase = {
 		length = 15.3,
 		thumbnailAssetId = "131445479797787",
 		modelAssetId = "95453460430799",
+		hiresTextures = false,
 	},
 	["N_Pao-full#1"] = {
 		name = "N_Pao-full#1",
@@ -3316,6 +3570,7 @@ local LocoDatabase = {
 		length = 15.3,
 		thumbnailAssetId = "92638442801497",
 		modelAssetId = "75421885291173",
+		hiresTextures = false,
 	},
 	["N_Pao-full#2"] = {
 		name = "N_Pao-full#2",
@@ -3329,6 +3584,7 @@ local LocoDatabase = {
 		length = 15.3,
 		thumbnailAssetId = "82909176649578",
 		modelAssetId = "121842664359179",
+		hiresTextures = false,
 	},
 	["N_Rah#1"] = {
 		name = "N_Rah#1",
@@ -3342,6 +3598,7 @@ local LocoDatabase = {
 		length = 12.6,
 		thumbnailAssetId = "92848770310520",
 		modelAssetId = "89420473805804",
+		hiresTextures = false,
 	},
 	["N_Raj"] = {
 		name = "N_Raj",
@@ -3355,6 +3612,7 @@ local LocoDatabase = {
 		length = 14.4,
 		thumbnailAssetId = "127467275227196",
 		modelAssetId = "130602398483510",
+		hiresTextures = false,
 	},
 	["N_Sqns"] = {
 		name = "N_Sqns",
@@ -3368,6 +3626,7 @@ local LocoDatabase = {
 		length = 19.8,
 		thumbnailAssetId = "102202526636749",
 		modelAssetId = "136406784287062",
+		hiresTextures = false,
 	},
 	["N_Sqns-full#1"] = {
 		name = "N_Sqns-full#1",
@@ -3381,6 +3640,7 @@ local LocoDatabase = {
 		length = 19.8,
 		thumbnailAssetId = "101748122862406",
 		modelAssetId = "138593541256034",
+		hiresTextures = false,
 	},
 	["N_Sqs-full#1"] = {
 		name = "N_Sqs-full#1",
@@ -3394,6 +3654,7 @@ local LocoDatabase = {
 		length = 19.9,
 		thumbnailAssetId = "91801285748348",
 		modelAssetId = "104340655727144",
+		hiresTextures = false,
 	},
 	["N_Sqs-full#2"] = {
 		name = "N_Sqs-full#2",
@@ -3407,6 +3668,7 @@ local LocoDatabase = {
 		length = 19.9,
 		thumbnailAssetId = "125384300554732",
 		modelAssetId = "132482632552625",
+		hiresTextures = false,
 	},
 	["N_Sqs-full#3"] = {
 		name = "N_Sqs-full#3",
@@ -3420,6 +3682,7 @@ local LocoDatabase = {
 		length = 19.9,
 		thumbnailAssetId = "75521999176511",
 		modelAssetId = "138177733881343",
+		hiresTextures = false,
 	},
 	["N_Sqs-full#4"] = {
 		name = "N_Sqs-full#4",
@@ -3433,6 +3696,7 @@ local LocoDatabase = {
 		length = 19.9,
 		thumbnailAssetId = "70907407744707",
 		modelAssetId = "135405323014595",
+		hiresTextures = false,
 	},
 	["N_Sqs-full#5"] = {
 		name = "N_Sqs-full#5",
@@ -3446,6 +3710,7 @@ local LocoDatabase = {
 		length = 19.9,
 		thumbnailAssetId = "95955703440977",
 		modelAssetId = "133835926088726",
+		hiresTextures = false,
 	},
 	["N_Sqs-full#6"] = {
 		name = "N_Sqs-full#6",
@@ -3459,6 +3724,7 @@ local LocoDatabase = {
 		length = 19.9,
 		thumbnailAssetId = "137068139764473",
 		modelAssetId = "110484319850314",
+		hiresTextures = false,
 	},
 	["N_Sqs-full#7"] = {
 		name = "N_Sqs-full#7",
@@ -3472,6 +3738,7 @@ local LocoDatabase = {
 		length = 19.9,
 		thumbnailAssetId = "93371066084203",
 		modelAssetId = "115916574685216",
+		hiresTextures = false,
 	},
 	["N_Ua#1"] = {
 		name = "N_Ua#1",
@@ -3485,6 +3752,7 @@ local LocoDatabase = {
 		length = 13.5,
 		thumbnailAssetId = "108994689199551",
 		modelAssetId = "72340595611009",
+		hiresTextures = false,
 	},
 	["N_Ua#2"] = {
 		name = "N_Ua#2",
@@ -3498,6 +3766,7 @@ local LocoDatabase = {
 		length = 13.5,
 		thumbnailAssetId = "80355173112673",
 		modelAssetId = "81959347906308",
+		hiresTextures = false,
 	},
 	["N_Ua#3"] = {
 		name = "N_Ua#3",
@@ -3511,6 +3780,7 @@ local LocoDatabase = {
 		length = 13.5,
 		thumbnailAssetId = "136521135336557",
 		modelAssetId = "138394455542433",
+		hiresTextures = false,
 	},
 	["N_Ua-empty"] = {
 		name = "N_Ua-empty",
@@ -3524,6 +3794,7 @@ local LocoDatabase = {
 		length = 13.5,
 		thumbnailAssetId = "117911481741476",
 		modelAssetId = "111204221989738",
+		hiresTextures = false,
 	},
 	["N_Uaaikk"] = {
 		name = "N_Uaaikk",
@@ -3537,6 +3808,7 @@ local LocoDatabase = {
 		length = 22.3,
 		thumbnailAssetId = "PENDING_UPLOAD",
 		modelAssetId = "140569485831789",
+		hiresTextures = false,
 	},
 	["N_Vte"] = {
 		name = "N_Vte",
@@ -3550,6 +3822,7 @@ local LocoDatabase = {
 		length = 9.8,
 		thumbnailAssetId = "74559818888685",
 		modelAssetId = "106374914202648",
+		hiresTextures = false,
 	},
 	["N_Wap"] = {
 		name = "N_Wap",
@@ -3563,6 +3836,7 @@ local LocoDatabase = {
 		length = 13.5,
 		thumbnailAssetId = "70882362554172",
 		modelAssetId = "124077571828595",
+		hiresTextures = false,
 	},
 	["N_Wap-full#1"] = {
 		name = "N_Wap-full#1",
@@ -3576,6 +3850,7 @@ local LocoDatabase = {
 		length = 13.5,
 		thumbnailAssetId = "86708909409766",
 		modelAssetId = "118698679028220",
+		hiresTextures = false,
 	},
 	["N_Wap-full#2"] = {
 		name = "N_Wap-full#2",
@@ -3589,6 +3864,7 @@ local LocoDatabase = {
 		length = 13.5,
 		thumbnailAssetId = "81310987389212",
 		modelAssetId = "114648719446175",
+		hiresTextures = false,
 	},
 	["N_Wap-full#3"] = {
 		name = "N_Wap-full#3",
@@ -3602,6 +3878,7 @@ local LocoDatabase = {
 		length = 13.5,
 		thumbnailAssetId = "86712366670757",
 		modelAssetId = "90931007142152",
+		hiresTextures = false,
 	},
 	["N_Z"] = {
 		name = "N_Z",
@@ -3615,6 +3892,7 @@ local LocoDatabase = {
 		length = 14,
 		thumbnailAssetId = "128705945322023",
 		modelAssetId = "122369394115898",
+		hiresTextures = false,
 	},
 	["N_Zaz"] = {
 		name = "N_Zaz",
@@ -3628,6 +3906,7 @@ local LocoDatabase = {
 		length = 16.4,
 		thumbnailAssetId = "112317963224527",
 		modelAssetId = "108659564278211",
+		hiresTextures = false,
 	},
 	["N_Zts"] = {
 		name = "N_Zts",
@@ -3641,6 +3920,7 @@ local LocoDatabase = {
 		length = 12.9,
 		thumbnailAssetId = "127858515487742",
 		modelAssetId = "104685272054224",
+		hiresTextures = false,
 	},
 	["N_Zts_Orlen"] = {
 		name = "N_Zts_Orlen",
@@ -3654,6 +3934,7 @@ local LocoDatabase = {
 		length = 12.9,
 		thumbnailAssetId = "71842719642890",
 		modelAssetId = "101937410747580",
+		hiresTextures = false,
 	},
 	["N_Ztsc"] = {
 		name = "N_Ztsc",
@@ -3667,6 +3948,7 @@ local LocoDatabase = {
 		length = 12.9,
 		thumbnailAssetId = "118494712721088",
 		modelAssetId = "131161742162856",
+		hiresTextures = false,
 	},
 	["N_Ztsc_Post"] = {
 		name = "N_Ztsc_Post",
@@ -3680,6 +3962,7 @@ local LocoDatabase = {
 		length = 12.9,
 		thumbnailAssetId = "94799163892027",
 		modelAssetId = "140198059178093",
+		hiresTextures = false,
 	},
 	["SD_Falls"] = {
 		name = "SD_Falls",
@@ -3693,6 +3976,7 @@ local LocoDatabase = {
 		length = 13.5,
 		thumbnailAssetId = "131911087805187",
 		modelAssetId = "126738335392755",
+		hiresTextures = false,
 	},
 	["Viamont_Faccs"] = {
 		name = "Viamont_Faccs",
@@ -3706,6 +3990,7 @@ local LocoDatabase = {
 		length = 12.8,
 		thumbnailAssetId = "71294436127361",
 		modelAssetId = "135704007546721",
+		hiresTextures = false,
 	},
 	["Viamont_Falls"] = {
 		name = "Viamont_Falls",
@@ -3719,6 +4004,7 @@ local LocoDatabase = {
 		length = 13.5,
 		thumbnailAssetId = "137759660474937",
 		modelAssetId = "130523080194417",
+		hiresTextures = false,
 	},
 	["CSD_TU47_0001"] = {
 		name = "CSD_TU47_0001",
@@ -3732,6 +4018,7 @@ local LocoDatabase = {
 		length = 12.4,
 		thumbnailAssetId = "75750632704417",
 		modelAssetId = "89188864685849",
+		hiresTextures = false,
 	},
 	["CSD_TU47_0002"] = {
 		name = "CSD_TU47_0002",
@@ -3745,6 +4032,7 @@ local LocoDatabase = {
 		length = 12.4,
 		thumbnailAssetId = "82944606801897",
 		modelAssetId = "96761576027626",
+		hiresTextures = false,
 	},
 	["CSD_U46"] = {
 		name = "CSD_U46",
@@ -3758,6 +4046,7 @@ local LocoDatabase = {
 		length = 7,
 		thumbnailAssetId = "132166288450399",
 		modelAssetId = "122341063219891",
+		hiresTextures = false,
 	},
 	["CSD_UBalm"] = {
 		name = "CSD_UBalm",
@@ -3771,6 +4060,7 @@ local LocoDatabase = {
 		length = 15.1,
 		thumbnailAssetId = "131692459564707",
 		modelAssetId = "114553043452699",
+		hiresTextures = false,
 	},
 	["CSD_UG"] = {
 		name = "CSD_UG",
@@ -3784,6 +4074,7 @@ local LocoDatabase = {
 		length = 6.9,
 		thumbnailAssetId = "130640815319088",
 		modelAssetId = "120042909750047",
+		hiresTextures = false,
 	},
 	["CSD_UOplenA"] = {
 		name = "CSD_UOplenA",
@@ -3797,6 +4088,7 @@ local LocoDatabase = {
 		length = 4.5,
 		thumbnailAssetId = "135727298693708",
 		modelAssetId = "84945335153332",
+		hiresTextures = false,
 	},
 	["CSD_UOplenB"] = {
 		name = "CSD_UOplenB",
@@ -3810,6 +4102,7 @@ local LocoDatabase = {
 		length = 3.8,
 		thumbnailAssetId = "117655540258996",
 		modelAssetId = "81606513352609",
+		hiresTextures = false,
 	},
 	["CSD_UOplenF"] = {
 		name = "CSD_UOplenF",
@@ -3823,6 +4116,7 @@ local LocoDatabase = {
 		length = 14.4,
 		thumbnailAssetId = "72522737690627",
 		modelAssetId = "115580232742210",
+		hiresTextures = false,
 	},
 }
 

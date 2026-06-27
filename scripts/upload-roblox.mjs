@@ -123,6 +123,7 @@ async function processLoco(locoDir, lockdata, apiKey, creatorId, dryRun, opts = 
       thumbnailAssetId: prev.thumbnailAssetId || "PENDING_UPLOAD",
       modelAssetId: prev.modelAssetId || "PENDING_UPLOAD",
       length,
+      hires,
     };
   }
 
@@ -165,7 +166,7 @@ async function processLoco(locoDir, lockdata, apiKey, creatorId, dryRun, opts = 
     }
   }
 
-  return { metadata: meta, thumbnailAssetId, modelAssetId, length };
+  return { metadata: meta, thumbnailAssetId, modelAssetId, length, hires };
 }
 
 // ---------------------------------------------------------------------------
@@ -211,6 +212,7 @@ function generateLua(allLocos, outputPath) {
     lines.push(`\t\tlength = ${loco.length || 0},`);
     lines.push(`\t\tthumbnailAssetId = "${luaStr(loco.thumbnailAssetId)}",`);
     lines.push(`\t\tmodelAssetId = "${luaStr(loco.modelAssetId)}",`);
+    lines.push(`\t\thiresTextures = ${loco.hires ? "true" : "false"},`);
     lines.push("\t},");
   }
   lines.push("}", "", "return LocoDatabase", "");
