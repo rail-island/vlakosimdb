@@ -7,6 +7,12 @@ export default function Filters({
   resolution,
   onResolution,
   resolutionCounts,
+  checkedOnly,
+  onCheckedOnly,
+  checkedCount,
+  locomotiveTypes,
+  locomotiveType,
+  onLocomotiveType,
   resultCount,
 }) {
   return (
@@ -54,6 +60,29 @@ export default function Filters({
         >
           LoRes <span className="chip-count">{resolutionCounts.lores}</span>
         </button>
+        <button
+          className={`chip ${checkedOnly ? "active" : ""}`}
+          onClick={() => onCheckedOnly(!checkedOnly)}
+        >
+          Checked <span className="chip-count">{checkedCount}</span>
+        </button>
+      </div>
+      <div className="chips">
+        <button
+          className={`chip ${locomotiveType === "all" ? "active" : ""}`}
+          onClick={() => onLocomotiveType("all")}
+        >
+          All locomotive types
+        </button>
+        {locomotiveTypes.map((type) => (
+          <button
+            key={type.key}
+            className={`chip ${locomotiveType === type.key ? "active" : ""}`}
+            onClick={() => onLocomotiveType(type.key)}
+          >
+            {type.label} <span className="chip-count">{type.count}</span>
+          </button>
+        ))}
       </div>
       <div className="result-count">{resultCount} shown</div>
     </div>

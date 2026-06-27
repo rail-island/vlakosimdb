@@ -33,7 +33,55 @@ body {
 .topbar h1 { font-size: 26px; margin: 0; letter-spacing: 0.5px; }
 .topbar .accent { color: var(--accent); }
 .tagline { margin: 0; color: var(--muted); font-size: 14px; }
-.total { margin-left: auto; color: var(--muted); font-size: 13px; }
+.total { color: var(--muted); font-size: 13px; }
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.copy-status { color: var(--muted); font-size: 12px; }
+.menu-wrap { position: relative; }
+.menu-button {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.menu-button:hover { border-color: var(--accent-2); }
+.menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  min-width: 190px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-2);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+}
+.menu button {
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.menu button:hover:not(:disabled) { background: rgba(255, 255, 255, 0.06); }
+.menu button:disabled { color: var(--muted); cursor: default; opacity: 0.6; }
 
 .loading, .error, .empty {
   padding: 40px; text-align: center; color: var(--muted);
@@ -88,6 +136,7 @@ body {
   padding-top: 20px;
 }
 .card {
+  position: relative;
   text-align: left;
   background: var(--panel);
   border: 1px solid var(--border);
@@ -100,6 +149,18 @@ body {
   transition: transform 0.12s ease, border-color 0.12s ease;
 }
 .card:hover { transform: translateY(-3px); border-color: var(--accent-2); }
+.card.checked { border-color: rgba(255, 176, 46, 0.75); }
+.card-open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
 .thumb {
   position: relative;
   aspect-ratio: 16 / 10;
@@ -112,7 +173,7 @@ body {
 .thumb-placeholder { color: var(--muted); font-size: 12px; }
 .badge {
   position: absolute;
-  top: 8px; left: 8px;
+  top: 8px; left: 40px;
   background: rgba(0, 0, 0, 0.55);
   color: #fff;
   font-size: 11px;
@@ -130,6 +191,25 @@ body {
 .card-body { padding: 10px 12px 12px; }
 .card-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
 .card-specs { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 12px; }
+.card-check {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+}
+.card-check input,
+.viewer-title input {
+  accent-color: var(--accent);
+  cursor: pointer;
+}
 
 /* Viewer */
 .viewer-overlay {
@@ -155,6 +235,12 @@ body {
   overflow-y: auto;
 }
 .viewer-info h2 { margin: 0 0 2px; font-size: 20px; }
+.viewer-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.viewer-title input { margin-top: 5px; flex: 0 0 auto; }
 .info-sub { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
 .close {
   position: absolute;

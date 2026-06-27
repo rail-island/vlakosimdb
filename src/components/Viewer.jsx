@@ -106,7 +106,7 @@ function Loader() {
   );
 }
 
-export default function Viewer({ model, onClose }) {
+export default function Viewer({ model, onClose, checked, onCheckedChange }) {
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
@@ -199,7 +199,15 @@ export default function Viewer({ model, onClose }) {
         </div>
 
         <aside className="viewer-info">
-          <h2>{model.title}</h2>
+          <div className="viewer-title">
+            <input
+              type="checkbox"
+              checked={checked}
+              aria-label={`Check ${model.title}`}
+              onChange={(e) => onCheckedChange(e.target.checked)}
+            />
+            <h2>{model.title}</h2>
+          </div>
           <div className="info-sub">{model.name}</div>
 
           <dl className="specs">
