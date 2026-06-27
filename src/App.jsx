@@ -25,6 +25,11 @@ function formatLabel(value) {
   return value.replace(/[_-]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function modelFolderName(model) {
+  const parts = (model.dir || "").split(/[\\/]/).filter(Boolean);
+  return parts[parts.length - 1] || model.name;
+}
+
 function readCheckedTrains() {
   try {
     const stored = JSON.parse(localStorage.getItem(CHECKED_TRAINS_KEY) || "[]");
@@ -136,7 +141,7 @@ export default function App() {
 
   const checkedTrainLines = useMemo(() => {
     if (!manifest) return [];
-    return manifest.models.filter((m) => checkedTrainIds.has(m.id)).map((m) => m.id);
+    return manifest.models.filter((m) => checkedTrainIds.has(m.id)).map(modelFolderName);
   }, [manifest, checkedTrainIds]);
 
   const copySelectedTrains = useCallback(async () => {
@@ -261,6 +266,7 @@ export default function App() {
           onClose={() => select(null)}
           checked={checkedTrainIds.has(selected.id)}
           onCheckedChange={(checked) => setTrainChecked(selected.id, checked)}
+          folderName={modelFolderName(selected)}
         />
       )}
     </div>

@@ -106,7 +106,7 @@ function Loader() {
   );
 }
 
-export default function Viewer({ model, onClose, checked, onCheckedChange }) {
+export default function Viewer({ model, onClose, checked, onCheckedChange, folderName }) {
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
@@ -208,7 +208,7 @@ export default function Viewer({ model, onClose, checked, onCheckedChange }) {
             />
             <h2>{model.title}</h2>
           </div>
-          <div className="info-sub">{model.name}</div>
+          <div className="info-sub">{folderName}</div>
 
           <dl className="specs">
             <Spec label="Category" value={[model.category, model.subcategory].filter(Boolean).join(" / ")} />
