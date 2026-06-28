@@ -1,0 +1,7 @@
+# Motocar directories to process (one per line)
+# Lines ending with /* expand to all sub-directories
+# Lines starting with # are comments
+# (db/motocar/tram has no index.xml of its own, so the tram subfolder is skipped)
+
+# db/motocar/*
+db/motocar/bus_kar_b731

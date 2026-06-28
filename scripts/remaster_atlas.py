@@ -61,7 +61,9 @@ import os
 
 UPSCALE = 4
 RECOMPACT_NAME = "recompact.json"
-DB_SEARCH_ROOT = "db/train"
+# Roots searched when resolving a bare model name. Trains live under db/train,
+# motocars (buses/trams) under db/motocar.
+DB_SEARCH_ROOTS = ("db/train", "db/motocar")
 
 ATLAS_PROMPT = (
     "This is a flat texture atlas for an old 3D RAILROAD VEHICLE (a locomotive, "
@@ -86,6 +88,53 @@ ATLAS_PROMPT = (
 )
 
 
+MOTOCAR_ATLAS_PROMPT = (
+    "This is a flat texture atlas for an old 3D ROAD/CITY VEHICLE (a bus, trolleybus "
+    "or tram) — several small low-resolution textures packed onto one sheet with black "
+    "gaps between them, already upscaled and slightly blurry. Return a sharper, cleaner, "
+    "higher-detail version. IMPORTANT: keep every element in EXACTLY the same position, "
+    "size and layout — do not move, add, remove, rearrange, crop or recolour anything, and "
+    "keep the black gaps between the tiles. Keep all logos, text, line/route numbers, "
+    "destination signs and colours exactly as they are. LOGOS/EMBLEMS (operator or "
+    "manufacturer marks): reproduce every logo with its correct, original orientation and "
+    "shape — NEVER mirror, flip, rotate or reverse a logo, and make sure EVERY instance of "
+    "the same logo on the sheet looks identical (same direction, not a mirror image of "
+    "another). Render the vehicle's WHEELS and headlights as clean, perfectly ROUND circles "
+    "(not ovals, not polygons). DE-PIXELATE: the source is a low-resolution pixel image, so "
+    "every diagonal or curved feature — window and door frames, body and roof lining stripes, "
+    "bumpers, mirrors, wheel arches and outlines, lamps, and (on a tram) the pantograph or "
+    "trolley arms — currently looks jagged and stair-stepped. Redraw these as SMOOTH, clean, "
+    "continuous, anti-aliased lines and curves: remove the blocky pixel staircase entirely "
+    "while keeping each feature's shape, position and colour. Straight horizontal/vertical "
+    "edges stay crisp; only the jagged diagonals and curves get smoothed. Add fine, plausible "
+    "detail to what is already present; do not invent new features."
+)
+
+
+def is_motocar(model_dir: Path) -> bool:
+    """True if the model lives under db/motocar (a bus/tram), not db/train."""
+    return "motocar" in model_dir.relative_to(_repo_root()).parts
+
+
+def motocar_prompt_for(model_dir: Path) -> str:
+    """Motocar atlas prompt plus the model's catalogue identifier as context. The
+    identifier (e.g. 'bus_kar_b731' = Karosa B 731 bus, 'tram_ckd_t3' = ČKD Tatra T3)
+    is a FILENAME describing the vehicle type/manufacturer/model — never paint it on
+    the vehicle. Any destination sign or line/route number already painted stays as-is."""
+    rel = model_dir.relative_to(_repo_root())
+    ident = model_dir.name
+    return MOTOCAR_ATLAS_PROMPT + (
+        f" Context — this vehicle's catalogue identifier is '{ident}' (path '{rel}'). "
+        "This identifier is a FILENAME describing the vehicle's type, manufacturer and "
+        "model (e.g. 'bus_kar_b731' = a Karosa B 731 city bus; 'tram_ckd_t3' = a ČKD "
+        "Tatra T3 tram), NOT text painted on the vehicle: NEVER render the identifier "
+        "verbatim anywhere on it. Keep whatever destination sign, line/route number or "
+        "operator name is already painted exactly as-is; use the identifier only to "
+        "recognise the vehicle's shape and proportions when the source is too blurry. Do "
+        "not invent a different vehicle than the one implied by the identifier."
+    )
+
+
 def atlas_prompt_for(model_dir: Path) -> str:
     """Atlas prompt plus the model's catalogue identifier as context, so the model
     can resolve a blurry running number to the correct class.
@@ -93,7 +142,11 @@ def atlas_prompt_for(model_dir: Path) -> str:
     The identifier is 'operator_class' (e.g. 'cd_111' = operator ČD, class 111) — it is
     NOT the running number and must never be painted on the vehicle verbatim. Czech
     running numbers are 'CLASS SERIAL-CHECK' (e.g. '111 022-5' / '111.022'), with the
-    operator (ČD) shown only as a separate emblem, never glued to the class digits."""
+    operator (ČD) shown only as a separate emblem, never glued to the class digits.
+
+    Motocars (buses/trams under db/motocar) use a different, road-vehicle prompt."""
+    if is_motocar(model_dir):
+        return motocar_prompt_for(model_dir)
     rel = model_dir.relative_to(_repo_root())
     ident = model_dir.name
     return ATLAS_PROMPT + (
@@ -130,12 +183,13 @@ def resolve_model(name_or_path: str) -> Path:
         return p
 
     matches = [
-        d for d in sorted((root / DB_SEARCH_ROOT).rglob(name_or_path))
+        d for search_root in DB_SEARCH_ROOTS
+        for d in sorted((root / search_root).rglob(name_or_path))
         if d.is_dir() and (d / "model" / "index.xml").exists()
     ]
     if not matches:
-        print(f"Error: no model named '{name_or_path}' found under {DB_SEARCH_ROOT}/ "
-              "(needs model/index.xml).")
+        print(f"Error: no model named '{name_or_path}' found under "
+              f"{', '.join(r + '/' for r in DB_SEARCH_ROOTS)} (needs model/index.xml).")
         sys.exit(2)
     if len(matches) > 1:
         print(f"Ambiguous name '{name_or_path}' — {len(matches)} matches:")

@@ -13,6 +13,7 @@ const CATEGORY_LABELS = {
   truck: "Freight",
   tram: "Trams",
   metro: "Metro",
+  moto: "Motocars",
   "760_mm": "Narrow gauge",
   other: "Other",
 };

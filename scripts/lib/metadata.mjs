@@ -4,7 +4,7 @@ import { parseXmlSafe, attrStr, attrNum } from "./xml.mjs";
 export function parseMetadata(indexXmlPath) {
   const root = parseXmlSafe(indexXmlPath);
   // Root element is usually <loco ...>; fall back to the first element.
-  const el = root.loco ?? root.building ?? Object.values(root).find((v) => v && typeof v === "object") ?? {};
+  const el = root.loco ?? root.motocar ?? root.building ?? Object.values(root).find((v) => v && typeof v === "object") ?? {};
   const num = (n) => {
     const v = el["@_" + n];
     if (v === undefined || v === null || v === "") return null;

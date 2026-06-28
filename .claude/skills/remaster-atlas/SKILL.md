@@ -1,6 +1,6 @@
 ---
 name: remaster-atlas
-description: Remaster a train/building model's textures to 4x with AI (gpt-image-2) using ONE call per model, writing one per-texture file next to each source (model/z_both_4x.png, etc.) — NOT a combined atlas. Use when the user asks to "upscale"/"remaster"/"4x" a specific model's textures by name, e.g. "Upscale cd_163 loco", "remaster the cd_a coach textures". Drives scripts/remaster_atlas.py (prepare/assemble) and uses your own vision to crop each AI-enhanced tile back into its own 4x file.
+description: Remaster a train/building/motocar model's textures to 4x with AI (gpt-image-2) using ONE call per model, writing one per-texture file next to each source (model/z_both_4x.png, etc.) — NOT a combined atlas. Use when the user asks to "upscale"/"remaster"/"4x" a specific model's textures by name, e.g. "Upscale cd_163 loco", "remaster the cd_a coach textures", "remaster bus_kar_b731". Works for trains (db/train) and motocars/buses/trams (db/motocar) — the AI prompt adapts to the vehicle type. Drives scripts/remaster_atlas.py (prepare/assemble) and uses your own vision to crop each AI-enhanced tile back into its own 4x file.
 user-invocable: true
 ---
 
@@ -8,8 +8,13 @@ user-invocable: true
 
 Upscale one model's textures 4x with AI using a SINGLE call per model, writing one per-texture
 file next to each source (`model/z_both_4x.png`, etc.). The user gives a model **name**
-(e.g. `cd_163`); you do everything. A combined `atlas_4x.png` is NOT produced here — the JS
-build/upload step derives it later from these `*_4x.png` files.
+(e.g. `cd_163`, or a motocar like `bus_kar_b731`); you do everything. A combined `atlas_4x.png`
+is NOT produced here — the JS build/upload step derives it later from these `*_4x.png` files.
+
+Models are resolved under both `db/train/` (trains) and `db/motocar/` (buses/trams). The AI
+prompt switches automatically by vehicle type: trains get the railroad/ČD-running-number prompt,
+motocars get a road-vehicle prompt (no pantograph/running-number guidance; keeps destination
+signs and line numbers as-is).
 
 Why one padded call + your vision: sending each texture separately would be many AI calls, and
 sending the whole atlas unpadded rearranges/rescales the tiles. So we pack all the model's textures

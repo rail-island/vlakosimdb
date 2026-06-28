@@ -11,6 +11,7 @@ import { readOptions } from "./lib/geometry.mjs";
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DB_TRAIN = path.join(ROOT, "db", "train");
+const DB_MOTOCAR = path.join(ROOT, "db", "motocar");
 export const MATERIALS = path.join(ROOT, "materials");
 export const OUT = path.join(ROOT, "public");
 const MODELS_OUT = path.join(OUT, "models");
@@ -49,6 +50,15 @@ export function slug(s) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
 
+// Build the manifest id for a model dir. Train ids are derived from the path
+// under db/train (e.g. "loco-electric-cd-163"); other roots prefix a category
+// so ids stay readable and don't collide (e.g. "moto-bus-1").
+export function modelId(base, dir, categoryOverride = null) {
+  const rel = path.relative(base, dir).split(path.sep);
+  const parts = categoryOverride ? [categoryOverride, ...rel] : rel;
+  return slug(parts.join("-")) || slug(rel[rel.length - 1] || "") || "model";
+}
+
 function stripDollar(s) {
   return s && s.startsWith("$") ? s.slice(1) : s;
 }
@@ -75,13 +85,13 @@ function makeThumbnail(dir, outPath) {
  * @param {{ id?: string, materialsDir?: string }} opts
  * @returns {{ id, entry }|null}  null if the model has no geometry
  */
-export function buildOneModel(dir, { id, materialsDir = MATERIALS } = {}) {
-  const rel = path.relative(DB_TRAIN, dir).split(path.sep);
+export function buildOneModel(dir, { id, materialsDir = MATERIALS, base = DB_TRAIN, categoryOverride = null } = {}) {
+  const rel = path.relative(base, dir).split(path.sep);
   const modelName = rel[rel.length - 1];
   const categoryParts = rel.slice(0, -1);
-  const category = categoryParts[0] || "other";
-  const subcategory = categoryParts[1] || null;
-  if (!id) id = slug(rel.join("-")) || slug(modelName) || "model";
+  const category = categoryOverride || categoryParts[0] || "other";
+  const subcategory = categoryOverride ? (categoryParts[0] || null) : (categoryParts[1] || null);
+  if (!id) id = modelId(base, dir, categoryOverride);
 
   // Metadata (top-level index.xml is optional).
   let meta = { name: modelName, title: modelName, author: "", email: "", weight: null, power: null, maxspeed: null, path: "" };
@@ -133,24 +143,33 @@ function main() {
   cleanDir(MODELS_OUT);
   cleanDir(THUMBS_OUT);
 
-  const dirs = findModelDirs(DB_TRAIN);
-  console.log(`Found ${dirs.length} model directories under db/train`);
+  const trainDirs = findModelDirs(DB_TRAIN);
+  console.log(`Found ${trainDirs.length} model directories under db/train`);
+
+  // Motocars live in their own root and are surfaced as category "moto".
+  // The tram/ subfolder overlaps the existing tram category, so skip it.
+  const motoDirs = fs.existsSync(DB_MOTOCAR)
+    ? findModelDirs(DB_MOTOCAR).filter((d) => path.relative(DB_MOTOCAR, d).split(path.sep)[0] !== "tram")
+    : [];
+  console.log(`Found ${motoDirs.length} model directories under db/motocar (excluding tram)`);
+
+  const work = [
+    ...trainDirs.map((dir) => ({ dir, base: DB_TRAIN, categoryOverride: null })),
+    ...motoDirs.map((dir) => ({ dir, base: DB_MOTOCAR, categoryOverride: "moto" })),
+  ];
 
   const models = [];
   const usedIds = new Set();
   let built = 0;
   const skipped = [];
 
-  for (const dir of dirs) {
-    const rel = path.relative(DB_TRAIN, dir).split(path.sep);
-    const modelName = rel[rel.length - 1];
-    let id = slug(rel.join("-"));
-    if (!id) id = slug(modelName) || `model-${models.length}`;
+  for (const { dir, base, categoryOverride } of work) {
+    let id = modelId(base, dir, categoryOverride) || `model-${models.length}`;
     while (usedIds.has(id)) id = `${id}-2`;
     usedIds.add(id);
 
     try {
-      const result = buildOneModel(dir, { id });
+      const result = buildOneModel(dir, { id, base, categoryOverride });
       if (!result) {
         skipped.push(`${id} (no polygons/vertices)`);
         continue;

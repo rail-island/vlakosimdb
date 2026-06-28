@@ -98,6 +98,80 @@ function Railroad({ bbox }) {
   );
 }
 
+// Procedural road + shoulders on grass, using the same bbox-driven placement as
+// the railroad so road vehicles rest on the surface instead of floating.
+function Road({ bbox }) {
+  const built = useMemo(() => {
+    if (!bbox) return null;
+    const { size, center, min } = bbox;
+    const alongZ = size.z >= size.x;
+    const longAxis = Math.max(size.x, size.z);
+    const crossAxis = Math.min(size.x, size.z) || longAxis;
+    const roadLen = longAxis * 3;
+    const roadW = Math.max(crossAxis * 1.55, crossAxis + 0.8);
+    const shoulderW = roadW * 0.28;
+    const roadH = Math.max(crossAxis * 0.035, 0.04);
+    const shoulderH = roadH * 0.75;
+    const surfaceY = -0.01;
+    const roadY = surfaceY - roadH / 2;
+    const shoulderY = surfaceY - shoulderH / 2 - 0.002;
+    const groundY = surfaceY - Math.max(roadH, shoulderH) - 0.02;
+    const dashLen = Math.max(longAxis * 0.12, 0.8);
+    const dashW = Math.max(roadW * 0.035, 0.06);
+    const dashCount = Math.min(Math.max(Math.round(roadLen / (dashLen * 2)), 3), 32);
+    const dashStep = roadLen / dashCount;
+    const dashes = Array.from(
+      { length: dashCount },
+      (_, i) => -roadLen / 2 + (i + 0.5) * dashStep
+    );
+    return {
+      center, min, alongZ, roadLen, roadW, shoulderW,
+      roadH, shoulderH, surfaceY, roadY, shoulderY, groundY,
+      dashLen, dashW, dashes,
+    };
+  }, [bbox]);
+
+  if (!built) return null;
+  const {
+    center, min, alongZ, roadLen, roadW, shoulderW,
+    roadH, shoulderH, surfaceY, roadY, shoulderY, groundY,
+    dashLen, dashW, dashes,
+  } = built;
+  const ground = Math.max(roadLen * 1.5, roadW * 6);
+
+  return (
+    <group position={[center.x, min.y, center.z]} rotation={[0, alongZ ? Math.PI / 2 : 0, 0]}>
+      {/* Grass ground */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, groundY, 0]}>
+        <planeGeometry args={[ground, ground]} />
+        <meshStandardMaterial color="#3f5f3a" roughness={1} />
+      </mesh>
+
+      {/* Gravel shoulders */}
+      {[-1, 1].map((side) => (
+        <mesh key={side} position={[0, shoulderY, side * (roadW / 2 + shoulderW / 2)]}>
+          <boxGeometry args={[roadLen, shoulderH, shoulderW]} />
+          <meshStandardMaterial color="#66645d" roughness={1} />
+        </mesh>
+      ))}
+
+      {/* Asphalt road */}
+      <mesh position={[0, roadY, 0]}>
+        <boxGeometry args={[roadLen, roadH, roadW]} />
+        <meshStandardMaterial color="#303335" roughness={0.95} />
+      </mesh>
+
+      {/* Center line */}
+      {dashes.map((x, i) => (
+        <mesh key={i} position={[x, surfaceY + 0.002, 0]}>
+          <boxGeometry args={[dashLen, 0.004, dashW]} />
+          <meshStandardMaterial color="#d7d3c4" roughness={0.7} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function Loader() {
   return (
     <Html center>
@@ -163,6 +237,8 @@ export default function Viewer({ model, onClose, checked, onCheckedChange, folde
   const onMeasure = useCallback((b) => setBbox(b), []);
   // Re-measure when the displayed GLB changes (model switch or rebuild).
   useEffect(() => setBbox(null), [glbUrl]);
+  const isMotocar = model.category === "moto";
+  const sceneryLabel = isMotocar ? "Show road & ground" : "Show railroad & ground";
 
   return (
     <div className="viewer-overlay" onClick={onClose}>
@@ -183,7 +259,7 @@ export default function Viewer({ model, onClose, checked, onCheckedChange, folde
               </Bounds>
             </Suspense>
             {showRailroad ? (
-              <Railroad bbox={bbox} />
+              isMotocar ? <Road bbox={bbox} /> : <Railroad bbox={bbox} />
             ) : (
               <Grid
                 args={[60, 60]}
@@ -226,7 +302,7 @@ export default function Viewer({ model, onClose, checked, onCheckedChange, folde
               checked={showRailroad}
               onChange={(e) => setShowRailroad(e.target.checked)}
             />
-            Show railroad &amp; ground
+            {sceneryLabel}
           </label>
 
           {IS_DEV && (

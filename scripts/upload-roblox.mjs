@@ -193,10 +193,10 @@ function parseExistingAssets(luaPath) {
   return map;
 }
 
-function generateLua(allLocos, outputPath) {
+function generateLua(allLocos, outputPath, noun = "locomotive") {
   const lines = [
-    "-- Auto-generated locomotive database",
-    `-- ${allLocos.length} locomotive(s)`,
+    `-- Auto-generated ${noun} database`,
+    `-- ${allLocos.length} ${noun}(s)`,
     "",
     "local LocoDatabase = {",
   ];
@@ -271,8 +271,9 @@ async function main() {
     allLocos.push(result);
   }
 
-  generateLua(allLocos, outputPath);
-  console.log(`\nDone! Processed ${allLocos.length} locomotive(s).`);
+  const noun = path.basename(outputPath).startsWith("moto") ? "motocar" : "locomotive";
+  generateLua(allLocos, outputPath, noun);
+  console.log(`\nDone! Processed ${allLocos.length} ${noun}(s).`);
 }
 
 main().catch((e) => { console.error(e.stack || String(e)); process.exit(1); });
