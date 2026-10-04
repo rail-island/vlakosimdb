@@ -35,8 +35,7 @@ from PIL import Image
 
 from atlas import build_texture_atlas
 from atlas_padded import build_padded_atlas
-from upload_loco import resolve_input_dirs
-from upload_utils import _repo_root
+from jt7_common import _repo_root, resolve_input_dirs
 
 try:
     from openai import OpenAI

@@ -1,6 +1,6 @@
 ---
 name: remaster-atlas
-description: Remaster a train/building/motocar model's textures to 4x with AI (gpt-image-2) using ONE call per model, writing one per-texture file next to each source (model/z_both_4x.png, etc.) — NOT a combined atlas. Use when the user asks to "upscale"/"remaster"/"4x" a specific model's textures by name, e.g. "Upscale cd_163 loco", "remaster the cd_a coach textures", "remaster bus_kar_b731". Works for trains (db/train) and motocars/buses/trams (db/motocar) — the AI prompt adapts to the vehicle type. Drives scripts/remaster_atlas.py (prepare/assemble) and uses your own vision to crop each AI-enhanced tile back into its own 4x file.
+description: Remaster a train/building/motocar model's textures to 4x with AI (gpt-image-2) using ONE call per model, writing one per-texture file next to each source (model/z_both_4x.png, etc.) — NOT a combined atlas. Use when the user asks to "upscale"/"remaster"/"4x" a specific model's textures by name, e.g. "Upscale cd_163 loco", "remaster the cd_a coach textures", "remaster bus_kar_b731". Works for trains (db/train), buses (db/motocar) and trams (db/tram) — the AI prompt adapts to the vehicle type. Drives scripts/remaster_atlas.py (prepare/assemble) and uses your own vision to crop each AI-enhanced tile back into its own 4x file.
 user-invocable: true
 ---
 
@@ -11,7 +11,7 @@ file next to each source (`model/z_both_4x.png`, etc.). The user gives a model *
 (e.g. `cd_163`, or a motocar like `bus_kar_b731`); you do everything. A combined `atlas_4x.png`
 is NOT produced here — the JS build/upload step derives it later from these `*_4x.png` files.
 
-Models are resolved under both `db/train/` (trains) and `db/motocar/` (buses/trams). The AI
+Models are resolved under `db/train/` (trains), `db/motocar/` (buses) and `db/tram/` (trams). The AI
 prompt switches automatically by vehicle type: trains get the railroad/ČD-running-number prompt,
 motocars get a road-vehicle prompt (no pantograph/running-number guidance; keeps destination
 signs and line numbers as-is).
@@ -61,9 +61,9 @@ All commands run from the repo root. The model name comes from the user's reques
    upscaling cost. It also **rebuilds `generated/<slug>/atlas_4x.png`** (the per-texture tiles
    repacked onto the compact layout at 4x) plus `atlas_4x_overlay.png` (50/50 blend with the
    classical `atlas_4x_raw.png`) — these are **for human inspection only**, refreshed on every
-   `assemble` so they never go stale. The 4x atlas the renderer actually uses is still derived by the
-   JS build/upload from the `*_4x.png` files (`scripts/lib/atlas4x.mjs`), not from this copy.
-   `upload_loco.py` uses `image_4x.png` instead of `image.bmp` when present.
+   `assemble` so they never go stale. The 4x atlas the shipped GLB actually uses is still derived by
+   the model export from the `*_4x.png` files (`scripts/models/atlas4x.ts`), not from this copy.
+   The export also prefers `image_4x.png` over `image.bmp` as the fallback thumbnail.
 
 4. **Verify positions — REQUIRED.** Run:
    ```
@@ -103,8 +103,9 @@ All commands run from the repo root. The model name comes from the user's reques
   (cost is then $0.00).
 - `--pad N` controls the padded gutter (default 16 source px) — increase it if the AI is merging
   neighbouring tiles.
-- The per-texture `*_4x.png` are 4x the source's own size; the JS build/upload derives the 4x atlas
-  from them (`scripts/lib/atlas4x.mjs`), so no manual atlas/UV step is needed here.
+- The per-texture `*_4x.png` are 4x the source's own size; the model export derives the 4x atlas
+  from them (`scripts/models/atlas4x.ts`), so no manual atlas/UV step is needed here. Run
+  `npm run export` here and then the Rail Island import to see the result in the game.
 - **Resolution:** the padded atlas is pre-upscaled with **NEAREST** (not LANCZOS) before the AI call,
   so tiny detail (a 6px `ČD` emblem, window mullions, gear teeth) reaches the model as crisp pixels
   instead of pre-blurred mush it would have to guess at. The de-pixelate clause in `ATLAS_PROMPT` then

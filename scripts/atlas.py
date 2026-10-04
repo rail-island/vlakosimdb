@@ -1,12 +1,9 @@
 """
-Texture-atlas builder, extracted from upload_utils.
+Texture-atlas builder for the texture remastering pipeline (remaster_textures.py,
+remaster_atlas.py).
 
 Parses a model XML and shelf-packs its referenced textures into a single combined
-PNG atlas. Used by the Roblox upload scripts (upload_loco.py)
-and by the texture remastering pipeline (remaster_textures.py).
-
-Imports its small helpers one-way from ``upload_utils`` (which must NOT import this
-module back, to avoid a circular import).
+PNG atlas. Helpers come from ``jt7_common``.
 """
 
 import hashlib
@@ -14,12 +11,7 @@ import io
 import math
 from pathlib import Path
 
-from upload_utils import (
-    MATERIAL_COLORS,
-    MATERIALS_DIR,
-    _repo_root,
-    parse_xml_safe,
-)
+from jt7_common import MATERIAL_COLORS, parse_xml_safe
 
 try:
     from PIL import Image
@@ -68,7 +60,6 @@ def build_texture_atlas(
     if not texture_refs_set:
         return b"", {}, []
 
-    materials_dir = _repo_root() / MATERIALS_DIR
     images: dict[str, "Image.Image"] = {}
     for ref in sorted(texture_refs_set):
         if ref.startswith("pack:"):
@@ -81,16 +72,8 @@ def build_texture_atlas(
         elif ref.startswith("material:"):
             mat_filename = ref[9:]  # e.g. "metal052.bmp"
             mat_name = mat_filename.replace(".bmp", "").lower()
-            # Prefer a real texture file from the materials/ folder
-            mat_path = materials_dir / mat_filename
-            if not mat_path.exists():
-                mat_path = materials_dir / mat_filename.upper()
-            if mat_path.exists():
-                images[ref] = Image.open(mat_path).convert("RGBA")
-                print(f"  [MAT] Using texture file: {mat_path.name}")
-            else:
-                color = MATERIAL_COLORS.get(mat_name, (128, 128, 128, 255))
-                images[ref] = Image.new("RGBA", (64, 64), color)
+            color = MATERIAL_COLORS.get(mat_name, (128, 128, 128, 255))
+            images[ref] = Image.new("RGBA", (64, 64), color)
         else:
             images[ref] = Image.new("RGBA", (16, 16), (255, 0, 255, 255))
 

@@ -21,7 +21,7 @@ Phase `assemble`:
   - write a high-res thumbnail (image_4x.png) and report the model's AI cost.
 
 atlas_4x is NOT produced here — it is derived later from the *_4x.png files by
-the JS build/upload step (scripts/lib/atlas4x.mjs). Originals are never modified.
+the model export (scripts/models/atlas4x.ts). Originals are never modified.
 
 Usage:
   python remaster_atlas.py prepare  --model cd_163
@@ -49,7 +49,7 @@ from remaster_textures import (
     model_slug,
     pick_size,
 )
-from upload_utils import _repo_root
+from jt7_common import _repo_root
 
 try:
     from openai import OpenAI
@@ -62,8 +62,8 @@ import os
 UPSCALE = 4
 RECOMPACT_NAME = "recompact.json"
 # Roots searched when resolving a bare model name. Trains live under db/train,
-# motocars (buses/trams) under db/motocar.
-DB_SEARCH_ROOTS = ("db/train", "db/motocar")
+# buses under db/motocar and trams under db/tram.
+DB_SEARCH_ROOTS = ("db/train", "db/motocar", "db/tram")
 
 ATLAS_PROMPT = (
     "This is a flat texture atlas for an old 3D RAILROAD VEHICLE (a locomotive, "
@@ -112,8 +112,9 @@ MOTOCAR_ATLAS_PROMPT = (
 
 
 def is_motocar(model_dir: Path) -> bool:
-    """True if the model lives under db/motocar (a bus/tram), not db/train."""
-    return "motocar" in model_dir.relative_to(_repo_root()).parts
+    """True for a road vehicle or tram (db/motocar, db/tram), not a train (db/train)."""
+    parts = model_dir.relative_to(_repo_root()).parts
+    return "motocar" in parts or "tram" in parts[:2]
 
 
 def motocar_prompt_for(model_dir: Path) -> str:
@@ -144,7 +145,7 @@ def atlas_prompt_for(model_dir: Path) -> str:
     running numbers are 'CLASS SERIAL-CHECK' (e.g. '111 022-5' / '111.022'), with the
     operator (ČD) shown only as a separate emblem, never glued to the class digits.
 
-    Motocars (buses/trams under db/motocar) use a different, road-vehicle prompt."""
+    Motocars (buses under db/motocar, trams under db/tram) use a different, road-vehicle prompt."""
     if is_motocar(model_dir):
         return motocar_prompt_for(model_dir)
     rel = model_dir.relative_to(_repo_root())
@@ -463,7 +464,7 @@ def prepare(model_dir: Path, out_root: Path, client, quality: str, pad: int,
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "tiles").mkdir(exist_ok=True)
 
-    # Compact atlas (the real upload layout = target) ...
+    # Compact atlas (the real build layout = target) ...
     compact_png, compact_map, _ = build_texture_atlas(model_sub, model_xml)
     if not compact_png:
         print("  [error] no textures / could not build compact atlas")

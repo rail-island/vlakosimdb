@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="Windows-1250"?>
-<cab file="cab.bmp" fovy="45" h="334" hi="0.3" w="575" x="27" y="10">
-<items>
-<circle endangle="-48" endvalue="200" file="speedmeter.bmp" radius="0.15" root="@speed" startangle="228" startvalue="0" wi="0.02" x="-0.51" y="-0.71"/>
-</items>
-</cab>

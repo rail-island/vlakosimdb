@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="Windows-1250"?>
-<road allowstyles="road" default="1" motodist="0.15" name="ROAD_0" title="Road">
-<surface>
-<gravel b="0.4" d1="0.2" d2="0.3" d3="0.2" file="gravel.bmp" g="0.4" hi="0.01" r="0.4"/>
-<midline file="midline.bmp" hi="0.02" transparent="1" w="0.02"/>
-</surface>
-</road>
