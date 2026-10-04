@@ -32,7 +32,7 @@ describe("vehicle ids", () => {
       expect(m.id.startsWith(`${m.category}-`), m.id).toBe(true);
       count[m.tree] = (count[m.tree] ?? 0) + 1;
     }
-    expect(count).toEqual({ motocar: 18, train: 311, tram: 9 });
+    expect(count).toEqual({ motocar: 18, train: 312, tram: 9 });
   });
 
   it("depend on the path below the tree only, not on where the tree sits", () => {
