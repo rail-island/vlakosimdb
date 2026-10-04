@@ -1,34 +1,35 @@
-// Port of recount() (jt7_src/out/jt7/data/modellib/simpleobj.zb) — regenerate a
-// simplemodel's <model> polygon soup from its source description (clips, shapes,
-// colorizes, stamps). Returns a synthetic <model> node in fast-xml-parser shape
-// ({ polygon: [...] }) so geometry.mjs's walk() consumes it like a parsed <model>.
+// Port of recount() (jt7 modellib/simpleobj) — regenerate a simplemodel's <model>
+// polygon soup from its source description (clips, shapes, colorizes, stamps).
+// Returns a synthetic <model> node in fast-xml-parser shape ({ polygon: [...] })
+// so geometry.ts's walk() consumes it like a parsed <model>.
 //
-// Inlines are intentionally NOT expanded here — geometry.mjs handles them via its
+// Inlines are intentionally NOT expanded here — geometry.ts handles them via its
 // own <inlines> recursion. <crook>/<noise> are unused across the DB and skipped.
 
-import { asArray, attrStr, attrNum } from "../xml.mjs";
-import { PedrAlg } from "./pedralg.mjs";
-import { polyedrToPolygons } from "./polyedr.mjs";
-import { ColorAlg, StampAlg } from "./coloralg.mjs";
-import { generateRotateSolid, loadCylindricColorize } from "./rotatesolid.mjs";
+import { asArray, attrStr, attrNum, type XmlNode } from "../xml.ts";
+import { PedrAlg } from "./pedralg.ts";
+import { polyedrToPolygons, type PolyedrLike } from "./polyedr.ts";
+import { ColorAlg, StampAlg, type XmlPolygon } from "./coloralg.ts";
+import { generateRotateSolid, loadCylindricColorize } from "./rotatesolid.ts";
 
 // findalong: resolve an axis section, following a `sameas` redirect.
-function findAlong(sm, name) {
-  const along = sm["along" + name];
+function findAlong(sm: XmlNode, name: string): XmlNode | undefined {
+  const along = sm["along" + name] as XmlNode | undefined;
   if (!along) return undefined;
   const sameas = attrStr(along, "sameas");
-  if (sameas) return sm["along" + sameas];
+  if (sameas) return sm["along" + sameas] as XmlNode | undefined;
   return along;
 }
 
 // makeclips: feed every clip polygon whose `apply` list names this shape.
-function makeClips(name, along, pedr, dir) {
+function makeClips(name: string, along: XmlNode | undefined, pedr: PedrAlg, dir: number): boolean {
   let res = false;
   if (!along) return res;
-  for (const poly of asArray(along.clip?.polygon)) {
+  const clip = along.clip as XmlNode | undefined;
+  for (const poly of asArray(clip?.polygon as XmlNode | XmlNode[] | undefined)) {
     const names = attrStr(poly, "apply").split(";");
     if (names.includes(name)) {
-      const points = asArray(poly.point).map((p) => ({
+      const points = asArray(poly.point as XmlNode | XmlNode[] | undefined).map((p) => ({
         x: attrNum(p, "x"),
         y: attrNum(p, "y"),
         faceid: attrStr(p, "faceid"),
@@ -44,15 +45,15 @@ function makeClips(name, along, pedr, dir) {
  * Regenerate <model> polygons from source. Returns a fast-xml-parser-shaped node
  * `{ polygon: [...] }`, or `null` when there is no source to regenerate from.
  */
-export function generateModel(sm, { flipS = {} } = {}) {
-  const shapes = asArray(sm.shapes?.shape);
+export function generateModel(sm: XmlNode, { flipS = {} }: { flipS?: Record<string, boolean> } = {}): { polygon: XmlPolygon[] } | null {
+  const shapes = asArray((sm.shapes as XmlNode | undefined)?.shape as XmlNode | XmlNode[] | undefined);
   if (shapes.length === 0) return null;
   const alongx = findAlong(sm, "x");
   const alongy = findAlong(sm, "y");
   const alongz = findAlong(sm, "z");
   if (!alongx && !alongy && !alongz) return null;
 
-  const model = [];
+  const model: XmlPolygon[] = [];
 
   for (const shape of shapes) {
     const name = attrStr(shape, "name");
@@ -63,20 +64,17 @@ export function generateModel(sm, { flipS = {} } = {}) {
     if (makeClips(name, alongz, pedr, 2)) areclips = true;
 
     const type = attrStr(shape, "type");
-    let mod; // { vrs, faces }
+    let mod: PolyedrLike | null = null;
     if (type === "clip") {
       pedr.initalg();
       pedr.run();
       mod = pedr.toPolyedr();
     } else if (type === "rotate") {
-      const pts = asArray(shape.verteces?.vertex).map((v) => ({
-        x: attrNum(v, "x"),
-        y: attrNum(v, "y"),
-        z: attrNum(v, "z"),
-      }));
-      const faceids = [];
-      for (let i = 0; i < pts.length - 1; i++) faceids.push(attrStr(asArray(shape.verteces.vertex)[i], "faceid"));
-      const cize = loadCylindricColorize(asArray(shape.colorizes?.colorize));
+      const vertEls = asArray((shape.verteces as XmlNode | undefined)?.vertex as XmlNode | XmlNode[] | undefined);
+      const pts = vertEls.map((v) => ({ x: attrNum(v, "x"), y: attrNum(v, "y"), z: attrNum(v, "z") }));
+      const faceids: string[] = [];
+      for (let i = 0; i < pts.length - 1; i++) faceids.push(attrStr(vertEls[i], "faceid"));
+      const cize = loadCylindricColorize(asArray((shape.colorizes as XmlNode | undefined)?.colorize as XmlNode | XmlNode[] | undefined));
       const cnt = attrNum(shape, "rotateverteces");
       const rotateOut = generateRotateSolid(pts, cnt, cize, faceids);
       if (attrStr(shape, "cullsafe") === "1") for (const f of rotateOut.faces) f.culling = 0;
@@ -97,7 +95,7 @@ export function generateModel(sm, { flipS = {} } = {}) {
   // Build colorize sides (non-stamp items only).
   const calg = new ColorAlg();
   calg.flipS = flipS;
-  for (const cize of asArray(sm.colorizes?.colorize)) {
+  for (const cize of asArray((sm.colorizes as XmlNode | undefined)?.colorize as XmlNode | XmlNode[] | undefined)) {
     if (attrStr(cize, "stamp") === "1") continue;
     const material = attrStr(cize, "material") === "1";
     const dirs = attrStr(cize, "dirs").split(";");
@@ -123,8 +121,8 @@ export function generateModel(sm, { flipS = {} } = {}) {
   for (const polygon of model) calg.run(polygon);
 
   // Stamp decals (colorizes with stamp="1").
-  const newpolys = [];
-  for (const stamp of asArray(sm.colorizes?.colorize)) {
+  const newpolys: XmlPolygon[] = [];
+  for (const stamp of asArray((sm.colorizes as XmlNode | undefined)?.colorize as XmlNode | XmlNode[] | undefined)) {
     if (attrStr(stamp, "stamp") !== "1") continue;
     let xcnt = attrNum(stamp, "stampcntx");
     let ycnt = attrNum(stamp, "stampcnty");
@@ -170,7 +168,7 @@ export function generateModel(sm, { flipS = {} } = {}) {
   // deletefaces: drop polygons whose faceid is listed.
   const erase = attrStr(sm, "deletefaces").split(";").filter((s) => s !== "");
   const result = erase.length
-    ? model.filter((p) => !erase.includes(attrStr(p, "faceid")))
+    ? model.filter((p) => !erase.includes(attrStr(p as XmlNode, "faceid")))
     : model;
 
   return { polygon: result };
