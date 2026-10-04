@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="Windows-1250"?>
-<tunnel rep.name="emptyobj.tunnel" hor="0.1" ver="0.3" name="tunnel1" author="Jan Prochazka" email="zputil@centrum.cz" default="0" top.texture="material:wall.bmp" top.texsize="" bot.texture="material:wall.bmp" bot.texsize="" title="$Tunnel 1"/>

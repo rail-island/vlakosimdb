@@ -7,16 +7,14 @@ generative upscale better — the image model is less likely to merge neighbours
 and the gutters let us re-detect/re-snap each tile to its exact grid cell
 afterwards (so UV mapping stays correct).
 
-This is a standalone experiment used only by remaster_textures.py --padded. It
-does NOT touch upload_utils.build_texture_atlas / the upload pipeline. If the POC
-works, the upload model's atlas/UVs would be adjusted to match.
+Used by remaster_textures.py --padded and by remaster_atlas.py.
 """
 
 import io
 import math
 from pathlib import Path
 
-from upload_utils import MATERIAL_COLORS, MATERIALS_DIR, _repo_root, parse_xml_safe
+from jt7_common import MATERIAL_COLORS, parse_xml_safe
 
 try:
     from PIL import Image
@@ -44,7 +42,6 @@ def _collect_images(model_dir: Path, model_xml_path: Path) -> tuple[dict, list[s
     if not refs:
         return {}, []
 
-    materials_dir = _repo_root() / MATERIALS_DIR
     images: dict[str, "Image.Image"] = {}
     for ref in sorted(refs):
         if ref.startswith("pack:"):
@@ -54,14 +51,8 @@ def _collect_images(model_dir: Path, model_xml_path: Path) -> tuple[dict, list[s
         elif ref.startswith("material:"):
             fn = ref[9:]
             name = fn.replace(".bmp", "").lower()
-            mp = materials_dir / fn
-            if not mp.exists():
-                mp = materials_dir / fn.upper()
-            if mp.exists():
-                images[ref] = Image.open(mp).convert("RGB")
-            else:
-                col = MATERIAL_COLORS.get(name, (128, 128, 128, 255))
-                images[ref] = Image.new("RGB", (64, 64), col[:3])
+            col = MATERIAL_COLORS.get(name, (128, 128, 128, 255))
+            images[ref] = Image.new("RGB", (64, 64), col[:3])
         else:
             images[ref] = Image.new("RGB", (16, 16), (255, 0, 255))
     return images, sorted(refs)

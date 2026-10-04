@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="Windows-1250"?>
-<smoke count="1000" elem_size="0.04" end_a="0" end_b="0.4" end_g="0.4" end_r="0.4" fade_max="1" fade_min="0.5" impuls_rate="0.02" interval="0.02" rise_const="0.3" slow_down="0.1" start_a="1" start_b="0.6" start_g="0.5" start_r="0.4" type="particle" vx_max="0.3" vx_min="-0.3" vy_max="0.6" vy_min="0.2" vz_max="0.3" vz_min="-0.3"/>

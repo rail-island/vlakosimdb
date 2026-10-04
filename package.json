@@ -1,38 +1,24 @@
 {
-  "name": "vlakosimdb-web",
+  "name": "vlakosimdb",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Web 3D browser for the VLAKosimDB train model database",
+  "description": "VLAKosimDB: the JT7 train, bus and tram model database and its GLB converter",
   "scripts": {
-    "build:models": "node scripts/build-models.mjs",
+    "export": "tsx scripts/models/export.ts",
     "test": "vitest run",
-    "remaster": "node scripts/remaster.mjs",
-    "upload": "node scripts/upload-roblox.mjs",
-    "upload:dry": "node scripts/upload-roblox.mjs --dry-run",
-    "upload:hires": "node scripts/upload-roblox.mjs --hires-only",
-    "upload:hires:dry": "node scripts/upload-roblox.mjs --hires-only --dry-run",
-    "upload:moto": "node scripts/upload-roblox.mjs --input INPUT_MOTO --output moto_data.lua",
-    "upload:moto:dry": "node scripts/upload-roblox.mjs --input INPUT_MOTO --output moto_data.lua --dry-run",
-    "dev": "npm run build:models && vite",
-    "build": "npm run build:models && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@react-three/drei": "^9.114.0",
-    "@react-three/fiber": "^8.17.10",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "sharp": "^0.35.2",
-    "three": "^0.169.0"
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "bmp-js": "^0.1.0",
-    "fast-xml-parser": "^4.5.0",
-    "iconv-lite": "^0.6.3",
-    "pngjs": "^7.0.0",
-    "vite": "^5.4.11",
-    "vitest": "^4.1.9"
+    "@types/node": "22.20.0",
+    "@types/pngjs": "6.0.5",
+    "bmp-js": "0.1.0",
+    "fast-xml-parser": "4.5.6",
+    "iconv-lite": "0.6.3",
+    "pngjs": "7.0.0",
+    "sharp": "0.34.5",
+    "tsx": "4.22.4",
+    "typescript": "5.9.3",
+    "vitest": "3.2.6"
   }
 }

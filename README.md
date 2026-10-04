@@ -1,53 +1,82 @@
-# VLAKosimDB — 3D Train Model Browser
+# VLAKosimDB
 
-A web app for browsing and inspecting the 3D train models stored in this
-repository. It converts the repo's proprietary XML + BMP models into glTF
-(`.glb`) at build time and renders them in the browser with Three.js.
+The train, bus and tram model database of the JT7 simulator, and the converter that
+turns it into the GLB vehicles [Rail Island](https://railisland.com) ships.
 
-## Quick start (localhost)
+The models are JT7's own format: an `index.xml` with the vehicle's metadata, a
+`model/index.xml` with its geometry (or the procedural `simplemodel` description the
+JT7 editor generates it from) and BMP textures. This repository holds those sources
+and builds them; Rail Island never reads them directly.
 
-Requires Node.js 18+.
+## Layout
+
+| Path | What it is |
+| --- | --- |
+| `db/train/` | Trains: `loco/{electric,diesel,steam,muv}`, `coach`, `emu`, `dmu`, `truck`, `760_mm`, `metro`, `tram`, ... |
+| `db/motocar/` | Buses. |
+| `db/tram/` | Trams. |
+| `scripts/models/` | The converter (TypeScript) and `export.ts`, the one command that runs it. |
+| `scripts/*.py`, `INPUT_REMASTER` | AI texture remastering (see below). |
+| `test/` | Vitest: golden geometry, articulation, metadata, thumbnail renderer, the id contract. |
+| `jt7_src/` | The original JT7 C++ sources, kept as the reference for the format and the `simplemodel` port. |
+
+Each model folder looks like `db/train/loco/electric/cd_163/`:
+
+- `index.xml`: metadata (name, title, author, weight, power, maxspeed, body style, smoke anchor), Windows-1250.
+- `image.bmp`: the hand-drawn side view (`image_4x.png` when remastered), used only when a thumbnail cannot be rendered.
+- `model/index.xml`: geometry, plus its textures (`x_dec.bmp`, ... and the AI-remastered `*_4x.png` next to them) and an optional `options.json` of texture flips.
+
+## Export
+
+Requires Node.js 20+.
 
 ```bash
 npm install
-npm run dev
+npm run export          # -> export/
+npm test
+npm run typecheck
 ```
 
-Then open the printed `http://localhost:5173` URL. The dev command first runs the
-model converter (`build:models`) to generate `public/models/*.glb`,
-`public/thumbs/*.png` and `public/manifest.json`, then starts Vite.
+`npm run export` converts every model and writes, per tree (`motocar`, `train`, `tram`):
 
-## Scripts
-
-| Command | What it does |
+| File | Content |
 | --- | --- |
-| `npm run build:models` | Convert `db/train/**` models → GLB + thumbnails + `manifest.json` (output in `public/`). |
-| `npm run dev` | Build models, then start the Vite dev server. |
-| `npm run build` | Build models, then produce a static site in `dist/`. |
-| `npm run preview` | Serve the built `dist/` locally. |
+| `export/<tree>/glb/<id>.glb` | The vehicle: geometry, one embedded texture atlas (4x when remastered textures exist), articulated vehicles as named section nodes. Raw, unencoded. |
+| `export/<tree>/thumbs/<id>.webp` | A 320x120 side view rendered from that GLB (a `.png` of the drawn side view only if the render fails). |
+| `export/<tree>/<tree>.meta.json` | `{ category, vehicles: [...] }`, one row per vehicle: id, file names, name, title, subcategory, traction, author, email, weight, power, maxspeed, length, bbox, vertex/face counts, hires, source folder, texture flips, articulation and smoke anchor. |
 
-## Deploying to Netlify
+`export/` is gitignored. A model that fails to convert is reported and makes the
+command exit non-zero.
 
-`netlify.toml` is included. Netlify runs `npm run build` and publishes `dist/`.
-Because the models are regenerated from the committed `db/` sources during the
-build, none of the generated assets need to be committed.
+**Vehicle ids are a contract.** An id is the category (`moto`, `train`, `tram`) plus
+the model's path below its tree, slugged: `db/train/loco/electric/cd_163` is
+`train-loco-electric-cd-163`. Rail Island stores ids in saved maps, so
+`test/export.test.ts` pins the full list in `test/fixtures/vehicle-ids.json`. Moving,
+renaming or deleting a model folder fails that test. Regenerate the fixture only when
+the change is intended, knowing the old id disappears from the game.
 
-## How it works
+## Using it from Rail Island
 
-The conversion pipeline is pure Node (no Python required):
+Rail Island's `pnpm import:vehicles` expects this repository checked out next to its
+own (`../vlakosimdb`). It runs `npm run export` here and then replaces its
+`db/motocar`, `db/train` and `db/tram` with the three `export/` trees, which it
+commits. Everything that depends on the game's runtime (LOD proxies, meshopt
+encoding, hashed file names, archiving) happens on the Rail Island side.
 
-- `scripts/build-models.mjs` — walks `db/train/**`, and for each model emits a
-  `.glb`, a thumbnail, and a manifest entry.
-- `scripts/lib/` — the converter, ported from the repo's Python tooling
-  (`scripts/upload_utils.py`, `scripts/atlas.py`):
-  - `xml.mjs` — Windows-1250 tolerant XML parsing.
-  - `geometry.mjs` — parses the `<model>` polygon/vertex data and merges
-    `<inline>` sub-models (e.g. pantographs) with their transforms.
-  - `atlas.mjs` — shelf-packs textures into one atlas, preferring AI-remastered
-    `*_4x.png` over the original `.bmp`, with material/solid-color fallbacks.
-  - `glb.mjs` — writes a glTF 2.0 binary with the atlas embedded.
-- `src/` — a React + Three.js (`@react-three/fiber` + `drei`) frontend: a
-  filterable thumbnail gallery and an on-demand 3D viewer.
+The side-view camera, lights and backdrop live in `scripts/models/thumbView.ts`, a
+copy of Rail Island's `src/models/thumbView.ts`. Keep the two in step so a shipped
+vehicle and a player's upload are photographed alike.
 
-Generated output (`public/models/`, `public/thumbs/`, `public/manifest.json`,
-`dist/`, `node_modules/`) is git-ignored.
+## Remastering textures
+
+AI 4x upscaling (gpt-image-2) writes a `*_4x.png` next to each source texture and an
+`image_4x.png` next to `image.bmp`. The export prefers them automatically.
+
+- `python3 scripts/remaster_atlas.py prepare|assemble --model <name>`: one model,
+  one AI call. The `remaster-atlas` skill (`.claude/skills/`) drives it.
+- `python3 scripts/remaster_textures.py`: the batch path over the models listed in
+  `INPUT_REMASTER`.
+
+Both need Python 3 with `pillow`, `python-dotenv` and `openai`, and an
+`OPENAI_API_KEY` in `.env`. After remastering, run the export and the Rail Island
+import to see the result in the game.

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="Windows-1250"?>
-<shape3d name="backface" rep.name="emptyobj.shape3d">
-<polygon b="1" g="1" r="1" texture="material:brick050.bmp" texture.transparent="0">
-<vertex s="0" t="0" x="10" y="0" z="0"/>
-<vertex s="0" t="1" x="10" y="8" z="0"/>
-<vertex s="1" t="1" x="10" y="8" z="10"/>
-<vertex s="1" t="0" x="10" y="0" z="10"/>
-</polygon>
-</shape3d>

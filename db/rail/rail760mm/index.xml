@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="Windows-1250"?>
-<railroad default="0" name="rail760mm" title="$Railroad 760 mm" train_y="0.03">
-<surface>
-<gravel b="0.4" file="gravel.bmp" g="0.4" hi="0.01" quality="0.2" r="0.4" w="0.2"/>
-<sleeper b="0.2" cover="0.08" file="sleeper.bmp" g="0.4" hi="0.02" len="0.15" r="0.6" wi="0.04"/>
-<rail b="0.7" file="rail.bmp" g="0.7" gauge2="0.035" hi="0.03" quality="0.2" r="0.7" w="0.015"/>
-<rail b="0.7" file="rail.bmp" g="0.7" gauge2="-0.035" hi="0.03" quality="0.2" r="0.7" w="0.015"/>
-</surface>
-</railroad>
